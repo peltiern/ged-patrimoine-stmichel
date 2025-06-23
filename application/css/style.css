@@ -1,37 +1,77 @@
 body {
-  font-family: sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
+  background: #f5f5f5;
+  color: #333;
 }
 
 header {
-  padding: 10px;
-  background: #eee;
+  padding: 15px;
+  background: #222;
+  color: white;
 }
 
 .filters label {
   margin-right: 5px;
+  font-weight: bold;
 }
 
-.filters select,
-.filters input {
-  margin-right: 10px;
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.filter-button {
+  padding: 5px 10px;
+  border: 1px solid #aaa;
+  background: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-button.selected {
+  background: #2196f3;
+  color: white;
+  border-color: #1976d2;
 }
 
 .tabs {
   display: flex;
   padding: 10px;
-  background: #ddd;
+  background: #333;
 }
 
 .tabs button {
   margin-right: 10px;
-  padding: 5px 10px;
+  padding: 8px 15px;
   cursor: pointer;
+  background: #555;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.tabs button:hover {
+  background: #777;
 }
 
 .tab-content {
   display: none;
   padding: 10px;
+}
+
+.tab-content.active {
+  display: block;
 }
 
 #map, #map-both {
@@ -40,25 +80,58 @@ header {
 
 .split-view {
   display: flex;
+  gap: 10px;
 }
 
-#results-list-both {
+#results-list-both,
+#results-list {
   flex: 1;
   overflow-y: auto;
   max-height: 500px;
 }
 
-#map-both {
+.list-container .photo-row {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  gap: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.photo-row img {
+  width: 120px;
+  height: auto;
+  border-radius: 4px;
+}
+
+.photo-info {
   flex: 1;
 }
 
-.thumbnail {
-  margin: 5px;
-  display: inline-block;
+#pagination {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
 }
 
-.thumbnail img {
-  width: 100px;
-  height: auto;
+#pagination button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  background: #2196f3;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
+#pagination button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+#pagination button:hover:not(:disabled) {
+  background: #1976d2;
+}
