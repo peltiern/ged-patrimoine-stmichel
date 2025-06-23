@@ -22,8 +22,11 @@ function initFilters() {
     photo.lieu?.forEach(l => allLieux.add(l));
   });
 
+  const allThemesTries = Array.from(allThemes).sort();
+  const allLieuxTries = Array.from(allLieux).sort();
+
   const themeSelect = document.getElementById('filter-themes');
-  allThemes.forEach(t => {
+  allThemesTries.forEach(t => {
     const option = document.createElement('option');
     option.value = t;
     option.textContent = t;
@@ -31,7 +34,7 @@ function initFilters() {
   });
 
   const lieuSelect = document.getElementById('filter-lieux');
-  allLieux.forEach(l => {
+  allLieuxTries.forEach(l => {
     const option = document.createElement('option');
     option.value = l;
     option.textContent = l;
@@ -129,10 +132,12 @@ function initMaps() {
 
 function updateMap(filtered, layer) {
   layer.clearLayers();
-  filtered.forEach(photo => {
+  filtered.forEach((photo, index) => {
     if (photo.latitude && photo.longitude) {
+      //img.src = '/resized/large/' + photo.chemin;
+      const path = 'resized/large/' + ((index % 2 === 0) ? '1.jpg' : '2.jpg');
       const marker = L.marker([photo.latitude, photo.longitude])
-        .bindPopup(`<strong>${photo.numero}</strong><br><img src="${photo.chemin}" width="100">`);
+        .bindPopup(`<strong>${photo.numero}</strong><br><img src="${path}" width="100">`);
       layer.addLayer(marker);
     }
   });
