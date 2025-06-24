@@ -7,6 +7,8 @@ let selectedLieux = [];
 let markerMap = new Map();
 let markerBothMap = new Map();
 let markerClusters, markerBothClusters;
+let currentLightboxIndex = 0;
+let currentFilteredList = [];
 
 fetch('data/photos_saint_michel.json')
     .then(res => res.json())
@@ -82,6 +84,8 @@ function applyFilters() {
     return themeMatch && lieuMatch;
   });
 
+  currentFilteredList = filtered; // Sauvegarder la liste filtrée
+
   renderList(filtered, "results-list", markerMap, map);
   renderList(filtered, "results-list-both", markerBothMap, mapBoth);
   updateMap(filtered, markerClusters, markerMap);
@@ -116,6 +120,10 @@ function renderList(filtered, containerId, markerMapping, leafletMap) {
     row.appendChild(info);
     container.appendChild(row);
 
+    row.addEventListener('click', () => {
+      openLightbox(index + (currentPage - 1) * itemsPerPage);
+    });
+
     row.addEventListener('mouseenter', () => {
       const marker = markerMapping.get(photo.numero);
       if (marker) markerBounce(marker);
@@ -130,20 +138,98 @@ function renderList(filtered, containerId, markerMapping, leafletMap) {
 function renderPagination(totalItems) {
   const pagination = document.getElementById('pagination');
   pagination.innerHTML = '';
+
   const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const maxPageButtons = 5; // nombre maximum de pages visibles autour de la page courante
 
-  for (let i = 1; i <= totalPages; i++) {
-    const btn = document.createElement('button');
-    btn.textContent = i;
-    if (i === currentPage) btn.disabled = true;
+  // Bouton "Première page"
+  const firstBtn = document.createElement('button');
+  firstBtn.textContent = '«';
+  firstBtn.disabled = currentPage === 1;
+  firstBtn.onclick = () => {
+    currentPage = 1;
+    applyFilters();
+  };
+  pagination.appendChild(firstBtn);
 
-    btn.onclick = () => {
-      currentPage = i;
+  // Bouton "Précédent"
+  const prevBtn = document.createElement('button');
+  prevBtn.textContent = '<';
+  prevBtn.disabled = currentPage === 1;
+  prevBtn.onclick = () => {
+    if (currentPage > 1) {
+      currentPage--;
       applyFilters();
-    };
+    }
+  };
+  pagination.appendChild(prevBtn);
 
-    pagination.appendChild(btn);
+  // Calcul des pages à afficher
+  let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+  let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+  if (endPage - startPage < maxPageButtons - 1) {
+    startPage = Math.max(1, endPage - maxPageButtons + 1);
   }
+
+  // Boutons de pages
+  for (let i = startPage; i <= endPage; i++) {
+
+    if (i === currentPage) {
+      // Champ de saisie direct
+      const pageInput = document.createElement('input');
+      pageInput.type = 'number';
+      pageInput.min = 1;
+      pageInput.max = totalPages;
+      pageInput.value = currentPage;
+      pageInput.style.width = '50px';
+      pageInput.onchange = () => {
+        const page = parseInt(pageInput.value);
+        if (page >= 1 && page <= totalPages) {
+          currentPage = page;
+          applyFilters();
+        }
+      };
+      pagination.appendChild(pageInput);
+    } else {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+
+      btn.onclick = () => {
+        currentPage = i;
+        applyFilters();
+      };
+
+      pagination.appendChild(btn);
+    }
+  }
+
+  // Bouton "Suivant"
+  const nextBtn = document.createElement('button');
+  nextBtn.textContent = '>';
+  nextBtn.disabled = currentPage === totalPages;
+  nextBtn.onclick = () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      applyFilters();
+    }
+  };
+  pagination.appendChild(nextBtn);
+
+  // Bouton "Dernière page"
+  const lastBtn = document.createElement('button');
+  lastBtn.textContent = '»';
+  lastBtn.disabled = currentPage === totalPages;
+  lastBtn.onclick = () => {
+    currentPage = totalPages;
+    applyFilters();
+  };
+  pagination.appendChild(lastBtn);
+
+  // Affichage "Page X sur Y"
+  const pageInfo = document.createElement('span');
+  pageInfo.style.marginLeft = '10px';
+  pageInfo.textContent = `Page ${currentPage} / ${totalPages}`;
+  pagination.appendChild(pageInfo);
 }
 
 function initMaps() {
@@ -199,6 +285,56 @@ function markerBounce(marker) {
     marker.setIcon(originalIcon);
   }, 600);
 }
+
+function openLightbox(index) {
+  currentLightboxIndex = index;
+  displayLightbox();
+
+  document.getElementById('lightbox').classList.remove('hidden');
+}
+
+function displayLightbox() {
+  const photo = currentFilteredList[currentLightboxIndex];
+  const path = 'resized/large/' + ((currentLightboxIndex % 2 === 0) ? '1.jpg' : '2.jpg');
+
+  document.getElementById('lightbox-body').innerHTML = `
+  <div class="lightbox-image-container">
+    <img src="${path}" alt="${photo.numero}">
+  </div>
+  <div class="lightbox-text">
+    <div><strong>${photo.numero}</strong></div>
+    <div>Date: ${photo.date || ''}</div>
+    <div>Themes: ${(photo.themes || []).join(', ')}</div>
+    <div>Lieux: ${(photo.lieu || []).join(', ')}</div>
+  </div>
+`;
+
+}
+
+document.getElementById('lightbox-close').addEventListener('click', () => {
+  document.getElementById('lightbox').classList.add('hidden');
+});
+
+document.getElementById('lightbox-prev').addEventListener('click', () => {
+  if (currentLightboxIndex > 0) {
+    currentLightboxIndex--;
+    displayLightbox();
+  }
+});
+
+document.getElementById('lightbox-next').addEventListener('click', () => {
+  if (currentLightboxIndex < currentFilteredList.length - 1) {
+    currentLightboxIndex++;
+    displayLightbox();
+  }
+});
+
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'lightbox') {
+    document.getElementById('lightbox').classList.add('hidden');
+  }
+});
+
 
 function showTab(id) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));

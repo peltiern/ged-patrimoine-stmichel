@@ -5,8 +5,8 @@
   <title>Galerie Photos</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/vendor/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <link rel="stylesheet" href="css/vendor/MarkerCluster.css" />
+  <link rel="stylesheet" href="css/vendor/MarkerCluster.Default.css" />
 </head>
 <body>
 <header>
@@ -48,8 +48,17 @@
   </section>
 </main>
 
+<div id="lightbox" class="lightbox hidden">
+  <div class="lightbox-content">
+    <span id="lightbox-close" class="lightbox-close">&times;</span>
+    <button id="lightbox-prev" class="lightbox-nav">❮</button>
+    <div id="lightbox-body"></div>
+    <button id="lightbox-next" class="lightbox-nav">❯</button>
+  </div>
+</div>
+
 <script src="js/vendor/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="js/vendor/leaflet.markercluster.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
