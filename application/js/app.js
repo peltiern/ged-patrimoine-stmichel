@@ -236,11 +236,11 @@ function initMaps() {
   map = L.map('map').setView([45.6406, 0.1096], 14);
   mapBoth = L.map('map-both').setView([45.6406, 0.1096], 14);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  L.tileLayer('img/tuiles/osm/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap'
   }).addTo(map);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapBoth);
+  L.tileLayer('img/tuiles/osm/{z}/{x}/{y}.png').addTo(mapBoth);
 
   delete L.Icon.Default.prototype._getIconUrl;
   L.Icon.Default.mergeOptions({
