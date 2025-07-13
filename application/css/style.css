@@ -1,8 +1,15 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
   background: #f5f5f5;
   color: #333;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
 }
 
 header {
@@ -11,12 +18,13 @@ header {
   color: white;
 }
 
-.filters label {
+/* Filtres */
+.filtres label {
   margin-right: 5px;
   font-weight: bold;
 }
 
-.filters {
+.filtres {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -24,13 +32,13 @@ header {
   margin-top: 10px;
 }
 
-.filter-group {
+.filtre-group {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
 }
 
-.filter-button {
+.filtre-button {
   padding: 5px 10px;
   border: 1px solid #aaa;
   background: white;
@@ -39,19 +47,73 @@ header {
   transition: all 0.2s;
 }
 
-.filter-button.selected {
+.filtre-button.selected {
   background: #2196f3;
   color: white;
   border-color: #1976d2;
 }
 
-.tabs {
+.custom-multiselect {
+  position: relative;
+  width: 200px;
+}
+
+.custom-multiselect-button {
+  padding: 8px 12px;
+  background-color: white;
+  color: #000000;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-multiselect-options {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  color: #000000;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.custom-multiselect.open .custom-multiselect-options {
+  display: block;
+}
+
+.custom-multiselect-options label {
+  display: block;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.custom-multiselect-options input {
+  margin-right: 5px;
+}
+
+/*Onglets*/
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: calc(100vh - 120px); /* ajuste selon ton header */
+}
+
+.onglets {
   display: flex;
   padding: 10px;
   background: #333;
 }
 
-.tabs button {
+.onglets button {
   margin-right: 10px;
   padding: 8px 15px;
   cursor: pointer;
@@ -61,61 +123,88 @@ header {
   border-radius: 5px;
 }
 
-.tabs button:hover {
+.onglets button:hover {
   background: #777;
 }
 
-.tab-content {
-  display: none;
+.contenu-onglet {
+  display: none !important;
   padding: 10px;
 }
 
-.tab-content.active {
-  display: block;
+.contenu-onglet.active {
+  display: flex !important;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
 }
 
-#map, #map-both {
+#carte {
   height: 500px;
 }
 
-.split-view {
+#onglet-liste {
   display: flex;
-  gap: 10px;
-}
-
-#results-list-both,
-#results-list {
+  flex-direction: column;
   flex: 1;
-  overflow-y: auto;
-  max-height: 500px;
+  overflow: hidden;
 }
 
-.list-container .photo-row {
-  display: flex;
-  align-items: center;
-  background: white;
+#resultats-liste {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
   padding: 10px;
-  margin-bottom: 5px;
-  border-radius: 5px;
-  gap: 15px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.photo-row img {
-  width: 120px;
-  height: auto;
-  border-radius: 4px;
+
+.photo-item {
+  background: white;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 4px;
 }
+
+.photo-item img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Ne coupe pas l'image */
+  aspect-ratio: auto; /* On laisse l’image choisir son ratio naturel */
+  flex-grow: 1;
+  border-radius: 5px;
+}
+
 
 .photo-info {
-  flex: 1;
+  font-size: 12px;
+  padding: 4px 6px;
+  text-align: center;
+  word-break: break-word;
+  white-space: normal;
+  overflow: visible;
 }
 
+
+/*Pagination*/
 #pagination {
   display: flex;
   gap: 5px;
-  margin-top: 10px;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px;
+  background: #f5f5f5;
+  box-shadow: 0 -1px 2px rgba(0,0,0,0.1);
 }
+
 
 #pagination button {
   padding: 6px 12px;
@@ -136,6 +225,7 @@ header {
   background: #1976d2;
 }
 
+/*Lightbox*/
 .lightbox {
   position: fixed;
   top: 0;
@@ -218,4 +308,12 @@ header {
 
 #lightbox-next {
   right: 10px;
+}
+
+/* Responsive pour petits écrans */
+@media (max-width: 768px) {
+  #resultats-liste {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+  }
 }
