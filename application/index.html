@@ -2,7 +2,17 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Galerie Photos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="Fonds photographique de Saint-Michel (16470 - France)">
+  <meta property="og:description" content="Photographies de la commune de Saint-Michel (16470)">
+  <meta property="og:image" content="https://peltiern.github.io/cartographie-saint-michel/img/banniere.jpg">
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+<!--  <meta property="og:url" content="https://peltiern.github.io/cartographie-saint-michel/">-->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Fonds photographique de Saint-Michel (16470 - France)">
+  <link rel="icon" href="img/favicon.ico"/>
+  <title>Fonds photographique de Saint-Michel (16470 - France)</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/vendor/leaflet.css" />
   <link rel="stylesheet" href="css/vendor/MarkerCluster.css" />
@@ -10,14 +20,24 @@
 </head>
 <body>
 <header>
-  <h1>Fonds photographique de Saint Michel</h1>
+  <h1>
+    <img class="logo" src="./img/logo-application.png" alt="logo">
+    Fonds photographique de Saint Michel
+  </h1>
   <div class="filtres">
     <label>Thèmes:</label>
     <div id="filtre-themes" class="filtre-group"></div>
 
     <label>Lieux:</label>
     <div id="filtre-lieux" class="filtre-group"></div>
+
+    <label for="filtre-sans-date-cb">Inclure les photos sans date:</label>
+    <div id="filtre-sans-date" class="filtre-group">
+      <input type="checkbox" id="filtre-sans-date-cb" checked/>
+    </div>
   </div>
+</header>
+<div class="timeline-container">
   <div class="timeline-wrapper" id="timeline">
     <div class="timeline-bar"></div>
     <div class="timeline-highlight" id="highlight"></div>
@@ -25,9 +45,7 @@
     <div class="handle range-right" id="handle-right"><div class="label right" id="label-right"></div></div>
     <div class="handle explore" id="handle-explore"><div class="label explore" id="label-explore"></div></div>
   </div>
-
-  <div class="timeline-scale" id="scale"></div>
-</header>
+</div>
 
 <main>
   <div class="onglets">

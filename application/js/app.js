@@ -6,6 +6,7 @@ let themesSelectionnes = [];
 let lieuxSelectionnes = [];
 let anneeDebut = 1900;
 let anneeFin = 2025;
+let inclurePhotosSansDate = true;
 let markerMap = new Map();
 let markerClusters;
 let currentLightboxIndex = 0;
@@ -36,6 +37,13 @@ function initialiserFiltres() {
   // Création des deux menus déroulants
   creerMultiselect('filtre-themes', Array.from(themes).sort(), themesSelectionnes, filtrerPhotos);
   creerMultiselect('filtre-lieux', Array.from(lieux).sort(), lieuxSelectionnes, filtrerPhotos);
+
+  const cbSansDate = document.getElementById('filtre-sans-date-cb');
+  cbSansDate.onchange = () => {
+    inclurePhotosSansDate = cbSansDate.checked;
+    filtrerPhotos();
+  };
+
 }
 
 function creerMultiselect(containerId, valeurs, tableauSelection, onChange) {
@@ -68,7 +76,6 @@ function creerMultiselect(containerId, valeurs, tableauSelection, onChange) {
         if (idx !== -1) tableauSelection.splice(idx, 1);
       }
       mettreAJourLabel(button, tableauSelection);
-      pageCourante = 1;
       onChange();
     };
 
@@ -105,24 +112,55 @@ document.addEventListener('click', (e) => {
 });
 
 
+function trierListe(filtered) {
+  filtered.sort((a, b) => {
+    const parseDate = (str) => {
+      if (!str) return null;
+      const m = str.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+      if (!m) return null;
+      return new Date(`${m[3]}-${m[2]}-${m[1]}`); // yyyy-MM-dd
+    };
+
+    const dateA = parseDate(a.date);
+    const dateB = parseDate(b.date);
+
+    // Si les deux ont une date : trier par date, puis par nom
+    if (dateA && dateB) {
+      const cmpDate = dateA - dateB;
+      if (cmpDate !== 0) return cmpDate;
+      return a.numero.localeCompare(b.numero);
+    }
+
+    // Si un seul a une date → celui avec date vient avant
+    if (dateA && !dateB) return -1;
+    if (!dateA && dateB) return 1;
+
+    // Les deux n'ont pas de date → trier par nom uniquement
+    return a.numero.localeCompare(b.numero);
+  });
+}
+
 function filtrerPhotos() {
 
   let filtered = data.filter(photo => {
 
-    // Exclure les photos sans date
-    if (!photo.date || typeof photo.date !== 'string') return false;
+    // Exclure les photos sans date si la checkbox n'est pas coché
+    if (!inclurePhotosSansDate && (!photo.date || typeof photo.date !== 'string')) return false;
 
-    // Extraire l'année à partir de 'dd/MM/yyyy'
-    const match = photo.date.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-    if (!match) return false;
+    let dateOk = true;
+    if (photo.date && typeof photo.date === 'string') {
+      // Extraire l'année à partir de 'dd/MM/yyyy'
+      const match = photo.date.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+      if (!match) return false;
 
-    const anneePhoto = parseInt(match[3]);
-    if (isNaN(anneePhoto)) return false;
+      const anneePhoto = parseInt(match[3]);
+      if (isNaN(anneePhoto)) return false;
 
-    // Appliquer le filtre année
-    const anneeOK = (!isNaN(anneeDebut) ? anneePhoto >= anneeDebut : true)
-        && (!isNaN(anneeFin)   ? anneePhoto <= anneeFin   : true);
-    if (!anneeOK) return false;
+      // Appliquer le filtre année
+      dateOk = (!isNaN(anneeDebut) ? anneePhoto >= anneeDebut : true)
+          && (!isNaN(anneeFin) ? anneePhoto <= anneeFin : true);
+      if (!dateOk) return false;
+    }
 
     const themeMatch = themesSelectionnes.length === 0 || photo.themes?.some(t => themesSelectionnes.includes(t));
     if (!themeMatch) return false;
@@ -130,8 +168,9 @@ function filtrerPhotos() {
     const lieuMatch = lieuxSelectionnes.length === 0 || photo.lieu?.some(l => lieuxSelectionnes.includes(l));
     if (!lieuMatch) return false;
 
-    return anneeOK && themeMatch && lieuMatch;
+    return dateOk && themeMatch && lieuMatch;
   });
+  trierListe(filtered);
 
   listeFiltreeCourante = filtered;
 
@@ -147,32 +186,25 @@ function genererListe(filtered, containerId) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
 
-  const pageItems = filtered.slice((pageCourante - 1) * nbPhotosParPage, pageCourante * nbPhotosParPage);
+  if (filtered && filtered.length > 0) {
+    const pageItems = filtered.slice((pageCourante - 1) * nbPhotosParPage, pageCourante * nbPhotosParPage);
 
-  pageItems.forEach((photo, index) => {
-    const item = document.createElement('div');
-    item.className = 'photo-item';
+    pageItems.forEach((photo, index) => {
+      const item = document.createElement('div');
+      item.className = 'photo-item';
 
-    const img = document.createElement('img');
-    img.src = 'resized/large/' + photo.chemin;
-    img.alt = photo.numero;
+      const img = document.createElement('img');
+      img.src = 'resized/large/' + photo.chemin;
+      img.alt = photo.numero;
 
-  //   const info = document.createElement('div');
-  //   info.className = 'photo-info';
-  //   info.innerHTML = `
-  //   <strong>${photo.numero}</strong><br>
-  //   ${photo.date || ''}<br>
-  //   ${(photo.themes || []).join(', ')}
-  // `;
+      item.appendChild(img);
+      container.appendChild(item);
 
-    item.appendChild(img);
-    // item.appendChild(info);
-    container.appendChild(item);
-
-    item.addEventListener('click', () => {
-      openLightbox(index + (pageCourante - 1) * nbPhotosParPage);
+      item.addEventListener('click', () => {
+        openLightbox(index + (pageCourante - 1) * nbPhotosParPage);
+      });
     });
-  });
+  }
 
 
   if (containerId === "resultats-liste") {
@@ -185,6 +217,28 @@ function genererPagination(totalItems) {
   pagination.innerHTML = '';
 
   const nbTotalPages = Math.ceil(totalItems / nbPhotosParPage);
+
+  // ⚠️ Cas spécial : aucune photo => page 0/0 et boutons désactivés
+  if (nbTotalPages === 0) {
+    const boutons = ['«', '<', '>', '»'];
+    boutons.forEach(texte => {
+      const btn = document.createElement('button');
+      btn.textContent = texte;
+      btn.disabled = true;
+      pagination.appendChild(btn);
+    });
+
+    const pageInfo = document.createElement('span');
+    pageInfo.style.marginLeft = '10px';
+    pageInfo.textContent = `Page 0 / 0`;
+    pagination.appendChild(pageInfo);
+
+    return;
+  }
+
+  // ⚠️ Sécurise la page courante si elle est hors limites
+  if (pageCourante > nbTotalPages) pageCourante = nbTotalPages;
+
   const nbMaxPagesAffichees = 5;
 
   // Bouton "Première page"
@@ -218,9 +272,7 @@ function genererPagination(totalItems) {
 
   // Boutons de pages
   for (let i = premierePageAffichee; i <= dernierePageAffichee; i++) {
-
     if (i === pageCourante) {
-      // Champ de saisie direct
       const pageInput = document.createElement('input');
       pageInput.type = 'number';
       pageInput.min = 1;
@@ -238,12 +290,10 @@ function genererPagination(totalItems) {
     } else {
       const btn = document.createElement('button');
       btn.textContent = i;
-
       btn.onclick = () => {
         pageCourante = i;
         filtrerPhotos();
       };
-
       pagination.appendChild(btn);
     }
   }
@@ -296,6 +346,8 @@ function initialiserCartes() {
 }
 
 function majCarte(photosFiltrees, clusterGroup) {
+  if (!clusterGroup) return;
+
   clusterGroup.clearLayers();
 
   photosFiltrees.forEach((photo, index) => {
@@ -376,6 +428,7 @@ afficherOnglet('liste');
 /** Slider - Timeline */
 const anneeMin = 1900;
 const anneeMax = 2025;
+const anneeExplore = 1985;
 
 const timeline = document.getElementById('timeline');
 const left = document.getElementById('handle-left');
@@ -396,6 +449,9 @@ const setPosition = (el, percent) => {
 const percentToYear = (percent) => {
   return Math.round(anneeMin + (anneeMax - anneeMin) * (percent / 100));
 };
+
+const yearToPercent = (year) => ((year - anneeMin) / (anneeMax - anneeMin)) * 100;
+
 
 const updateLabels = () => {
   const leftPct = parseFloat(left.dataset.percent);
@@ -467,9 +523,9 @@ const makeDraggable = (el, updateCallback, constraints = null) => {
 };
 
 // Initial positions
-initPosition(left, 20);
-initPosition(right, 60);
-initPosition(explore, 40);
+initPosition(left, yearToPercent(anneeMin));
+initPosition(right, yearToPercent(anneeMax));
+initPosition(explore, yearToPercent(anneeExplore));
 
 // Drag logic
 makeDraggable(left, updateHighlight, {
@@ -483,12 +539,3 @@ makeDraggable(explore, updateHighlight);
 updateLabels();
 updateHighlight();
 updateDatesRange();
-
-// Timeline scale
-const scale = document.getElementById('scale');
-for (let y = anneeMin; y <= anneeMax; y += 5) {
-  const tick = document.createElement('div');
-  tick.className = 'tick';
-  tick.textContent = y;
-  scale.appendChild(tick);
-}
