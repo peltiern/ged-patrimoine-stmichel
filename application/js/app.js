@@ -4,6 +4,8 @@ const nbPhotosParPage = 12;
 let carte;
 let themesSelectionnes = [];
 let lieuxSelectionnes = [];
+let anneeDebut = 1900;
+let anneeFin = 2025;
 let markerMap = new Map();
 let markerClusters;
 let currentLightboxIndex = 0;
@@ -104,13 +106,31 @@ document.addEventListener('click', (e) => {
 
 
 function filtrerPhotos() {
-  // const dateStart = document.getElementById('filter-date-start').value;
-  // const dateEnd = document.getElementById('filter-date-end').value;
 
   let filtered = data.filter(photo => {
+
+    // Exclure les photos sans date
+    if (!photo.date || typeof photo.date !== 'string') return false;
+
+    // Extraire l'année à partir de 'dd/MM/yyyy'
+    const match = photo.date.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    if (!match) return false;
+
+    const anneePhoto = parseInt(match[3]);
+    if (isNaN(anneePhoto)) return false;
+
+    // Appliquer le filtre année
+    const anneeOK = (!isNaN(anneeDebut) ? anneePhoto >= anneeDebut : true)
+        && (!isNaN(anneeFin)   ? anneePhoto <= anneeFin   : true);
+    if (!anneeOK) return false;
+
     const themeMatch = themesSelectionnes.length === 0 || photo.themes?.some(t => themesSelectionnes.includes(t));
+    if (!themeMatch) return false;
+
     const lieuMatch = lieuxSelectionnes.length === 0 || photo.lieu?.some(l => lieuxSelectionnes.includes(l));
-    return themeMatch && lieuMatch;
+    if (!lieuMatch) return false;
+
+    return anneeOK && themeMatch && lieuMatch;
   });
 
   listeFiltreeCourante = filtered;
@@ -137,16 +157,16 @@ function genererListe(filtered, containerId) {
     img.src = 'resized/large/' + photo.chemin;
     img.alt = photo.numero;
 
-    const info = document.createElement('div');
-    info.className = 'photo-info';
-    info.innerHTML = `
-    <strong>${photo.numero}</strong><br>
-    ${photo.date || ''}<br>
-    ${(photo.themes || []).join(', ')}
-  `;
+  //   const info = document.createElement('div');
+  //   info.className = 'photo-info';
+  //   info.innerHTML = `
+  //   <strong>${photo.numero}</strong><br>
+  //   ${photo.date || ''}<br>
+  //   ${(photo.themes || []).join(', ')}
+  // `;
 
     item.appendChild(img);
-    item.appendChild(info);
+    // item.appendChild(info);
     container.appendChild(item);
 
     item.addEventListener('click', () => {
@@ -351,3 +371,124 @@ function afficherOnglet(id) {
 }
 
 afficherOnglet('liste');
+
+
+/** Slider - Timeline */
+const anneeMin = 1900;
+const anneeMax = 2025;
+
+const timeline = document.getElementById('timeline');
+const left = document.getElementById('handle-left');
+const right = document.getElementById('handle-right');
+const explore = document.getElementById('handle-explore');
+const labelLeft = document.getElementById('label-left');
+const labelRight = document.getElementById('label-right');
+const labelExplore = document.getElementById('label-explore');
+const highlight = document.getElementById('highlight');
+const status = document.getElementById('status');
+
+const getBarWidth = () => timeline.clientWidth;
+
+const setPosition = (el, percent) => {
+  el.style.left = `calc(${percent}% - 10px)`;
+};
+
+const percentToYear = (percent) => {
+  return Math.round(anneeMin + (anneeMax - anneeMin) * (percent / 100));
+};
+
+const updateLabels = () => {
+  const leftPct = parseFloat(left.dataset.percent);
+  const rightPct = parseFloat(right.dataset.percent);
+  const explorePct = parseFloat(explore.dataset.percent);
+
+  labelLeft.innerText = percentToYear(leftPct);
+  labelRight.innerText = percentToYear(rightPct);
+  labelExplore.innerText = percentToYear(explorePct);
+};
+
+const updateHighlight = () => {
+  const leftPct = parseFloat(left.dataset.percent);
+  const rightPct = parseFloat(right.dataset.percent);
+  const x = Math.min(leftPct, rightPct);
+  const w = Math.abs(rightPct - leftPct);
+  highlight.style.left = `${x}%`;
+  highlight.style.width = `${w}%`;
+};
+
+const updateDatesRange = () => {
+  anneeDebut = percentToYear(parseFloat(left.dataset.percent));
+  anneeFin = percentToYear(parseFloat(right.dataset.percent));
+  filtrerPhotos();
+};
+
+const updateDatesExplore = () => {
+  anneeDebut = percentToYear(parseFloat(explore.dataset.percent));
+  anneeFin = percentToYear(parseFloat(explore.dataset.percent));
+  filtrerPhotos();
+};
+
+const initPosition = (el, percent) => {
+  el.dataset.percent = percent;
+  setPosition(el, percent);
+};
+
+const makeDraggable = (el, updateCallback, constraints = null) => {
+  let dragging = false;
+
+  el.addEventListener('mousedown', () => {
+    dragging = true;
+    document.body.style.userSelect = 'none';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    const rect = timeline.getBoundingClientRect();
+    let percent = ((e.clientX - rect.left) / rect.width) * 100;
+    percent = Math.max(0, Math.min(100, percent));
+
+    if (constraints) {
+      if (typeof constraints.min === 'function') percent = Math.max(percent, constraints.min());
+      if (typeof constraints.max === 'function') percent = Math.min(percent, constraints.max());
+    }
+
+    el.dataset.percent = percent;
+    setPosition(el, percent);
+    updateLabels();
+    updateHighlight();
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (dragging && (el === explore)) updateDatesExplore();
+    if (dragging && (el === left || el === right)) updateDatesRange();
+    dragging = false;
+    document.body.style.userSelect = 'auto';
+  });
+};
+
+// Initial positions
+initPosition(left, 20);
+initPosition(right, 60);
+initPosition(explore, 40);
+
+// Drag logic
+makeDraggable(left, updateHighlight, {
+  max: () => parseFloat(right.dataset.percent) - 1
+});
+makeDraggable(right, updateHighlight, {
+  min: () => parseFloat(left.dataset.percent) + 1
+});
+makeDraggable(explore, updateHighlight);
+
+updateLabels();
+updateHighlight();
+updateDatesRange();
+
+// Timeline scale
+const scale = document.getElementById('scale');
+for (let y = anneeMin; y <= anneeMax; y += 5) {
+  const tick = document.createElement('div');
+  tick.className = 'tick';
+  tick.textContent = y;
+  scale.appendChild(tick);
+}
