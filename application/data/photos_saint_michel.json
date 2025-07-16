@@ -1287,7 +1287,9 @@
     "themes": [
       "Rues"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64139,
+    "longitude": 0.10648
   },
   {
     "numero": "00078",
@@ -1336,7 +1338,9 @@
     "lieu": [
       "Stade"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.633781,
+    "longitude": 0.115594
   },
   {
     "numero": "00082",
@@ -1396,7 +1400,9 @@
     "themes": [
       "Personnes"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644891,
+    "longitude": 0.103499
   },
   {
     "numero": "00087",
@@ -1406,7 +1412,9 @@
     "themes": [
       "Personnes"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644891,
+    "longitude": 0.103499
   },
   {
     "numero": "00088",
@@ -1451,7 +1459,9 @@
     "lieu": [
       "Mairie"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641592,
+    "longitude": 0.106724
   },
   {
     "numero": "00091",
@@ -1464,7 +1474,9 @@
     "lieu": [
       "Mairie"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641592,
+    "longitude": 0.106724
   },
   {
     "numero": "00092",
@@ -1906,7 +1918,9 @@
     "lieu": [
       "Rue"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641328,
+    "longitude": 0.101016
   },
   {
     "numero": "00124",
@@ -2044,7 +2058,9 @@
     "themes": [
       "Personnes"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644901,
+    "longitude": 0.10349
   },
   {
     "numero": "00133",
@@ -2054,7 +2070,9 @@
     "themes": [
       "Personnes"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644901,
+    "longitude": 0.10349
   },
   {
     "numero": "00134",
@@ -2368,7 +2386,9 @@
     "lieu": [
       "Logis de Chantoiseau"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.6448,
+    "longitude": 0.103571
   },
   {
     "numero": "00153",
@@ -2409,7 +2429,9 @@
     "themes": [
       "Personnes"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644899,
+    "longitude": 0.103493
   },
   {
     "numero": "00156",
@@ -2548,7 +2570,9 @@
     "themes": [
       "Personnes"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644899,
+    "longitude": 0.103493
   },
   {
     "numero": "00165",
@@ -2589,7 +2613,9 @@
     "themes": [
       "Lieu"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641588,
+    "longitude": 0.106737
   },
   {
     "numero": "00168",
@@ -3205,14 +3231,18 @@
     "album": "B",
     "nom": "00206.jpg",
     "chemin": "B/00206.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641576,
+    "longitude": 0.10668
   },
   {
     "numero": "00207",
     "album": "B",
     "nom": "00207.jpg",
     "chemin": "B/00207.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641576,
+    "longitude": 0.10668
   },
   {
     "numero": "00208",
@@ -3318,7 +3348,9 @@
     "lieu": [
       "Rue"
     ],
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.629685,
+    "longitude": 0.12172
   },
   {
     "numero": "00215",
@@ -3839,21 +3871,27 @@
     "album": "B",
     "nom": "00251.jpg",
     "chemin": "B/00251.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641576,
+    "longitude": 0.10668
   },
   {
     "numero": "00252",
     "album": "B",
     "nom": "00252.jpg",
     "chemin": "B/00252.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641576,
+    "longitude": 0.10668
   },
   {
     "numero": "00253",
     "album": "B",
     "nom": "00253.jpg",
     "chemin": "B/00253.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644897,
+    "longitude": 0.10349
   },
   {
     "numero": "00254",
@@ -3874,21 +3912,27 @@
     "album": "B",
     "nom": "00256.jpg",
     "chemin": "B/00256.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.6409,
+    "longitude": 0.101451
   },
   {
     "numero": "00257",
     "album": "B",
     "nom": "00257.jpg",
     "chemin": "B/00257.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.6409,
+    "longitude": 0.101451
   },
   {
     "numero": "00258",
     "album": "B",
     "nom": "00258.jpg",
     "chemin": "B/00258.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.6409,
+    "longitude": 0.101451
   },
   {
     "numero": "00259",
@@ -3955,14 +3999,18 @@
     "album": "B",
     "nom": "00267.jpg",
     "chemin": "B/00267.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.639269,
+    "longitude": 0.105892
   },
   {
     "numero": "00268",
     "album": "B",
     "nom": "00268.jpg",
     "chemin": "B/00268.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.639269,
+    "longitude": 0.105892
   },
   {
     "numero": "00269",
@@ -4000,63 +4048,81 @@
     "album": "B",
     "nom": "00272.jpg",
     "chemin": "B/00272.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641585,
+    "longitude": 0.106743
   },
   {
     "numero": "00273",
     "album": "B",
     "nom": "00273.jpg",
     "chemin": "B/00273.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644896,
+    "longitude": 0.103489
   },
   {
     "numero": "00274",
     "album": "B",
     "nom": "00274.jpg",
     "chemin": "B/00274.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644896,
+    "longitude": 0.103489
   },
   {
     "numero": "00275",
     "album": "B",
     "nom": "00275.jpg",
     "chemin": "B/00275.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644896,
+    "longitude": 0.103489
   },
   {
     "numero": "00276",
     "album": "B",
     "nom": "00276.jpg",
     "chemin": "B/00276.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641601,
+    "longitude": 0.106739
   },
   {
     "numero": "00277",
     "album": "B",
     "nom": "00277.jpg",
     "chemin": "B/00277.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641601,
+    "longitude": 0.106739
   },
   {
     "numero": "00278",
     "album": "B",
     "nom": "00278.jpg",
     "chemin": "B/00278.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641601,
+    "longitude": 0.106739
   },
   {
     "numero": "00279",
     "album": "B",
     "nom": "00279.jpg",
     "chemin": "B/00279.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641601,
+    "longitude": 0.106739
   },
   {
     "numero": "00280",
     "album": "B",
     "nom": "00280.jpg",
     "chemin": "B/00280.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644893,
+    "longitude": 0.103491
   },
   {
     "numero": "00281",
@@ -4207,14 +4273,18 @@
     "album": "B",
     "nom": "00293.jpg",
     "chemin": "B/00293.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.640572,
+    "longitude": 0.10964
   },
   {
     "numero": "00294",
     "album": "B",
     "nom": "00294.jpg",
     "chemin": "B/00294.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.640572,
+    "longitude": 0.10964
   },
   {
     "numero": "00295",
@@ -4281,21 +4351,27 @@
     "album": "B",
     "nom": "00300.jpg",
     "chemin": "B/00300.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637183,
+    "longitude": 0.116574
   },
   {
     "numero": "00301",
     "album": "B",
     "nom": "00301.jpg",
     "chemin": "B/00301.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637183,
+    "longitude": 0.116574
   },
   {
     "numero": "00302",
     "album": "B",
     "nom": "00302.jpg",
     "chemin": "B/00302.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.642612,
+    "longitude": 0.103057
   },
   {
     "numero": "00303",
@@ -4316,42 +4392,54 @@
     "album": "B",
     "nom": "00305.jpg",
     "chemin": "B/00305.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641591,
+    "longitude": 0.10674
   },
   {
     "numero": "00306",
     "album": "B",
     "nom": "00306.jpg",
     "chemin": "B/00306.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641591,
+    "longitude": 0.10674
   },
   {
     "numero": "00307",
     "album": "B",
     "nom": "00307.jpg",
     "chemin": "B/00307.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641591,
+    "longitude": 0.10674
   },
   {
     "numero": "00308",
     "album": "B",
     "nom": "00308.jpg",
     "chemin": "B/00308.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641591,
+    "longitude": 0.10674
   },
   {
     "numero": "00309",
     "album": "B",
     "nom": "00309.jpg",
     "chemin": "B/00309.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641591,
+    "longitude": 0.10674
   },
   {
     "numero": "00310",
     "album": "B",
     "nom": "00310.jpg",
     "chemin": "B/00310.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641591,
+    "longitude": 0.10674
   },
   {
     "numero": "00311",
@@ -4400,14 +4488,18 @@
     "album": "B",
     "nom": "00317.jpg",
     "chemin": "B/00317.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637183,
+    "longitude": 0.116574
   },
   {
     "numero": "00318",
     "album": "B",
     "nom": "00318.jpg",
     "chemin": "B/00318.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637183,
+    "longitude": 0.116574
   },
   {
     "numero": "00319",
@@ -4421,105 +4513,135 @@
     "album": "B",
     "nom": "00320.jpg",
     "chemin": "B/00320.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637737,
+    "longitude": 0.116042
   },
   {
     "numero": "00321",
     "album": "B",
     "nom": "00321.jpg",
     "chemin": "B/00321.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637737,
+    "longitude": 0.116042
   },
   {
     "numero": "00322",
     "album": "B",
     "nom": "00322.jpg",
     "chemin": "B/00322.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637737,
+    "longitude": 0.116042
   },
   {
     "numero": "00323",
     "album": "B",
     "nom": "00323.jpg",
     "chemin": "B/00323.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637737,
+    "longitude": 0.116042
   },
   {
     "numero": "00324",
     "album": "B",
     "nom": "00324.jpg",
     "chemin": "B/00324.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.642111,
+    "longitude": 0.107229
   },
   {
     "numero": "00325",
     "album": "B",
     "nom": "00325.jpg",
     "chemin": "B/00325.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641492,
+    "longitude": 0.106539
   },
   {
     "numero": "00326",
     "album": "B",
     "nom": "00326.jpg",
     "chemin": "B/00326.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641492,
+    "longitude": 0.106539
   },
   {
     "numero": "00327",
     "album": "B",
     "nom": "00327.jpg",
     "chemin": "B/00327.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637737,
+    "longitude": 0.116042
   },
   {
     "numero": "00328",
     "album": "B",
     "nom": "00328.jpg",
     "chemin": "B/00328.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637737,
+    "longitude": 0.116042
   },
   {
     "numero": "00329",
     "album": "B",
     "nom": "00329.jpg",
     "chemin": "B/00329.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637737,
+    "longitude": 0.116042
   },
   {
     "numero": "00330",
     "album": "B",
     "nom": "00330.jpg",
     "chemin": "B/00330.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637737,
+    "longitude": 0.116042
   },
   {
     "numero": "00331",
     "album": "B",
     "nom": "00331.jpg",
     "chemin": "B/00331.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641587,
+    "longitude": 0.106744
   },
   {
     "numero": "00332",
     "album": "B",
     "nom": "00332.jpg",
     "chemin": "B/00332.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641587,
+    "longitude": 0.106744
   },
   {
     "numero": "00333",
     "album": "B",
     "nom": "00333.jpg",
     "chemin": "B/00333.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641587,
+    "longitude": 0.106744
   },
   {
     "numero": "00334",
     "album": "B",
     "nom": "00334.jpg",
     "chemin": "B/00334.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641587,
+    "longitude": 0.106744
   },
   {
     "numero": "00335",
@@ -4547,14 +4669,18 @@
     "album": "B",
     "nom": "00338.jpg",
     "chemin": "B/00338.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644897,
+    "longitude": 0.103487
   },
   {
     "numero": "00339",
     "album": "B",
     "nom": "00339.jpg",
     "chemin": "B/00339.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.644897,
+    "longitude": 0.103487
   },
   {
     "numero": "00340",
@@ -4607,42 +4733,54 @@
     "album": "B",
     "nom": "00343.jpg",
     "chemin": "B/00343.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641582,
+    "longitude": 0.106752
   },
   {
     "numero": "00344",
     "album": "B",
     "nom": "00344.jpg",
     "chemin": "B/00344.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641582,
+    "longitude": 0.106752
   },
   {
     "numero": "00345",
     "album": "B",
     "nom": "00345.jpg",
     "chemin": "B/00345.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641582,
+    "longitude": 0.106752
   },
   {
     "numero": "00346",
     "album": "B",
     "nom": "00346.jpg",
     "chemin": "B/00346.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641582,
+    "longitude": 0.106752
   },
   {
     "numero": "00347",
     "album": "B",
     "nom": "00347.jpg",
     "chemin": "B/00347.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641582,
+    "longitude": 0.106752
   },
   {
     "numero": "00348",
     "album": "B",
     "nom": "00348.jpg",
     "chemin": "B/00348.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641582,
+    "longitude": 0.106752
   },
   {
     "numero": "00349",
@@ -4663,14 +4801,18 @@
     "album": "B",
     "nom": "00351.jpg",
     "chemin": "B/00351.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637158,
+    "longitude": 0.11665
   },
   {
     "numero": "00352",
     "album": "B",
     "nom": "00352.jpg",
     "chemin": "B/00352.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.637158,
+    "longitude": 0.11665
   },
   {
     "numero": "00353",
@@ -4684,112 +4826,144 @@
     "album": "B",
     "nom": "00354.jpg",
     "chemin": "B/00354.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64168,
+    "longitude": 0.106392
   },
   {
     "numero": "00355",
     "album": "B",
     "nom": "00355.jpg",
     "chemin": "B/00355.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64168,
+    "longitude": 0.106392
   },
   {
     "numero": "00356",
     "album": "B",
     "nom": "00356.jpg",
     "chemin": "B/00356.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64166,
+    "longitude": 0.106429
   },
   {
     "numero": "00357",
     "album": "B",
     "nom": "00357.jpg",
     "chemin": "B/00357.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64166,
+    "longitude": 0.106429
   },
   {
     "numero": "00358",
     "album": "B",
     "nom": "00358.jpg",
     "chemin": "B/00358.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64166,
+    "longitude": 0.106429
   },
   {
     "numero": "00359",
     "album": "B",
     "nom": "00359.jpg",
     "chemin": "B/00359.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.643152,
+    "longitude": 0.107109
   },
   {
     "numero": "00360",
     "album": "B",
     "nom": "00360.jpg",
     "chemin": "B/00360.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.643142,
+    "longitude": 0.10723
   },
   {
     "numero": "00361",
     "album": "B",
     "nom": "00361.jpg",
     "chemin": "B/00361.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.648913,
+    "longitude": 0.107251
   },
   {
     "numero": "00362",
     "album": "B",
     "nom": "00362.jpg",
     "chemin": "B/00362.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.648913,
+    "longitude": 0.107251
   },
   {
     "numero": "00363",
     "album": "B",
     "nom": "00363.jpg",
     "chemin": "B/00363.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.648913,
+    "longitude": 0.107251
   },
   {
     "numero": "00364",
     "album": "B",
     "nom": "00364.jpg",
     "chemin": "B/00364.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.650863,
+    "longitude": 0.106698
   },
   {
     "numero": "00365",
     "album": "B",
     "nom": "00365.jpg",
     "chemin": "B/00365.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64366,
+    "longitude": 0.108475
   },
   {
     "numero": "00366",
     "album": "B",
     "nom": "00366.jpg",
     "chemin": "B/00366.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.643666,
+    "longitude": 0.108284
   },
   {
     "numero": "00367",
     "album": "B",
     "nom": "00367.jpg",
     "chemin": "B/00367.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.643906,
+    "longitude": 0.104438
   },
   {
     "numero": "00368",
     "album": "B",
     "nom": "00368.jpg",
     "chemin": "B/00368.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.643906,
+    "longitude": 0.104438
   },
   {
     "numero": "00369",
     "album": "B",
     "nom": "00369.jpg",
     "chemin": "B/00369.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64084,
+    "longitude": 0.101434
   },
   {
     "numero": "00370",
@@ -4810,161 +4984,207 @@
     "album": "B",
     "nom": "00372.jpg",
     "chemin": "B/00372.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.633916,
+    "longitude": 0.112829
   },
   {
     "numero": "00373",
     "album": "B",
     "nom": "00373.jpg",
     "chemin": "B/00373.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.638919,
+    "longitude": 0.109783
   },
   {
     "numero": "00374",
     "album": "B",
     "nom": "00374.jpg",
     "chemin": "B/00374.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.642403,
+    "longitude": 0.105317
   },
   {
     "numero": "00375",
     "album": "B",
     "nom": "00375.jpg",
     "chemin": "B/00375.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.639273,
+    "longitude": 0.108486
   },
   {
     "numero": "00376",
     "album": "B",
     "nom": "00376.jpg",
     "chemin": "B/00376.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.639273,
+    "longitude": 0.108486
   },
   {
     "numero": "00377",
     "album": "B",
     "nom": "00377.jpg",
     "chemin": "B/00377.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.639273,
+    "longitude": 0.108486
   },
   {
     "numero": "00378",
     "album": "B",
     "nom": "00378.jpg",
     "chemin": "B/00378.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.639196,
+    "longitude": 0.108726
   },
   {
     "numero": "00379",
     "album": "B",
     "nom": "00379.jpg",
     "chemin": "B/00379.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.640863,
+    "longitude": 0.108765
   },
   {
     "numero": "00380",
     "album": "B",
     "nom": "00380.jpg",
     "chemin": "B/00380.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.640824,
+    "longitude": 0.108759
   },
   {
     "numero": "00381",
     "album": "B",
     "nom": "00381.jpg",
     "chemin": "B/00381.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.640531,
+    "longitude": 0.109935
   },
   {
     "numero": "00382",
     "album": "B",
     "nom": "00382.jpg",
     "chemin": "B/00382.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.640531,
+    "longitude": 0.109935
   },
   {
     "numero": "00383",
     "album": "B",
     "nom": "00383.jpg",
     "chemin": "B/00383.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.640465,
+    "longitude": 0.109666
   },
   {
     "numero": "00384",
     "album": "B",
     "nom": "00384.jpg",
     "chemin": "B/00384.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.641575,
+    "longitude": 0.106749
   },
   {
     "numero": "00385",
     "album": "B",
     "nom": "00385.jpg",
     "chemin": "B/00385.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64066,
+    "longitude": 0.10965
   },
   {
     "numero": "00386",
     "album": "B",
     "nom": "00386.jpg",
     "chemin": "B/00386.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64066,
+    "longitude": 0.10965
   },
   {
     "numero": "00387",
     "album": "B",
     "nom": "00387.jpg",
     "chemin": "B/00387.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64066,
+    "longitude": 0.10965
   },
   {
     "numero": "00388",
     "album": "B",
     "nom": "00388.jpg",
     "chemin": "B/00388.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64066,
+    "longitude": 0.10965
   },
   {
     "numero": "00389",
     "album": "B",
     "nom": "00389.jpg",
     "chemin": "B/00389.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64066,
+    "longitude": 0.10965
   },
   {
     "numero": "00390",
     "album": "B",
     "nom": "00390.jpg",
     "chemin": "B/00390.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64066,
+    "longitude": 0.10965
   },
   {
     "numero": "00391",
     "album": "B",
     "nom": "00391.jpg",
     "chemin": "B/00391.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64066,
+    "longitude": 0.10965
   },
   {
     "numero": "00392",
     "album": "B",
     "nom": "00392.jpg",
     "chemin": "B/00392.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64066,
+    "longitude": 0.10965
   },
   {
     "numero": "00393",
     "album": "B",
     "nom": "00393.jpg",
     "chemin": "B/00393.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64066,
+    "longitude": 0.10965
   },
   {
     "numero": "00394",
     "album": "B",
     "nom": "00394.jpg",
     "chemin": "B/00394.jpg",
-    "sources": "Mairie"
+    "sources": "Mairie",
+    "latitude": 45.64066,
+    "longitude": 0.10965
   },
   {
     "numero": "00395",
@@ -17085,13 +17305,6 @@
     "album": "G",
     "nom": "02131.jpg",
     "chemin": "G/02131.jpg",
-    "sources": "Mairie"
-  },
-  {
-    "numero": "02132",
-    "album": "G",
-    "nom": "02132.jpg",
-    "chemin": "G/02132.jpg",
     "sources": "Mairie"
   },
   {
