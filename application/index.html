@@ -50,9 +50,16 @@
 
 <main>
   <div class="onglets">
-    <button onclick="afficherOnglet('liste')">Liste</button>
-    <button onclick="afficherOnglet('carte')">Carte</button>
+    <div class="onglets-gauche">
+      <button id="btn-liste" onclick="afficherOnglet('liste')">Liste</button>
+      <button id="btn-carte" onclick="afficherOnglet('carte')">Carte</button>
+    </div>
+    <div class="onglets-droite">
+      <span id="compteur-photos">0 photos</span>
+      <button id="reset-filtres" title="Réinitialiser les filtres">⟲</button>
+    </div>
   </div>
+
 
   <section id="onglet-liste" class="contenu-onglet">
     <div id="resultats-liste" class="liste-container"></div>

@@ -4,7 +4,7 @@ const nbPhotosParPage = 12;
 let carte;
 let themesSelectionnes = [];
 let lieuxSelectionnes = [];
-let anneeDebut = 1900;
+let anneeDebut = 1851;
 let anneeFin = 2025;
 let inclurePhotosSansDate = true;
 let markerMap = new Map();
@@ -43,7 +43,6 @@ function initialiserFiltres() {
     inclurePhotosSansDate = cbSansDate.checked;
     filtrerPhotos();
   };
-
 }
 
 function creerMultiselect(containerId, valeurs, tableauSelection, onChange) {
@@ -102,6 +101,26 @@ function mettreAJourLabel(button, selection) {
   button.title = selection.join(', ');
 }
 
+function reinitialiserFiltres() {
+  themesSelectionnes = [];
+  lieuxSelectionnes = [];
+  inclurePhotosSansDate = true;
+  anneeDebut = anneeMin;
+  anneeFin = anneeMax;
+
+  document.getElementById('filtre-sans-date-cb').checked = true;
+  document.querySelectorAll('.custom-multiselect input[type=checkbox]').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.custom-multiselect-button').forEach(button => button.textContent = 'Sélectionner...');
+
+  initPosition(left, 0);
+  initPosition(right, 100);
+  updateLabels();
+  updateHighlight();
+  updateDatesRange();
+
+  filtrerPhotos();
+}
+
 // Fermer les menus ouverts quand on clique ailleurs
 document.addEventListener('click', (e) => {
   document.querySelectorAll('.custom-multiselect').forEach(ms => {
@@ -141,51 +160,20 @@ function trierListe(filtered) {
 }
 
 function filtrerPhotos() {
+  const intensite = {}; // pour la heatmap
+  const filtered = [];
 
-  let filtered = data.filter(photo => {
-
-    // Exclure les photos sans date si la checkbox n'est pas coché
-    if (!inclurePhotosSansDate && (!photo.date || typeof photo.date !== 'string')) return false;
-
-    let dateOk = true;
-    if (photo.date && typeof photo.date === 'string') {
-      // Extraire l'année à partir de 'dd/MM/yyyy'
-      const match = photo.date.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-      if (!match) return false;
-
-      const anneePhoto = parseInt(match[3]);
-      if (isNaN(anneePhoto)) return false;
-
-      // Appliquer le filtre année
-      dateOk = (!isNaN(anneeDebut) ? anneePhoto >= anneeDebut : true)
-          && (!isNaN(anneeFin) ? anneePhoto <= anneeFin : true);
-      if (!dateOk) return false;
-    }
+  data.forEach(photo => {
+    // Appliquer uniquement les filtres thèmes, lieux, inclure/exclure sans-date pour la heatmap
+    if (!inclurePhotosSansDate && (!photo.date || typeof photo.date !== 'string')) return;
 
     const themeMatch = themesSelectionnes.length === 0 || photo.themes?.some(t => themesSelectionnes.includes(t));
-    if (!themeMatch) return false;
+    if (!themeMatch) return;
 
     const lieuMatch = lieuxSelectionnes.length === 0 || photo.lieu?.some(l => lieuxSelectionnes.includes(l));
-    if (!lieuMatch) return false;
+    if (!lieuMatch) return;
 
-    return dateOk && themeMatch && lieuMatch;
-  });
-  trierListe(filtered);
-
-  listeFiltreeCourante = filtered;
-
-  genererListe(filtered, "resultats-liste");
-  afficherHeatmap();
-  majCarte(filtered, markerClusters, markerMap);
-
-  if (document.querySelector('.contenu-onglet.active')?.id.includes('carte')) {
-    carte.invalidateSize();
-  }
-}
-
-function calculerIntensiteParAnnee() {
-  const intensite = {};
-  listeFiltreeCourante.forEach(photo => {
+    // La photo passe les filtres non liés aux années → comptage heatmap
     if (photo.date) {
       const match = photo.date.match(/(\d{2})\/(\d{2})\/(\d{4})/);
       if (match) {
@@ -193,28 +181,54 @@ function calculerIntensiteParAnnee() {
         intensite[annee] = (intensite[annee] || 0) + 1;
       }
     }
+
+    // Vérification filtre par année pour affichage
+    let dateOk = true;
+    if (photo.date && typeof photo.date === 'string') {
+      const match = photo.date.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+      if (!match) return;
+
+      const anneePhoto = parseInt(match[3]);
+      if (isNaN(anneePhoto)) return;
+
+      dateOk = (!isNaN(anneeDebut) ? anneePhoto >= anneeDebut : true)
+          && (!isNaN(anneeFin) ? anneePhoto <= anneeFin : true);
+    }
+
+    if (dateOk) filtered.push(photo);
   });
-  return intensite;
+
+  trierListe(filtered);
+  listeFiltreeCourante = filtered;
+  document.getElementById('compteur-photos').textContent = `${filtered.length} photo(s)`;
+
+  genererListe(filtered, "resultats-liste");
+  afficherHeatmap(intensite);
+  majCarte(filtered, markerClusters, markerMap);
+
+  if (document.querySelector('.contenu-onglet.active')?.id.includes('carte')) {
+    carte.invalidateSize();
+  }
 }
 
-function afficherHeatmap() {
-  const intensite = calculerIntensiteParAnnee();
-  const max = Math.max(...Object.values(intensite));
+function afficherHeatmap(intensite) {
+  const max = Math.max(...Object.values(intensite), 1);
   const heatmap = document.getElementById('timeline-heatmap');
   heatmap.innerHTML = '';
 
   for (let an = anneeMin; an <= anneeMax; an++) {
     const val = intensite[an] || 0;
     const ratio = val / max;
-    const couleur = `rgba(255, 0, 0, ${ratio})`; // plus rouge s'il y a plus de photos
-
+    const couleur = `rgba(255, 0, 0, ${ratio})`;
     const segment = document.createElement('div');
     segment.style.flex = '1';
     segment.style.backgroundColor = couleur;
+    if (val > 0) {
+      segment.title = `${an} : ${val} photo(s)`;
+    }
     heatmap.appendChild(segment);
   }
 }
-
 
 function genererListe(filtered, containerId) {
   const container = document.getElementById(containerId);
@@ -459,6 +473,10 @@ function afficherOnglet(id) {
   document.querySelectorAll('.contenu-onglet').forEach(t => t.classList.remove('active'));
   document.getElementById(`onglet-${id}`).classList.add('active');
 
+  // Activer/désactiver les boutons
+  document.getElementById('btn-liste').disabled = (id === 'liste');
+  document.getElementById('btn-carte').disabled = (id === 'carte');
+
   if (id === 'carte') {
     setTimeout(() => {
       carte.invalidateSize();
@@ -466,11 +484,12 @@ function afficherOnglet(id) {
   }
 }
 
+
 afficherOnglet('liste');
 
 
 /** Slider - Timeline */
-const anneeMin = 1900;
+const anneeMin = 1851;
 const anneeMax = 2025;
 const anneeExplore = 1985;
 
@@ -539,7 +558,15 @@ const makeDraggable = (el, updateCallback, constraints = null) => {
   el.addEventListener('mousedown', () => {
     dragging = true;
     document.body.style.userSelect = 'none';
+
+    // Activer le bon mode dès le clic
+    if (el === explore) {
+      setExploreMode(true);
+    } else if (el === left || el === right) {
+      setExploreMode(false);
+    }
   });
+
 
   window.addEventListener('mousemove', (e) => {
     if (!dragging) return;
@@ -559,12 +586,34 @@ const makeDraggable = (el, updateCallback, constraints = null) => {
   });
 
   window.addEventListener('mouseup', () => {
-    if (dragging && (el === explore)) updateDatesExplore();
-    if (dragging && (el === left || el === right)) updateDatesRange();
+    if (dragging && el === explore) {
+      updateDatesExplore();
+    }
+    if (dragging && (el === left || el === right)) {
+      updateDatesRange();
+    }
     dragging = false;
     document.body.style.userSelect = 'auto';
   });
 };
+
+function setExploreMode(active) {
+  if (active) {
+    left.classList.add('disabled');
+    right.classList.add('disabled');
+    highlight.classList.add('disabled');
+    explore.classList.remove('disabled');
+  } else {
+    left.classList.remove('disabled');
+    right.classList.remove('disabled');
+    highlight.classList.remove('disabled');
+    explore.classList.add('disabled');
+  }
+}
+
+document.getElementById('reset-filtres').addEventListener('click', () => {
+  reinitialiserFiltres();
+});
 
 // Initial positions
 initPosition(left, yearToPercent(anneeMin));
@@ -583,3 +632,4 @@ makeDraggable(explore, updateHighlight);
 updateLabels();
 updateHighlight();
 updateDatesRange();
+setExploreMode(false);

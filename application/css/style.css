@@ -116,11 +116,14 @@ main {
 
 .onglets {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 10px;
     background: #333;
+    color: white;
 }
 
-.onglets button {
+.onglets-gauche button {
     margin-right: 10px;
     padding: 8px 15px;
     cursor: pointer;
@@ -130,9 +133,39 @@ main {
     border-radius: 5px;
 }
 
-.onglets button:hover {
-    background: #777;
+.onglets-gauche button:disabled {
+    background: #999;
+    cursor: not-allowed;
 }
+
+.onglets-droite {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#compteur-photos {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#reset-filtres {
+    background: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+#reset-filtres:hover {
+    background: #1976d2;
+    transform: rotate(-90deg);
+}
+
 
 .contenu-onglet {
     display: none !important;
@@ -443,8 +476,18 @@ main {
     background: #aaa;
 }
 
+.handle.disabled {
+    opacity: 0.3;
+    pointer-events: auto;
+}
+
+.timeline-highlight.disabled {
+    opacity: 0.2;
+}
+
 #timeline-heatmap {
     display: flex;
-    height: 10px;
-    margin-top: 4px;
+    height: 5px;
+    margin-top: 1px;
+    background-color: #333333;
 }
