@@ -175,12 +175,46 @@ function filtrerPhotos() {
   listeFiltreeCourante = filtered;
 
   genererListe(filtered, "resultats-liste");
+  afficherHeatmap();
   majCarte(filtered, markerClusters, markerMap);
 
   if (document.querySelector('.contenu-onglet.active')?.id.includes('carte')) {
     carte.invalidateSize();
   }
 }
+
+function calculerIntensiteParAnnee() {
+  const intensite = {};
+  listeFiltreeCourante.forEach(photo => {
+    if (photo.date) {
+      const match = photo.date.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+      if (match) {
+        const annee = parseInt(match[3]);
+        intensite[annee] = (intensite[annee] || 0) + 1;
+      }
+    }
+  });
+  return intensite;
+}
+
+function afficherHeatmap() {
+  const intensite = calculerIntensiteParAnnee();
+  const max = Math.max(...Object.values(intensite));
+  const heatmap = document.getElementById('timeline-heatmap');
+  heatmap.innerHTML = '';
+
+  for (let an = anneeMin; an <= anneeMax; an++) {
+    const val = intensite[an] || 0;
+    const ratio = val / max;
+    const couleur = `rgba(255, 0, 0, ${ratio})`; // plus rouge s'il y a plus de photos
+
+    const segment = document.createElement('div');
+    segment.style.flex = '1';
+    segment.style.backgroundColor = couleur;
+    heatmap.appendChild(segment);
+  }
+}
+
 
 function genererListe(filtered, containerId) {
   const container = document.getElementById(containerId);
@@ -351,11 +385,21 @@ function majCarte(photosFiltrees, clusterGroup) {
   clusterGroup.clearLayers();
 
   photosFiltrees.forEach((photo, index) => {
+
+    currentLightboxIndex = listeFiltreeCourante.indexOf(photo);
+
     if (photo.latitude && photo.longitude) {
       const path = 'resized/large/' + photo.chemin;
 
       const marker = L.marker([photo.latitude, photo.longitude])
-          .bindPopup(`<strong>${photo.numero}</strong><br><img src="${path}" width="100">`);
+          .bindPopup(`<strong>${photo.numero}</strong><br><img src="${path}" width="150" onclick="openLightbox(${currentLightboxIndex})">`);
+
+      marker.on('dblclick', () => {
+        if (currentLightboxIndex !== -1) {
+          openLightbox(currentLightboxIndex);
+        }
+      });
+
       clusterGroup.addLayer(marker);
     }
   });

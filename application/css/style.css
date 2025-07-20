@@ -442,3 +442,9 @@ main {
     height: 10px;
     background: #aaa;
 }
+
+#timeline-heatmap {
+    display: flex;
+    height: 10px;
+    margin-top: 4px;
+}
