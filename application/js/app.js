@@ -12,6 +12,21 @@ let markerClusters;
 let currentLightboxIndex = 0;
 let listeFiltreeCourante = [];
 
+/** Slider - Timeline */
+const anneeMin = 1851;
+const anneeMax = 2025;
+const anneeExplore = 1985;
+
+const timeline = document.getElementById('timeline');
+const left = document.getElementById('handle-left');
+const right = document.getElementById('handle-right');
+const explore = document.getElementById('handle-explore');
+const labelLeft = document.getElementById('label-left');
+const labelRight = document.getElementById('label-right');
+const labelExplore = document.getElementById('label-explore');
+const highlight = document.getElementById('highlight');
+
+/** Carte */
 const cordonneesCentre = [45.6406, 0.1096];
 const zoomInitial = 14;
 
@@ -102,8 +117,8 @@ function mettreAJourLabel(button, selection) {
 }
 
 function reinitialiserFiltres() {
-  themesSelectionnes = [];
-  lieuxSelectionnes = [];
+  themesSelectionnes.length = 0;
+  lieuxSelectionnes.length = 0;
   inclurePhotosSansDate = true;
   anneeDebut = anneeMin;
   anneeFin = anneeMax;
@@ -219,7 +234,7 @@ function afficherHeatmap(intensite) {
   for (let an = anneeMin; an <= anneeMax; an++) {
     const val = intensite[an] || 0;
     const ratio = val / max;
-    const couleur = `rgba(255, 0, 0, ${ratio})`;
+    const couleur = `rgba(255, 193, 7, ${ratio})`;
     const segment = document.createElement('div');
     segment.style.flex = '1';
     segment.style.backgroundColor = couleur;
@@ -245,7 +260,41 @@ function genererListe(filtered, containerId) {
       img.src = 'resized/large/' + photo.chemin;
       img.alt = photo.numero;
 
+      const overlay = document.createElement('div');
+      overlay.className = 'photo-overlay';
+      overlay.style.maxHeight = '28px'; // hauteur repliée par défaut
+      overlay.innerHTML = `
+                <div class="overlay-header">
+                    <div class="photo-title">${photo.numero}</div>
+                </div>
+                <div class="overlay-infos">
+                    <div class="photo-details">
+                        <div>Date : ${photo.date || 'Inconnue'}</div>
+                        <div>Thèmes : ${(photo.themes || []).join(', ') || 'Aucun'}</div>
+                        <div>Lieux : ${(photo.lieu || []).join(', ') || 'Inconnu'}</div>
+                    </div>
+                </div>
+            `;
+
+      // Déplie quand la souris entre dans header ou infos
+      const header = overlay.querySelector('.overlay-header');
+      const infos = overlay.querySelector('.overlay-infos');
+
+      const openOverlay = () => {
+        overlay.style.maxHeight = '100%';
+        overlay.classList.add('open');
+      };
+      const closeOverlay = () => {
+        overlay.style.maxHeight = '28px';
+        overlay.classList.remove('open');
+      };
+
+      header.addEventListener('mouseenter', openOverlay);
+      infos.addEventListener('mouseenter', openOverlay);
+      overlay.addEventListener('mouseleave', closeOverlay);
+
       item.appendChild(img);
+      item.appendChild(overlay);
       container.appendChild(item);
 
       item.addEventListener('click', () => {
@@ -254,11 +303,11 @@ function genererListe(filtered, containerId) {
     });
   }
 
-
   if (containerId === "resultats-liste") {
     genererPagination(filtered.length);
   }
 }
+
 
 function genererPagination(totalItems) {
   const pagination = document.getElementById('pagination');
@@ -400,17 +449,17 @@ function majCarte(photosFiltrees, clusterGroup) {
 
   photosFiltrees.forEach((photo, index) => {
 
-    currentLightboxIndex = listeFiltreeCourante.indexOf(photo);
+    const indexPhoto = listeFiltreeCourante.indexOf(photo);
 
     if (photo.latitude && photo.longitude) {
       const path = 'resized/large/' + photo.chemin;
 
       const marker = L.marker([photo.latitude, photo.longitude])
-          .bindPopup(`<strong>${photo.numero}</strong><br><img src="${path}" width="150" onclick="openLightbox(${currentLightboxIndex})">`);
+          .bindPopup(`<strong>${photo.numero}</strong><br><img src="${path}" width="150" onclick="openLightbox(${indexPhoto})">`);
 
       marker.on('dblclick', () => {
-        if (currentLightboxIndex !== -1) {
-          openLightbox(currentLightboxIndex);
+        if (indexPhoto !== -1) {
+          openLightbox(indexPhoto);
         }
       });
 
@@ -434,13 +483,37 @@ function displayLightbox() {
   <div class="lightbox-image-container">
     <img src="${path}" alt="${photo.numero}">
   </div>
-  <div class="lightbox-text">
-    <div><strong>${photo.numero}</strong></div>
-    <div>Date: ${photo.date || ''}</div>
-    <div>Themes: ${(photo.themes || []).join(', ')}</div>
-    <div>Lieux: ${(photo.lieu || []).join(', ')}</div>
+  <div class="photo-overlay lightbox-overlay">
+    <div class="overlay-header">
+      <div class="photo-title">${photo.numero}</div>
+    </div>
+    <div class="overlay-infos">
+      <div class="photo-details">
+        <div>Date : ${photo.date || 'Inconnue'}</div>
+        <div>Thèmes : ${(photo.themes || []).join(', ') || 'Aucun'}</div>
+        <div>Lieux : ${(photo.lieu || []).join(', ') || 'Inconnu'}</div>
+      </div>
+    </div>
   </div>
 `;
+
+  // Déplie quand la souris entre dans header ou infos
+  const overlay = document.getElementById('lightbox-body').querySelector('.lightbox-overlay');
+  const header = overlay.querySelector('.overlay-header');
+  const infos = overlay.querySelector('.overlay-infos');
+
+  const openOverlay = () => {
+    overlay.style.maxHeight = '100%';
+    overlay.classList.add('open');
+  };
+  const closeOverlay = () => {
+    overlay.style.maxHeight = '50px';
+    overlay.classList.remove('open');
+  };
+
+  header.addEventListener('mouseenter', openOverlay);
+  infos.addEventListener('mouseenter', openOverlay);
+  overlay.addEventListener('mouseleave', closeOverlay);
 
 }
 
@@ -486,24 +559,6 @@ function afficherOnglet(id) {
 
 
 afficherOnglet('liste');
-
-
-/** Slider - Timeline */
-const anneeMin = 1851;
-const anneeMax = 2025;
-const anneeExplore = 1985;
-
-const timeline = document.getElementById('timeline');
-const left = document.getElementById('handle-left');
-const right = document.getElementById('handle-right');
-const explore = document.getElementById('handle-explore');
-const labelLeft = document.getElementById('label-left');
-const labelRight = document.getElementById('label-right');
-const labelExplore = document.getElementById('label-explore');
-const highlight = document.getElementById('highlight');
-const status = document.getElementById('status');
-
-const getBarWidth = () => timeline.clientWidth;
 
 const setPosition = (el, percent) => {
   el.style.left = `calc(${percent}% - 10px)`;

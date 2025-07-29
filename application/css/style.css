@@ -203,31 +203,66 @@ main {
 
 
 .photo-item {
+    position: relative;
     background: white;
     border-radius: 5px;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 4px;
-    transition: none;
+    padding: 0;
 }
 
 .photo-item img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain; /* Ne coupe pas l'image */
-    aspect-ratio: auto; /* On laisse l’image choisir son ratio naturel */
-    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* évite de couper l'image */
     border-radius: 5px;
     cursor: zoom-in;
 }
 
 .photo-item img:hover {
-    filter: brightness(0.85);
+    filter: brightness(0.9);
     transition: filter 0.2s;
+}
+
+.photo-overlay {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    max-height: 27px; /* hauteur repliée */
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.overlay-header {
+    width: 10%;
+    margin-left: auto;
+    background: rgba(0, 0, 0, 0.2);
+    color: #333;
+    padding: 5px;
+    text-align: right;
+    font-weight: bold;
+    transition: background 0.3s, color 0.3s;
+    border-top-left-radius: 10px;
+    cursor: pointer;
+}
+
+/* Quand l'overlay est ouvert, header prend la couleur foncée */
+.photo-overlay.open .overlay-header {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+}
+
+.overlay-infos {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 5px;
+    box-sizing: border-box;
+    text-align: left;
 }
 
 
@@ -353,6 +388,31 @@ main {
 #lightbox-next {
     right: 10px;
 }
+
+.lightbox-overlay {
+    max-height: 50px;
+}
+
+.lightbox-overlay .overlay-header {
+    font-size: 1.4em;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    width: 5%;
+}
+
+.lightbox-overlay .overlay-infos {
+    font-size: 1.2em;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.lightbox-overlay.open .overlay-infos,
+.lightbox-overlay .overlay-header:hover + .overlay-infos {
+    max-height: 500px; /* plus grand pour le contenu étendu */
+}
+
 
 /* Responsive pour petits écrans */
 @media (max-width: 768px) {
