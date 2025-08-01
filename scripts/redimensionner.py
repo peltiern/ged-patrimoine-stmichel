@@ -36,6 +36,8 @@ def process_images():
     for root, _, files in os.walk(SOURCE_DIR):
         if TARGET_DIR in root:
             continue  # Ignore le dossier "resize"
+        if "./env" in root:
+            continue  # Ignore le dossier "resize"
 
         for filename in files:
             ext = os.path.splitext(filename)[1].lower()
