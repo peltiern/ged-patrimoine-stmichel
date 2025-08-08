@@ -6,9 +6,19 @@ import math
 csv_path = "Classement Photos Saint-Michel - Classement.csv"
 df = pd.read_csv(csv_path, dtype=str)
 
-# Supprimer les colonnes non désirées
-colonnes_a_supprimer = ["Pour expo ?", "Lieu expo", "Doublons"]
-df = df.drop(columns=[col for col in colonnes_a_supprimer if col in df.columns])
+# Garder uniquement les lignes où "A garder" == "OUI"
+if "A garder" in df.columns:
+    df = df[df["A garder"].str.upper() == "OUI"]
+
+# Ne garder que les colonnes désirées
+colonnes_a_garder = [
+    "numero", "album", "chemin", "date", "themes", "lieu", "geolocalisation", "commentaire"
+]
+df = df[[col for col in colonnes_a_garder if col in df.columns]]
+
+# Remplacer l'extension .tif par .jpg dans le chemin du fichier
+if "chemin" in df.columns:
+    df["chemin"] = df["chemin"].str.replace(r"\.tif$", ".jpg", case=False, regex=True)
 
 # Fonction pour transformer la géolocalisation en latitude/longitude
 def parse_geoloc(geoloc_str):

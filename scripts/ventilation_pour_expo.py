@@ -20,6 +20,8 @@ df.columns = [col.strip() for col in df.columns]
 df_expo = df[df["Pour expo ?"].str.strip().str.lower() == "oui"]
 
 # Copier les fichiers
+dest_dir_expo_complet = "Expo_complet"
+os.makedirs(dest_dir_expo_complet, exist_ok=True)
 for _, row in df_expo.iterrows():
     src_path = row["chemin"]
     theme = nettoyer_nom_dossier(row["Thème pour expo"])
@@ -29,6 +31,8 @@ for _, row in df_expo.iterrows():
     if os.path.isfile(src_path):
         shutil.copy2(src_path, dest_dir)
         print(f"✔ Copié : {src_path} -> {dest_dir}")
+        shutil.copy2(src_path, dest_dir_expo_complet)
+        print(f"✔ Copié : {src_path} -> {dest_dir_expo_complet}")
     else:
         print(f"⚠ Fichier introuvable : {src_path}")
 
