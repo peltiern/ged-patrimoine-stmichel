@@ -266,6 +266,7 @@ function genererListe(filtered, containerId) {
       overlay.innerHTML = `
                 <div class="overlay-header">
                     <div class="photo-title">${photo.numero}</div>
+                    <button class="btn-report" onclick="openReportForm('${photo.numero}')">⚠ Signaler</button>
                 </div>
                 <div class="overlay-infos">
                     <div class="photo-details">
@@ -540,6 +541,30 @@ document.getElementById('lightbox').addEventListener('click', (e) => {
     document.getElementById('lightbox').classList.add('hidden');
   }
 });
+
+async function openReportForm(photoNum) {
+    const container = document.getElementById('report-container');
+    if (!container) return;
+
+    // Charger le formulaire depuis le composant
+    const res = await fetch('components/contact-form.html');
+    const html = await res.text();
+
+    // Injecter le formulaire
+    container.innerHTML = html;
+    container.classList.remove('hidden');
+
+    // Préremplir numéro de photo et sujet
+    document.getElementById('numero_photo').value = photoNum;
+    document.getElementById('objet').value = `Signalement photo ${photoNum}`;
+
+    // Bouton fermer
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = 'Fermer';
+    closeBtn.onclick = () => container.classList.add('hidden');
+    container.prepend(closeBtn);
+}
+
 
 
 function afficherOnglet(id) {

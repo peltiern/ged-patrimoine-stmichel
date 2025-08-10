@@ -14,6 +14,7 @@
   <link rel="icon" href="img/favicon.ico"/>
   <title>Fonds photographique de Saint-Michel (16470 - France)</title>
   <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/contact.css">
   <link rel="stylesheet" href="css/vendor/leaflet.css" />
   <link rel="stylesheet" href="css/vendor/MarkerCluster.css" />
   <link rel="stylesheet" href="css/vendor/MarkerCluster.Default.css" />
@@ -24,6 +25,7 @@
     <img class="logo" src="./img/logo-application.png" alt="logo">
     Fonds photographique de Saint-Michel
   </h1>
+    <a href="contact.html" id="open-contact-link">Contact</a>
   <div class="filtres">
     <label>Thèmes:</label>
     <div id="filtre-themes" class="filtre-group"></div>
@@ -78,10 +80,13 @@
     <div id="lightbox-body" class="lightbox-body"></div>
     <button id="lightbox-next" class="lightbox-nav">❯</button>
   </div>
+    <!-- Conteneur caché pour le signalement -->
+    <div id="report-container" class="hidden"></div>
 </div>
 
 <script src="js/vendor/leaflet.js"></script>
 <script src="js/vendor/leaflet.markercluster.js"></script>
 <script src="js/app.js"></script>
+<script src="js/contact-submit.js"></script>
 </body>
 </html>
