@@ -1,92 +1,110 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:title" content="Fonds photographique de Saint-Michel (16470 - France)">
-  <meta property="og:description" content="Photographies de la commune de Saint-Michel (16470)">
-  <meta property="og:image" content="https://peltiern.github.io/cartographie-saint-michel/img/banniere.jpg">
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-<!--  <meta property="og:url" content="https://peltiern.github.io/cartographie-saint-michel/">-->
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Fonds photographique de Saint-Michel (16470 - France)">
-  <link rel="icon" href="img/favicon.ico"/>
-  <title>Fonds photographique de Saint-Michel (16470 - France)</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Fonds photographique de Saint-Michel (16470 - France)">
+    <meta property="og:description" content="Photographies de la commune de Saint-Michel (16470)">
+    <meta property="og:image" content="https://peltiern.github.io/cartographie-saint-michel/img/banniere.jpg">
+    <meta property="og:image:width" content="1200"/>
+    <meta property="og:image:height" content="630"/>
+    <!--  <meta property="og:url" content="https://peltiern.github.io/cartographie-saint-michel/">-->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Fonds photographique de Saint-Michel (16470 - France)">
+    <link rel="icon" href="img/favicon.ico"/>
+    <title>Fonds photographique de Saint-Michel (16470 - France)</title>
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/contact.css">
-  <link rel="stylesheet" href="css/vendor/leaflet.css" />
-  <link rel="stylesheet" href="css/vendor/MarkerCluster.css" />
-  <link rel="stylesheet" href="css/vendor/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="css/vendor/leaflet.css"/>
+    <link rel="stylesheet" href="css/vendor/MarkerCluster.css"/>
+    <link rel="stylesheet" href="css/vendor/MarkerCluster.Default.css"/>
 </head>
 <body>
-<header>
-  <h1>
-    <img class="logo" src="./img/logo-application.png" alt="logo">
-    Fonds photographique de Saint-Michel
-  </h1>
-    <a href="contact.html" id="open-contact-link">Contact</a>
-  <div class="filtres">
-    <label>Thèmes:</label>
-    <div id="filtre-themes" class="filtre-group"></div>
-
-    <label>Lieux:</label>
-    <div id="filtre-lieux" class="filtre-group"></div>
-
-    <label for="filtre-sans-date-cb">Inclure les photos sans date:</label>
-    <div id="filtre-sans-date" class="filtre-group">
-      <input type="checkbox" id="filtre-sans-date-cb" checked/>
-    </div>
-  </div>
-</header>
-<div class="timeline-container">
-  <div class="timeline-wrapper" id="timeline">
-    <div class="timeline-bar"></div>
-    <div class="timeline-highlight" id="highlight"></div>
-    <div class="handle range-left" id="handle-left"><div class="label left" id="label-left"></div></div>
-    <div class="handle range-right" id="handle-right"><div class="label right" id="label-right"></div></div>
-    <div class="handle explore" id="handle-explore"><div class="label explore" id="label-explore"></div></div>
-  </div>
-  <div id="timeline-heatmap"></div>
-</div>
-
+<div id="site-header"></div>
 <main>
-  <div class="onglets">
-    <div class="onglets-gauche">
-      <button id="btn-liste" onclick="afficherOnglet('liste')">Liste</button>
-      <button id="btn-carte" onclick="afficherOnglet('carte')">Carte</button>
+    <div class="filtres">
+        <label>Thèmes:</label>
+        <div id="filtre-themes" class="filtre-group"></div>
+
+        <label>Lieux:</label>
+        <div id="filtre-lieux" class="filtre-group"></div>
+
+        <label for="filtre-sans-date-cb">Inclure les photos sans date:</label>
+        <div id="filtre-sans-date" class="filtre-group">
+            <input type="checkbox" id="filtre-sans-date-cb" checked/>
+        </div>
     </div>
-    <div class="onglets-droite">
-      <span id="compteur-photos">0 photos</span>
-      <button id="reset-filtres" title="Réinitialiser les filtres">⟲</button>
+    <div class="timeline-container">
+        <div class="timeline-wrapper" id="timeline">
+            <div class="timeline-bar"></div>
+            <div class="timeline-highlight" id="highlight"></div>
+            <div class="handle range-left" id="handle-left">
+                <div class="label left" id="label-left"></div>
+            </div>
+            <div class="handle range-right" id="handle-right">
+                <div class="label right" id="label-right"></div>
+            </div>
+            <div class="handle explore" id="handle-explore">
+                <div class="label explore" id="label-explore"></div>
+            </div>
+        </div>
+        <div id="timeline-heatmap"></div>
     </div>
-  </div>
+
+    <div class="onglets">
+        <div class="onglets-gauche">
+            <button id="btn-liste" onclick="afficherOnglet('liste')">Liste</button>
+            <button id="btn-carte" onclick="afficherOnglet('carte')">Carte</button>
+        </div>
+        <div class="onglets-droite">
+            <span id="compteur-photos">0 photos</span>
+            <button id="reset-filtres" title="Réinitialiser les filtres">⟲</button>
+        </div>
+    </div>
 
 
-  <section id="onglet-liste" class="contenu-onglet">
-    <div id="resultats-liste" class="liste-container"></div>
-    <div id="pagination"></div>
-  </section>
+    <section id="onglet-liste" class="contenu-onglet">
+        <div id="resultats-liste" class="liste-container"></div>
+        <div id="pagination"></div>
+    </section>
 
-  <section id="onglet-carte" class="contenu-onglet">
-    <div id="carte"></div>
-  </section>
+    <section id="onglet-carte" class="contenu-onglet">
+        <div id="carte"></div>
+    </section>
+
+    <div id="lightbox" class="lightbox hidden">
+        <div class="lightbox-content">
+            <div class="lightbox-topbar">
+                <div id="lightbox-menu" class="lightbox-button">&#8942;</div>
+                <div id="lightbox-close" class="lightbox-button">&times;</div>
+            </div>
+
+            <div id="lightbox-menu-popup" class="hidden">
+                <ul>
+                    <li id="menu-report">Signaler la photo</li>
+                </ul>
+            </div>
+
+            <button id="lightbox-prev" class="lightbox-nav">❮</button>
+            <div id="lightbox-body" class="lightbox-body"></div>
+            <button id="lightbox-next" class="lightbox-nav">❯</button>
+        </div>
+        <!-- Conteneur caché pour le signalement -->
+        <div id="report-container" class="hidden">
+            <div class="report-content">
+                <!-- le formulaire sera injecté ici -->
+            </div>
+        </div>
+
+    </div>
 </main>
+<div id="site-footer"></div>
 
-<div id="lightbox" class="lightbox hidden">
-  <div class="lightbox-content">
-    <span id="lightbox-close" class="lightbox-close">&times;</span>
-    <button id="lightbox-prev" class="lightbox-nav">❮</button>
-    <div id="lightbox-body" class="lightbox-body"></div>
-    <button id="lightbox-next" class="lightbox-nav">❯</button>
-  </div>
-    <!-- Conteneur caché pour le signalement -->
-    <div id="report-container" class="hidden"></div>
-</div>
-
+<script src="js/page-layout.js"></script>
 <script src="js/vendor/leaflet.js"></script>
 <script src="js/vendor/leaflet.markercluster.js"></script>
 <script src="js/app.js"></script>
+<script src="js/contact-form.js"></script>
 <script src="js/contact-submit.js"></script>
 </body>
 </html>

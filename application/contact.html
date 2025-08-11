@@ -2,14 +2,41 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Contact</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Fonds photographique de Saint-Michel (16470 - France)">
+    <meta property="og:description" content="Photographies de la commune de Saint-Michel (16470)">
+    <meta property="og:image" content="https://peltiern.github.io/cartographie-saint-michel/img/banniere.jpg">
+    <meta property="og:image:width" content="1200"/>
+    <meta property="og:image:height" content="630"/>
+    <!--  <meta property="og:url" content="https://peltiern.github.io/cartographie-saint-michel/">-->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Fonds photographique de Saint-Michel (16470 - France)">
+    <link rel="icon" href="img/favicon.ico"/>
+    <title>Fonds photographique de Saint-Michel (16470 - France) - Contact</title>
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/contact.css">
 </head>
 <body>
-<h1>Contact</h1>
-<div id="contact-form-container"></div>
-
-<script src="js/contact-page.js"></script>
+<div id="site-header"></div>
+<main>
+    <h1>Contact</h1>
+    <div id="contact-form-container"></div>
+</main>
+<div id="site-footer"></div>
+<script src="js/page-layout.js"></script>
+<script src="js/contact-form.js"></script>
 <script src="js/contact-submit.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const res = await fetch('components/contact-form.html');
+        document.getElementById('contact-form-container').innerHTML = await res.text();
+
+        const params = new URLSearchParams(window.location.search);
+        initContactForm({
+            mode: params.get('mode'),
+            photo: params.get('photo')
+        });
+    });
+</script>
 </body>
 </html>
