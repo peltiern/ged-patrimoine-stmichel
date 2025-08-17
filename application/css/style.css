@@ -12,17 +12,48 @@ body {
     flex-direction: column;
 }
 
-header {
-    padding: 15px;
-    background: #222;
-    color: white;
+/* Header sombre comme footer */
+.site-header {
+    background-color: #222; /* même fond que le footer */
+    color: #fff;            /* texte blanc */
+    padding: 10px 15px;      /* compact */
+    border-bottom: 1px solid #444;
 }
 
-.logo {
-    width: 60px;
+/* H1 aligné */
+.site-header h1 {
+    display: flex;
+    align-items: center;
+    font-size: 1.6em;
+    margin: 0;
+}
+
+/* Lien du logo */
+.logo-link {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px;
+    text-decoration: none;
+    color: inherit; /* garde le blanc */
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 45px;
-    vertical-align: middle;
+}
+.logo-link:visited {
+    color: inherit;
+}
+.logo-link:hover {
+    opacity: 0.8; /* petit effet visuel */
+}
+
+/* Logo */
+.logo {
+    height: 50px;
+    width: auto;
+}
+
+/* Titre */
+.site-title {
+    white-space: nowrap;
 }
 
 /* Filtres */
@@ -228,6 +259,16 @@ main {
     transition: filter 0.2s;
 }
 
+.photo-title-small {
+    padding-right: 5px;
+    font-size: 16px;
+}
+
+.photo-title-large {
+    padding-right: 5px;
+    font-size: 26px;
+}
+
 .photo-overlay {
     position: absolute;
     bottom: 0;
@@ -274,7 +315,7 @@ main {
     justify-content: flex-end;
     align-items: center;
     padding: 10px;
-    background: #222;
+    background: #333;
     color: white;
 }
 
@@ -390,9 +431,9 @@ main {
     right: 10px;
 }
 
-.lightbox-overlay {
-    max-height: 50px;
-}
+/*.lightbox-overlay {*/
+/*    max-height: 50px;*/
+/*}*/
 
 .lightbox-overlay .overlay-header {
     font-size: 1.4em;

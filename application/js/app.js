@@ -254,7 +254,7 @@ function genererListe(filtered, containerId) {
 
         pageItems.forEach((photo, index) => {
 
-            const item = genererPhotoOverlay(photo, 'photo-item', '28px');
+            const item = genererPhotoOverlay(photo, 'photo-item', '28px', 'photo-title-small');
 
             // Click pour ouvrir lightbox
             item.addEventListener('click', () => {
@@ -289,7 +289,7 @@ function genererPagination(totalItems) {
 
         const pageInfo = document.createElement('span');
         pageInfo.style.marginLeft = '10px';
-        pageInfo.textContent = `Page 0 / 0`;
+        pageInfo.textContent = `0 / 0`;
         pagination.appendChild(pageInfo);
 
         return;
@@ -379,10 +379,10 @@ function genererPagination(totalItems) {
     };
     pagination.appendChild(boutonDernierePage);
 
-    // Affichage "Page X sur Y"
+    // Affichage "X sur Y"
     const pageInfo = document.createElement('span');
     pageInfo.style.marginLeft = '10px';
-    pageInfo.textContent = `Page ${pageCourante} / ${nbTotalPages}`;
+    pageInfo.textContent = `${pageCourante} / ${nbTotalPages}`;
     pagination.appendChild(pageInfo);
 }
 
@@ -437,7 +437,7 @@ function openLightbox(index) {
     document.getElementById('lightbox').classList.remove('hidden');
 }
 
-function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight) {
+function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePhotoTitle) {
 
     const item = document.createElement('div');
     item.className = itemClassName;
@@ -458,7 +458,7 @@ function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight) {
 
     // Titre
     const photoTitle = document.createElement('div');
-    photoTitle.className = 'photo-title';
+    photoTitle.className = classNamePhotoTitle;
     photoTitle.textContent = photo.numero;
 
     overlayHeader.appendChild(photoTitle);
@@ -519,7 +519,7 @@ function displayLightbox() {
 
     const photo = listeFiltreeCourante[currentLightboxIndex];
 
-    container.appendChild(genererPhotoOverlay(photo, 'lightbox-image-container', '50px'));
+    container.appendChild(genererPhotoOverlay(photo, 'lightbox-image-container', '40px', 'photo-title-large'));
 }
 
 document.getElementById('lightbox-close').addEventListener('click', () => {
