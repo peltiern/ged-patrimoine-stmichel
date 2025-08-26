@@ -1,26 +1,220 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="Fonds photographique de Saint-Michel (16470 - France)">
-    <meta property="og:description" content="Photographies de la commune de Saint-Michel (16470)">
-    <meta property="og:image" content="https://peltiern.github.io/cartographie-saint-michel/img/banniere.jpg">
-    <meta property="og:image:width" content="1200"/>
-    <meta property="og:image:height" content="630"/>
-    <!--  <meta property="og:url" content="https://peltiern.github.io/cartographie-saint-michel/">-->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Fonds photographique de Saint-Michel (16470 - France)">
-    <link rel="icon" href="img/favicon.ico"/>
-    <title>Fonds photographique de Saint-Michel (16470 - France) - Contact</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/footer.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta property="og:title" content="Fonds photographique de Saint-Michel (16470 - France)">
+	<meta property="og:description" content="Photographies de la commune de Saint-Michel (16470)">
+	<meta property="og:image" content="https://peltiern.github.io/cartographie-saint-michel/img/banniere.jpg">
+	<meta property="og:image:width" content="1200"/>
+	<meta property="og:image:height" content="630"/>
+	<!--  <meta property="og:url" content="https://peltiern.github.io/cartographie-saint-michel/">-->
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="Fonds photographique de Saint-Michel (16470 - France)">
+	<link rel="icon" href="img/favicon.ico"/>
+	<title>Fonds photographique de Saint-Michel (16470 - France) - Contact</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/footer.css">
+	<style>
+		:root {
+			--max: 960px;
+			--fg: #1f2937;
+			--muted: #6b7280;
+			--bg: #ffffff;
+			--link: #1d4ed8;
+			--border: #e5e7eb
+		}
+
+		html {
+			scroll-behavior: smooth
+		}
+
+		body {
+			font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+			line-height: 1.6;
+			color: var(--fg);
+			margin: 0;
+			background: var(--bg)
+		}
+
+		header {
+			border-bottom: 1px solid var(--border);
+			background: #fafafa
+		}
+
+		.wrap {
+			max-width: var(--max);
+			margin-inline: auto;
+			padding: clamp(16px, 3vw, 28px)
+		}
+
+		h1 {
+			font-size: clamp(28px, 4vw, 40px);
+			line-height: 1.2;
+			margin: 0 0 8px
+		}
+
+		h2 {
+			font-size: clamp(20px, 3vw, 26px);
+			margin: 32px 0 8px
+		}
+
+		h3 {
+			font-size: clamp(18px, 2.5vw, 22px);
+			margin: 28px 0 6px
+		}
+
+		p, li {
+			color: var(--fg)
+		}
+
+		.muted {
+			color: var(--muted)
+		}
+
+		a {
+			color: var(--link)
+		}
+
+		main {
+			max-width: var(--max);
+			margin-inline: auto;
+			padding: clamp(16px, 3vw, 28px)
+		}
+
+		.notice {
+			background: #f8fafc;
+			border: 1px solid var(--border);
+			padding: 16px;
+			border-radius: 12px
+		}
+
+		footer {
+			border-top: 1px solid var(--border);
+			background: #fafafa;
+			margin-top: 32px
+		}
+
+		.list {
+			padding-left: 1.25rem
+		}
+
+		.chips {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px
+		}
+
+		.chip {
+			border: 1px solid var(--border);
+			padding: .25rem .5rem;
+			border-radius: 999px;
+			font-size: .9rem
+		}
+
+		.dl {
+			display: grid;
+			grid-template-columns:220px 1fr;
+			gap: 8px;
+			align-items: start
+		}
+
+		@media (max-width: 640px) {
+			.dl {
+				grid-template-columns:1fr
+			}
+		}
+	</style>
 </head>
 <body>
 <div id="site-header"></div>
 <main>
-    <h1>Politique de confidentialité</h1>
-    <div>TODO</div>
+	<div class="wrap">
+		<h1>Politique de confidentialité</h1>
+		<p class="muted">Dernière mise à jour :
+			<time datetime="2025-08-26">26 août 2025</time>
+		</p>
+	</div>
+	<section>
+		<h2>2. Données collectées</h2>
+		<ul class="list">
+			<li><strong>Formulaire de contact (FormCarry)</strong> : nom, prénom, adresse e‑mail, contenu du message.
+			</li>
+			<li><strong>Navigation</strong> : aucune donnée personnelle n’est collectée à des fins publicitaires. Aucun
+				traceur commercial (Google Analytics, Google Ads, etc.).
+			</li>
+		</ul>
+	</section>
+	<section>
+		<h2>3. Finalités du traitement</h2>
+		<ul class="list">
+			<li>Répondre aux demandes envoyées via le formulaire de contact.</li>
+			<li>Permettre de signaler une photographie.</li>
+			<li>Assurer le bon fonctionnement et la sécurité du site.</li>
+		</ul>
+	</section>
+	<section>
+		<h2>4. Hébergement et sous‑traitance</h2>
+		<div class="dl">
+			<p><strong>Hébergement</strong></p>
+			<p>Le site et les photographies sont hébergés par <strong>Scaleway</strong> sur des serveurs situés à Paris
+				(France).</p>
+			<p><strong>Sous‑traitant</strong></p>
+			<p>Les formulaires de contact sont gérés par <strong>FormCarry</strong>, qui traite les données soumises
+				pour l’acheminement des messages.</p>
+		</div>
+	</section>
+	<section>
+		<h2>5. Base légale</h2>
+		<ul class="list">
+			<li><strong>Consentement</strong> de l’utilisateur (formulaire de contact).</li>
+			<li><strong>Intérêt légitime</strong> (valorisation du patrimoine local).</li>
+		</ul>
+	</section>
+	<section>
+		<h2>6. Durée de conservation</h2>
+		<ul class="list">
+			<li>Messages du formulaire : <strong>3 ans maximum</strong>.</li>
+			<li>Aucune donnée n’est conservée à des fins commerciales.</li>
+		</ul>
+	</section>
+	<section>
+		<h2>7. Droits des utilisateurs</h2>
+		<p>Vous disposez des droits d’accès, de rectification, d’opposition, d’effacement et de limitation. Pour les
+			exercer : <a href="mailto:[ton-adresse@exemple.fr]">[ton-adresse@exemple.fr]</a>. Vous pouvez également
+			saisir la CNIL (<a href="https://www.cnil.fr/" rel="noopener">cnil.fr</a>).</p>
+	</section>
+	<section>
+		<h2>8. Cookies</h2>
+		<p>Le site utilise uniquement des cookies techniques nécessaires à son fonctionnement (notamment pour
+			l’affichage des cartes via Leaflet / OpenStreetMap). Aucun cookie publicitaire n’est installé.</p>
+	</section>
+	<section>
+		<h2>9. Photographies et droit à l’image</h2>
+		<p>Le site présente des photographies datées de 1851 à 2013, issues de différentes sources (indiquées sous
+			chaque photo), notamment : la <strong>Mairie de Saint‑Michel</strong>, des dépôts privés, et des <strong>sites
+				Internet</strong> avec mention de la source.</p>
+		<p>Certaines images peuvent représenter des personnes reconnaissables. Si vous apparaissez sur une photo et
+			souhaitez exercer votre droit à l’image, vous pouvez demander le retrait via le <a href="contact.html">formulaire
+				de contact</a>.</p>
+		<h3>Clause spécifique – Photographies issues d’Internet</h3>
+		<div class="notice">
+			<p>Certaines photographies ont été récupérées sur Internet. Elles sont publiées uniquement :</p>
+			<ul class="list">
+				<li>dans un but <strong>culturel et patrimonial</strong> ;</li>
+				<li>avec <strong>mention de la source</strong> connue ;</li>
+				<li><strong>sans intention commerciale</strong>.</li>
+			</ul>
+			<p>Si vous êtes titulaire de droits sur une photographie publiée et souhaitez qu’elle soit retirée, vous
+				pouvez en faire la demande via le <a href="contact.html">formulaire de contact</a>. L’éditeur s’engage à
+				retirer la photographie concernée dans les meilleurs délais.</p>
+		</div>
+	</section>
+	<section>
+		<h2>10. Contact</h2>
+		<p>Pour toute question relative à cette politique, écrivez à : <a href="mailto:[ton-adresse@exemple.fr]">[ton-adresse@exemple.fr]</a>.
+		</p>
+	</section>
 </main>
 <div id="site-footer"></div>
 <script src="js/page-layout.js"></script>
