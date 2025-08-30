@@ -272,8 +272,6 @@ function genererListe(filtered, containerId) {
 
 
 function genererPagination(totalItems) {
-    pageCourante = 1;
-
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
 
