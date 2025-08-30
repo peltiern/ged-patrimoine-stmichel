@@ -1,101 +1,16 @@
-/* ================================
-   Variables globales (charte)
-================================ */
-:root {
-    --font-family: "Inter", sans-serif;
-
-    --color-primary: #2c3e50;   /* Titres, accents */
-    --color-secondary: #18bc9c; /* Liens, boutons */
-    --color-text: #333;         /* Texte standard */
-    --color-bg: #fff;           /* Fond */
-    --color-light: #f4f4f4;     /* Sections claires */
-}
-
-/* ================================
-   Reset & base
-================================ */
-* {
+html, body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-html, body {
     height: 100%;
-    font-family: var(--font-family);
-    background: var(--color-bg);
-    color: var(--color-text);
-    line-height: 1.6;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f5f5f5;
+    color: #333;
 }
 
 body {
     display: flex;
     flex-direction: column;
 }
-
-main {
-    flex: 1 0 auto;
-}
-
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* ================================
-   Typographie
-================================ */
-h1 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: var(--color-primary);
-}
-
-h2 {
-    font-size: 1.6rem;
-    font-weight: 600;
-    margin-bottom: 0.8rem;
-    color: var(--color-primary);
-}
-
-h3 {
-    font-size: 1.3rem;
-    font-weight: 500;
-    margin-bottom: 0.6rem;
-    color: var(--color-primary);
-}
-
-p {
-    margin-bottom: 1rem;
-}
-
-/* ================================
-   Liens & Boutons
-================================ */
-a {
-    color: var(--color-secondary);
-    text-decoration: none;
-}
-a:hover {
-    text-decoration: underline;
-}
-
-button {
-    font-family: var(--font-family);
-    background: var(--color-secondary);
-    color: #fff;
-    border: none;
-    padding: 0.6em 1.2em;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-button:hover {
-    background: #149174;
-}
-
 
 /* Header sombre comme footer */
 .site-header {
@@ -511,7 +426,6 @@ main {
     cursor: pointer;
     padding: 5px 10px;
     border-radius: 5px;
-    z-index: 10;
 }
 
 #lightbox-prev {
