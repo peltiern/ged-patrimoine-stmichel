@@ -447,9 +447,7 @@ function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePh
     img.src = 'resized/large/' + photo.chemin;
     img.alt = photo.numero;
 
-    ajouterZoomEtDeplacementPhoto(img, item);
-
-    // Overlay
+// Overlay
     const overlay = document.createElement('div');
     overlay.className = 'photo-overlay';
     overlay.style.maxHeight = overlayMaxHeight; // hauteur repliée par défaut
@@ -514,55 +512,6 @@ function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePh
 
     return item;
 }
-
-function ajouterZoomEtDeplacementPhoto(img, container) {
-    let scale = 1;
-    let translateX = 0;
-    let translateY = 0;
-
-    let isDragging = false;
-    let startX, startY;
-
-// Gestion du zoom avec la molette
-    container.addEventListener("wheel", (e) => {
-        e.preventDefault();
-
-        const zoomIntensity = 0.1;
-        if (e.deltaY < 0) {
-            scale += zoomIntensity;
-        } else {
-            scale = Math.max(0.5, scale - zoomIntensity); // limite zoom out
-        }
-        updateTransform(img, translateX, translateY, scale);
-    }, { passive: false });
-
-// Déplacement avec clic gauche
-    container.addEventListener("mousedown", (e) => {
-        e.preventDefault();
-        isDragging = true;
-        startX = e.clientX - translateX;
-        startY = e.clientY - translateY;
-        container.style.cursor = "grabbing";
-    });
-
-    window.addEventListener("mouseup", () => {
-        isDragging = false;
-        container.style.cursor = "grab";
-    });
-
-    window.addEventListener("mousemove", (e) => {
-        if (!isDragging) return;
-        translateX = e.clientX - startX;
-        translateY = e.clientY - startY;
-        updateTransform(img, translateX, translateY, scale);
-    });
-}
-
-// Applique la transformation
-function updateTransform(img, translateX, translateY, scale) {
-    img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-}
-
 
 function displayLightbox() {
     const container = document.getElementById('lightbox-body');
