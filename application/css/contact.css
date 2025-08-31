@@ -1,10 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
-
 .formcarry-container {
     box-sizing: border-box;
     margin: 40px auto 0 auto;
     padding: 0;
-    font-family: "Inter", sans-serif;
     font-size: 14px;
     font-weight: 400;
     line-height: 24px;
@@ -58,8 +55,6 @@
     color: var(--fc-normal-text-color);
     border-radius: 6px;
     padding: 8px 12px;
-
-    font-family: "Inter", sans-serif;
     font-size: 14px;
     transition: 125ms background, 125ms color, 125ms box-shadow;
 }
@@ -109,7 +104,6 @@
 }
 
 .formcarry-container button {
-    font-family: "Inter", sans-serif;
     font-weight: 500;
     font-size: 14px;
     letter-spacing: -0.02em;
@@ -125,7 +119,6 @@
 }
 
 .formcarry-container button {
-    font-family: "Inter", sans-serif;
     font-weight: 500;
     font-size: 14px;
     letter-spacing: -0.02em;
