@@ -4,6 +4,7 @@ const nbPhotosParPage = 12;
 let carte;
 let themesSelectionnes = [];
 let lieuxSelectionnes = [];
+let numeroRecherche = '';
 let anneeDebut = 1851;
 let anneeFin = 2025;
 let inclurePhotosSansDate = true;
@@ -52,6 +53,12 @@ function initialiserFiltres() {
     // Création des deux menus déroulants
     creerMultiselect('filtre-themes', Array.from(themes).sort(), themesSelectionnes, filtrerPhotos);
     creerMultiselect('filtre-lieux', Array.from(lieux).sort(), lieuxSelectionnes, filtrerPhotos);
+
+    const inputNumero = document.getElementById('filtre-numero-photo-input');
+    inputNumero.oninput = () => {
+        numeroRecherche = inputNumero.value;
+        filtrerPhotos();
+    };
 
     const cbSansDate = document.getElementById('filtre-sans-date-cb');
     cbSansDate.onchange = () => {
@@ -119,10 +126,12 @@ function mettreAJourLabel(button, selection) {
 function reinitialiserFiltres() {
     themesSelectionnes.length = 0;
     lieuxSelectionnes.length = 0;
+    numeroRecherche = '';
     inclurePhotosSansDate = true;
     anneeDebut = anneeMin;
     anneeFin = anneeMax;
 
+    document.getElementById('filtre-numero-photo-input').value = '';
     document.getElementById('filtre-sans-date-cb').checked = true;
     document.querySelectorAll('.custom-multiselect input[type=checkbox]').forEach(cb => cb.checked = false);
     document.querySelectorAll('.custom-multiselect-button').forEach(button => button.textContent = 'Sélectionner...');
@@ -181,6 +190,9 @@ function filtrerPhotos() {
     data.forEach(photo => {
         // Appliquer uniquement les filtres thèmes, lieux, inclure/exclure sans-date pour la heatmap
         if (!inclurePhotosSansDate && (!photo.date || typeof photo.date !== 'string')) return;
+
+        const numeroMatch = numeroRecherche.length === 0 || photo.numero?.includes(numeroRecherche);
+        if (!numeroMatch) return;
 
         const themeMatch = themesSelectionnes.length === 0 || photo.themes?.some(t => themesSelectionnes.includes(t));
         if (!themeMatch) return;
