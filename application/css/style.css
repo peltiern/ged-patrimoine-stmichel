@@ -1,9 +1,9 @@
 /* Voir les polices sur Fontsource (Rubik) */
 @font-face {
     font-family: 'Roboto';
-    src: url('../fonts/webfonts/roboto-latin-400-normal.woff2') format('woff2'),
-    url('../fonts/webfonts/roboto-latin-400-normal.woff') format('woff');
-    font-weight: 400;
+    src: url('../fonts/webfonts/roboto-latin-300-normal.woff2') format('woff2'),
+    url('../fonts/webfonts/roboto-latin-300-normal.woff') format('woff');
+    font-weight: 300;
     font-style: normal;
     font-display: swap; /* évite le flash de texte invisible */
 }
@@ -22,8 +22,9 @@ html, body {
     padding: 0;
     height: 100%;
     font-family: Roboto, sans-serif;
+    line-height: 26px;
     background: #f5f5f5;
-    color: #333;
+    color: #222;
 }
 
 body {
@@ -31,11 +32,10 @@ body {
     flex-direction: column;
 }
 
-/* Header sombre comme footer */
 .site-header {
-    background-color: #222; /* même fond que le footer */
-    color: #fff;            /* texte blanc */
-    padding: 10px 15px;      /* compact */
+    background-color: #222;
+    color: #f5f5f5;
+    padding: 10px 15px;
     border-bottom: 1px solid #444;
 }
 
@@ -43,7 +43,7 @@ body {
 .site-header h1 {
     display: flex;
     align-items: center;
-    font-size: 1.6em;
+    font-size: 2.5em;
     margin: 0;
 }
 
@@ -54,7 +54,7 @@ body {
     margin-right: 10px;
     text-decoration: none;
     color: inherit; /* garde le blanc */
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: #f5f5f5;
     border-radius: 45px;
 }
 .logo-link:visited {
@@ -111,6 +111,12 @@ main {
     gap: 5px;
 }
 
+.filtre-group-champ-saisie {
+    height: 45px;
+    border-radius: 5px;
+    font-size: 1.2em;
+}
+
 .filtre-button {
     padding: 5px 10px;
     border: 1px solid #aaa;
@@ -139,6 +145,7 @@ main {
     border-radius: 5px;
     cursor: pointer;
     user-select: none;
+    font-weight: bold;
 }
 
 .custom-multiselect-options {
