@@ -487,48 +487,48 @@ function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePh
 
     overlayHeader.appendChild(photoTitle);
 
-    // Overlay infos
-    const overlayInfos = document.createElement('div');
-    overlayInfos.className = 'overlay-infos';
-
-    // Détails
-    const photoDetails = document.createElement('div');
-    photoDetails.className = 'photo-details';
-
-    // Date
-    const dateDiv = document.createElement('div');
-    dateDiv.textContent = `Date : ${photo.date || 'Inconnue'}`;
-    photoDetails.appendChild(dateDiv);
-
-    // Thèmes
-    const themesDiv = document.createElement('div');
-    themesDiv.textContent = `Thèmes : ${(photo.themes || []).join(', ') || 'Aucun'}`;
-    photoDetails.appendChild(themesDiv);
-
-    // Lieux
-    const lieuxDiv = document.createElement('div');
-    lieuxDiv.textContent = `Lieux : ${(photo.lieu || []).join(', ') || 'Inconnu'}`;
-    photoDetails.appendChild(lieuxDiv);
-
-    // Assemblage overlay infos
-    overlayInfos.appendChild(photoDetails);
+    // // Overlay infos
+    // const overlayInfos = document.createElement('div');
+    // overlayInfos.className = 'overlay-infos';
+    //
+    // // Détails
+    // const photoDetails = document.createElement('div');
+    // photoDetails.className = 'photo-details';
+    //
+    // // Date
+    // const dateDiv = document.createElement('div');
+    // dateDiv.textContent = `Date : ${photo.date || 'Inconnue'}`;
+    // photoDetails.appendChild(dateDiv);
+    //
+    // // Thèmes
+    // const themesDiv = document.createElement('div');
+    // themesDiv.textContent = `Thèmes : ${(photo.themes || []).join(', ') || 'Aucun'}`;
+    // photoDetails.appendChild(themesDiv);
+    //
+    // // Lieux
+    // const lieuxDiv = document.createElement('div');
+    // lieuxDiv.textContent = `Lieux : ${(photo.lieu || []).join(', ') || 'Inconnu'}`;
+    // photoDetails.appendChild(lieuxDiv);
+    //
+    // // Assemblage overlay infos
+    // overlayInfos.appendChild(photoDetails);
 
     // Assemblage overlay
     overlay.appendChild(overlayHeader);
-    overlay.appendChild(overlayInfos);
+    // overlay.appendChild(overlayInfos);
 
-    const openOverlay = () => {
-        overlay.style.maxHeight = '100%';
-        overlay.classList.add('open');
-    };
-    const closeOverlay = () => {
-        overlay.style.maxHeight = overlayMaxHeight;
-        overlay.classList.remove('open');
-    };
+    // const openOverlay = () => {
+    //     overlay.style.maxHeight = '100%';
+    //     overlay.classList.add('open');
+    // };
+    // const closeOverlay = () => {
+    //     overlay.style.maxHeight = overlayMaxHeight;
+    //     overlay.classList.remove('open');
+    // };
 
-    overlayHeader.addEventListener('mouseenter', openOverlay);
-    overlayInfos.addEventListener('mouseenter', openOverlay);
-    overlay.addEventListener('mouseleave', closeOverlay);
+    // overlayHeader.addEventListener('mouseenter', openOverlay);
+    // overlayInfos.addEventListener('mouseenter', openOverlay);
+    // overlay.addEventListener('mouseleave', closeOverlay);
 
     // Assemblage final
     item.appendChild(img);
