@@ -14,9 +14,9 @@ let currentLightboxIndex = 0;
 let listeFiltreeCourante = [];
 
 /** Slider - Timeline */
-const anneeMin = 1851;
-const anneeMax = 2025;
-const anneeExplore = 1985;
+const anneeMinInitiale = 1851;
+const anneeMaxInitiale = 2025;
+const anneeExploreInitiale = 1985;
 
 const timeline = document.getElementById('timeline');
 const left = document.getElementById('handle-left');
@@ -128,8 +128,8 @@ function reinitialiserFiltres() {
     lieuxSelectionnes.length = 0;
     numeroRecherche = '';
     inclurePhotosSansDate = true;
-    anneeDebut = anneeMin;
-    anneeFin = anneeMax;
+    anneeDebut = anneeMinInitiale;
+    anneeFin = anneeMaxInitiale;
 
     document.getElementById('filtre-numero-photo-input').value = '';
     document.getElementById('filtre-sans-date-cb').checked = true;
@@ -138,9 +138,11 @@ function reinitialiserFiltres() {
 
     initPosition(left, 0);
     initPosition(right, 100);
+    initPosition(explore, yearToPercent(anneeExploreInitiale));
     updateLabels();
     updateHighlight();
     updateDatesRange();
+    setExploreMode(false);
 
     filtrerPhotos();
 }
@@ -243,7 +245,7 @@ function afficherHeatmap(intensite) {
     const heatmap = document.getElementById('timeline-heatmap');
     heatmap.innerHTML = '';
 
-    for (let an = anneeMin; an <= anneeMax; an++) {
+    for (let an = anneeMinInitiale; an <= anneeMaxInitiale; an++) {
         const val = intensite[an] || 0;
         const ratio = val / max;
         const couleur = `rgba(255, 193, 7, ${ratio})`;
@@ -429,9 +431,19 @@ function majCarte(photosFiltrees, clusterGroup) {
             const path = 'resized/large/' + photo.chemin;
 
             const marker = L.marker([photo.latitude, photo.longitude])
-                .bindPopup(`<strong>${photo.numero}</strong><br><img src="${path}" width="150" onclick="openLightbox(${indexPhoto})">`);
+                .bindPopup(`<strong>${photo.numero}</strong><br><img src="${path}" width="200"">`);
 
-            marker.on('dblclick', () => {
+            // Ouvrir la popup au survol
+            marker.on('mouseover', () => {
+                marker.openPopup();
+            });
+
+            // Fermer la popup quand la souris quitte le marker
+            marker.on('mouseout', () => {
+                marker.closePopup();
+            });
+
+            marker.on('click', () => {
                 if (indexPhoto !== -1) {
                     openLightbox(indexPhoto);
                 }
@@ -638,10 +650,10 @@ const setPosition = (el, percent) => {
 };
 
 const percentToYear = (percent) => {
-    return Math.round(anneeMin + (anneeMax - anneeMin) * (percent / 100));
+    return Math.round(anneeMinInitiale + (anneeMaxInitiale - anneeMinInitiale) * (percent / 100));
 };
 
-const yearToPercent = (year) => ((year - anneeMin) / (anneeMax - anneeMin)) * 100;
+const yearToPercent = (year) => ((year - anneeMinInitiale) / (anneeMaxInitiale - anneeMinInitiale)) * 100;
 
 
 const updateLabels = () => {
@@ -744,9 +756,9 @@ document.getElementById('reset-filtres').addEventListener('click', () => {
 });
 
 // Initial positions
-initPosition(left, yearToPercent(anneeMin));
-initPosition(right, yearToPercent(anneeMax));
-initPosition(explore, yearToPercent(anneeExplore));
+initPosition(left, yearToPercent(anneeMinInitiale));
+initPosition(right, yearToPercent(anneeMaxInitiale));
+initPosition(explore, yearToPercent(anneeExploreInitiale));
 
 // Drag logic
 makeDraggable(left, updateHighlight, {
