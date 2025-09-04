@@ -8,6 +8,15 @@
     font-display: swap; /* évite le flash de texte invisible */
 }
 
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/webfonts/roboto-latin-700-normal.woff2') format('woff2'),
+    url('../fonts/webfonts/roboto-latin-700-normal.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap; /* évite le flash de texte invisible */
+}
+
 :root {
     --max: ;
     --fg: #1f2937;
@@ -300,12 +309,12 @@ main {
 }
 
 .photo-title-small {
-    padding-right: 5px;
-    font-size: 16px;
+    font-weight: bold;
+    font-size: 1.3em
 }
 
 .photo-title-large {
-    padding-right: 5px;
+    padding: 5px;
     font-size: 26px;
 }
 
@@ -314,13 +323,12 @@ main {
     bottom: 0;
     right: 0;
     width: 100%;
-    max-height: 27px; /* hauteur repliée */
     overflow: hidden;
     transition: max-height 0.3s ease;
 }
 
 .overlay-header {
-    width: 10%;
+    width: fit-content;
     margin-left: auto;
     background: rgba(0, 0, 0, 0.2);
     color: #333;
@@ -610,7 +618,7 @@ main {
     font-size: 1.3em;
     font-weight: bold;
     border-radius: 5px;
-    padding: 10px;
+    padding: 8px;
     background-color: #333;
 }
 

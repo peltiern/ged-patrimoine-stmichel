@@ -474,7 +474,6 @@ function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePh
 // Overlay
     const overlay = document.createElement('div');
     overlay.className = 'photo-overlay';
-    overlay.style.maxHeight = overlayMaxHeight; // hauteur repliée par défaut
 
     // Overlay header
     const overlayHeader = document.createElement('div');
