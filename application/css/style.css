@@ -20,14 +20,17 @@
 :root {
     --max: ;
     --fg: #1f2937;
-    --muted: #6b7280;
+    --muted: #aaadb2;
     --bg: #ffffff;
     --link: #1d4ed8;
     --border: #e5e7eb;
     --color-light: #f5f5f5;
     --color-grey: #585858;
     --color-dark: #222;
-    --background-color-light: #F8F8FFFF
+    --background-color-light: #F8F8FFFF;
+    --button-color: #2196f3;
+    --button-color-hover: #1976d2;
+    --line-title-color: #949494;
 }
 
 html, body {
@@ -43,6 +46,19 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
+}
+
+h2 {
+    font-size: 1.3em;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 .site-header {
@@ -97,10 +113,39 @@ main {
 }
 
 .main-content {
-    max-width: 50vw;
+    width: 50vw;
     margin-inline: auto;
     padding: clamp(16px, 3vw, 28px);
     background-color: var(--background-color-light);
+}
+
+.main-content h1:after {
+    content: '';
+    display: block;
+    width: 5.125rem;
+    height: .125rem;
+    background-color: var(--line-title-color);
+    margin-top: .625rem;
+}
+
+.main-content h2:after {
+    content: '';
+    display: block;
+    width: 2.125rem;
+    height: .125rem;
+    background-color: var(--line-title-color);
+    margin-top: .3rem;
+}
+
+.main-content section {
+    margin-top: 2rem;
+}
+
+.main-content a {
+    text-decoration: underline;
+}
+.main-content a:hover {
+    color: #000000;
 }
 
 /* Filtres */
@@ -144,7 +189,7 @@ main {
 }
 
 .filtre-button.selected {
-    background: #2196f3;
+    background: var(--button-color);
     color: white;
     border-color: #1976d2;
 }
@@ -232,7 +277,7 @@ main {
 }
 
 #reset-filtres {
-    background: #2196f3;
+    background: var(--button-color);
     color: white;
     border: none;
     border-radius: 50%;
@@ -244,7 +289,7 @@ main {
 }
 
 #reset-filtres:hover {
-    background: #1976d2;
+    background: var(--button-color-hover);
     transform: rotate(-90deg);
 }
 
@@ -372,7 +417,7 @@ main {
     padding: 6px 12px;
     border: none;
     border-radius: 5px;
-    background: #2196f3;
+    background: var(--button-color);
     color: white;
     cursor: pointer;
     transition: background 0.2s;
@@ -722,6 +767,7 @@ main {
     border-radius: 5px;
     cursor: pointer;
 }
+
 .btn-report:hover {
     background: #cc0000;
 }
@@ -731,7 +777,7 @@ main {
 }
 
 .notice {
-    background: #f8fafc;
+    background: var(--color-light);
     border: 1px solid var(--border);
     padding: 16px;
     border-radius: 12px
