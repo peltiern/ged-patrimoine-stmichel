@@ -31,6 +31,7 @@
     --button-color: #2196f3;
     --button-color-hover: #1976d2;
     --line-title-color: #949494;
+    --zoomist-wrapper-bg-color: #ffffff;
 }
 
 html, body {
@@ -488,13 +489,6 @@ main {
     object-fit: contain;
 }
 
-.lightbox-text {
-    flex: 0 0 120px;
-    overflow-y: auto;
-    width: 100%;
-    margin-top: 10px;
-}
-
 .lightbox-close {
     position: absolute;
     top: 10px;
@@ -514,6 +508,7 @@ main {
     cursor: pointer;
     padding: 5px 10px;
     border-radius: 5px;
+    z-index: 100;
 }
 
 #lightbox-prev {
@@ -790,5 +785,32 @@ main {
 
 .list {
     padding-left: 1.25rem
+}
+
+.zoomist-container {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    background-color: var(--zoomist-wrapper-bg-color);
+}
+
+.zoomist-container:active {
+    cursor: grabbing;
+}
+
+.zoomist-wrapper {
+    background-color: var(--zoomist-wrapper-bg-color);
+}
+
+.zoomist-image {
+    width: 100%;
+    height: 100%;
+}
+
+.zoomist-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* <-- pour voir l'image entière */
+    object-position: center;
 }
 

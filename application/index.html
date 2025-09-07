@@ -13,6 +13,7 @@
     <meta property="og:site_name" content="Fonds photographique de Saint-Michel (16470 - France)">
     <link rel="icon" href="img/favicon.ico"/>
     <title>Fonds photographique de Saint-Michel (16470 - France)</title>
+    <link rel="stylesheet" href="css/vendor/zoomist.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/contact.css">
     <link rel="stylesheet" href="css/footer.css">
@@ -92,7 +93,17 @@
             </div>
 
             <button id="lightbox-prev" class="lightbox-nav">❮</button>
-            <div id="lightbox-body" class="lightbox-body"></div>
+            <!-- zoomist-container -->
+            <div class="lightbox-body zoomist-container">
+                <!-- zoomist-wrapper is required -->
+                <div class="zoomist-wrapper">
+                    <!-- zoomist-image is required -->
+                    <div class="zoomist-image">
+                        <!-- you can add anything you want to zoom here. -->
+                        <img id="lightbox-img" src="" alt="">
+                    </div>
+                </div>
+            </div>
             <button id="lightbox-next" class="lightbox-nav">❯</button>
         </div>
         <!-- Conteneur caché pour le signalement -->
@@ -109,6 +120,7 @@
 <script src="js/page-layout.js"></script>
 <script src="js/vendor/leaflet.js"></script>
 <script src="js/vendor/leaflet.markercluster.js"></script>
+<script src="js/vendor/zoomist.js"></script>
 <script src="js/app.js"></script>
 <script src="js/contact-form.js"></script>
 <script src="js/contact-submit.js"></script>
