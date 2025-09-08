@@ -456,23 +456,22 @@ main {
     background: white;
     width: 90%;
     height: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    text-align: center;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) clamp(60px, 5%, 120px);
+    /* 1ère ligne = image, se réduit si besoin (minmax(0,1fr))
+       2ème ligne = infos, vise 15% avec bornes 60–120px */
     overflow: hidden;
-    padding: 20px;
+    padding: 0;
     border-radius: 8px;
 }
 
-#lightbox-body {
-    flex: 1 1 auto;
-    width: 100%;
+.lightbox-body {
+    /* plus besoin de flex ici, juste conteneur */
+    min-height: 0;      /* évite débordement des enfants à 100% */
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
 }
 
 .lightbox-image-container {
@@ -579,6 +578,52 @@ main {
 #lightbox-menu-popup li:hover {
     background: #f0f0f0;
 }
+
+#lightbox-description {
+    overflow-y: auto;
+    padding: 10px 15px;
+    background: #f9f9f9;
+    border-top: 1px solid var(--border);
+    box-sizing: border-box;
+}
+
+.lightbox-info {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 15px;
+    height: 100%;
+    align-items: center;
+}
+
+.info-left {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-date-desc {
+    font-size: 0.95em;
+    color: var(--color-dark);
+    font-weight: 500;
+}
+
+.info-source {
+    font-size: 0.85em;
+    color: var(--muted);
+}
+
+.info-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    font-size: 1em;
+    font-weight: bold;
+    color: var(--color-dark);
+    border-left: 1px solid var(--border);
+    min-width: 60px;
+}
+
 
 .hidden {
     display: none;
