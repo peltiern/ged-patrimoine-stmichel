@@ -461,7 +461,9 @@ main {
     /* 1ère ligne = image, se réduit si besoin (minmax(0,1fr))
        2ème ligne = infos, vise 15% avec bornes 60–120px */
     overflow: hidden;
-    padding: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
     border-radius: 8px;
 }
 

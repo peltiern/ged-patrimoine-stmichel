@@ -539,10 +539,28 @@ function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePh
 function displayLightbox() {
     const photo = listeFiltreeCourante[currentLightboxIndex];
 
+    // Image
     const img = document.getElementById('lightbox-img');
-
     img.src = 'resized/large/' + photo.chemin;
     img.alt = photo.numero;
+
+    // Date
+    const date = document.getElementById('photo-date');
+    date.innerText = `${photo.date || ''}`;
+
+    // Description
+    const description = document.getElementById('photo-description');
+    description.innerText = `${photo.description || ''}`;
+
+    // TODO Lieu
+
+    // Source
+    const source = document.getElementById('photo-source');
+    source.innerText = `${photo.source || ''}`;
+
+    // Numéro
+    const numero = document.getElementById('photo-numero');
+    numero.innerText = `${photo.numero || ''}`;
 
     // Attendre que l'image soit bien chargée
     img.onload = () => {
