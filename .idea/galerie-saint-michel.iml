@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="leaflet" level="application" />
     <orderEntry type="library" name="leaflet.markercluster" level="application" />
+    <orderEntry type="library" name="zoomist" level="application" />
   </component>
 </module>

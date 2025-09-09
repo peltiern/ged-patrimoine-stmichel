@@ -604,14 +604,13 @@ main {
 }
 
 .info-date-desc {
-    font-size: 0.95em;
     color: var(--color-dark);
-    font-weight: 500;
+    font-weight: 700;
 }
 
 .info-source {
-    font-size: 0.85em;
-    color: var(--muted);
+    font-size: 0.9em;
+    color: var(--color-dark);
 }
 
 .info-right {
@@ -619,7 +618,7 @@ main {
     align-items: center;
     justify-content: center;
     padding: 0 10px;
-    font-size: 1em;
+    font-size: 1.3em;
     font-weight: bold;
     color: var(--color-dark);
     border-left: 1px solid var(--border);

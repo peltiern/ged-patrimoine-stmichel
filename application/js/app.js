@@ -550,13 +550,23 @@ function displayLightbox() {
 
     // Description
     const description = document.getElementById('photo-description');
-    description.innerText = `${photo.description || ''}`;
+    if (photo.commentaires && photo.commentaires !== "") {
+        description.innerText = ` -  ${photo.commentaires}`;
+    } else {
+        description.innerText = "";
+    }
 
-    // TODO Lieu
+    // Lieu
+    const lieu = document.getElementById('photo-lieu');
+    if (photo.lieu && photo.lieu !== "") {
+        lieu.innerText = ` -  ${photo.lieu}`;
+    } else {
+        lieu.innerText = "";
+    }
 
     // Source
     const source = document.getElementById('photo-source');
-    source.innerText = `${photo.source || ''}`;
+    source.innerText = `${photo.sources || ''}`;
 
     // Numéro
     const numero = document.getElementById('photo-numero');
