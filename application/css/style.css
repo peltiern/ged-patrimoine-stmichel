@@ -859,3 +859,7 @@ main {
     object-position: center;
 }
 
+.external-only {
+    display: none; !important;
+}
+

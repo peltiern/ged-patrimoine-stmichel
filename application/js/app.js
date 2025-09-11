@@ -835,3 +835,11 @@ updateLabels();
 updateHighlight();
 updateDatesRange();
 setExploreMode(false);
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.ENV?.INTERNET === true) {
+        document.body.querySelectorAll('.external-only').forEach(el => {
+            el.classList.remove('external-only');
+        });
+    }
+});
