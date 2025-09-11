@@ -31,7 +31,7 @@
     --button-color: #2196f3;
     --button-color-hover: #1976d2;
     --line-title-color: #949494;
-    --zoomist-wrapper-bg-color: #ffffff;
+    --zoomist-wrapper-bg-color: #e5e7eb;
 }
 
 html, body {
@@ -453,7 +453,7 @@ main {
 
 .lightbox-content {
     position: relative;
-    background: white;
+    background: var(--border);
     width: 90%;
     height: 90%;
     display: grid;
@@ -583,8 +583,7 @@ main {
 
 #lightbox-description {
     overflow-y: auto;
-    padding: 10px 15px;
-    background: #f9f9f9;
+    padding: 5px 15px;
     border-top: 1px solid var(--border);
     box-sizing: border-box;
 }
