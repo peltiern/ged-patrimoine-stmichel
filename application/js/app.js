@@ -57,12 +57,14 @@ function initialiserFiltres() {
     const inputNumero = document.getElementById('filtre-numero-photo-input');
     inputNumero.oninput = () => {
         numeroRecherche = inputNumero.value;
+        pageCourante = 1;
         filtrerPhotos();
     };
 
     const cbSansDate = document.getElementById('filtre-sans-date-cb');
     cbSansDate.onchange = () => {
         inclurePhotosSansDate = cbSansDate.checked;
+        pageCourante = 1;
         filtrerPhotos();
     };
 }
@@ -97,6 +99,7 @@ function creerMultiselect(containerId, valeurs, tableauSelection, onChange) {
                 if (idx !== -1) tableauSelection.splice(idx, 1);
             }
             mettreAJourLabel(button, tableauSelection);
+            pageCourante = 1;
             onChange();
         };
 
@@ -144,6 +147,7 @@ function reinitialiserFiltres() {
     updateDatesRange();
     setExploreMode(false);
 
+    pageCourante = 1;
     filtrerPhotos();
 }
 
@@ -740,12 +744,14 @@ const updateHighlight = () => {
 const updateDatesRange = () => {
     anneeDebut = percentToYear(parseFloat(left.dataset.percent));
     anneeFin = percentToYear(parseFloat(right.dataset.percent));
+    pageCourante = 1;
     filtrerPhotos();
 };
 
 const updateDatesExplore = () => {
     anneeDebut = percentToYear(parseFloat(explore.dataset.percent));
     anneeFin = percentToYear(parseFloat(explore.dataset.percent));
+    pageCourante = 1;
     filtrerPhotos();
 };
 
