@@ -4,7 +4,7 @@ const nbPhotosParPage = 12;
 let carte;
 let themesSelectionnes = [];
 let lieuxSelectionnes = [];
-let numeroRecherche = '';
+let termeRecherche = '';
 let anneeDebut = 1851;
 let anneeFin = 2025;
 let inclurePhotosSansDate = true;
@@ -54,9 +54,9 @@ function initialiserFiltres() {
     creerMultiselect('filtre-themes', Array.from(themes).sort(), themesSelectionnes, filtrerPhotos);
     creerMultiselect('filtre-lieux', Array.from(lieux).sort(), lieuxSelectionnes, filtrerPhotos);
 
-    const inputNumero = document.getElementById('filtre-numero-photo-input');
-    inputNumero.oninput = () => {
-        numeroRecherche = inputNumero.value;
+    const inputTerme = document.getElementById('filtre-terme-photo-input');
+    inputTerme.oninput = () => {
+        termeRecherche = inputTerme.value;
         pageCourante = 1;
         filtrerPhotos();
     };
@@ -129,12 +129,12 @@ function mettreAJourLabel(button, selection) {
 function reinitialiserFiltres() {
     themesSelectionnes.length = 0;
     lieuxSelectionnes.length = 0;
-    numeroRecherche = '';
+    termeRecherche = '';
     inclurePhotosSansDate = true;
     anneeDebut = anneeMinInitiale;
     anneeFin = anneeMaxInitiale;
 
-    document.getElementById('filtre-numero-photo-input').value = '';
+    document.getElementById('filtre-terme-photo-input').value = '';
     document.getElementById('filtre-sans-date-cb').checked = true;
     document.querySelectorAll('.custom-multiselect input[type=checkbox]').forEach(cb => cb.checked = false);
     document.querySelectorAll('.custom-multiselect-button').forEach(button => button.textContent = 'Sélectionner...');
@@ -189,6 +189,10 @@ function trierListe(filtered) {
     });
 }
 
+const normalize = (s) => String(s ?? '').toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
 function filtrerPhotos() {
     const intensite = {}; // pour la heatmap
     const filtered = [];
@@ -197,8 +201,11 @@ function filtrerPhotos() {
         // Appliquer uniquement les filtres thèmes, lieux, inclure/exclure sans-date pour la heatmap
         if (!inclurePhotosSansDate && (!photo.date || typeof photo.date !== 'string')) return;
 
-        const numeroMatch = numeroRecherche.length === 0 || photo.numero?.includes(numeroRecherche);
-        if (!numeroMatch) return;
+        const termeNorm = normalize(termeRecherche);
+        const commentairesNorm = normalize(photo.commentaires);
+
+        const termeMatch = termeRecherche.length === 0 || photo.numero?.includes(termeNorm) || commentairesNorm.includes(termeNorm);
+        if (!termeMatch) return;
 
         const themeMatch = themesSelectionnes.length === 0 || photo.themes?.some(t => themesSelectionnes.includes(t));
         if (!themeMatch) return;
@@ -251,7 +258,11 @@ function afficherHeatmap(intensite) {
 
     for (let an = anneeMinInitiale; an <= anneeMaxInitiale; an++) {
         const val = intensite[an] || 0;
-        const ratio = val / max;
+        let ratio = val / max;
+        if (val > 0) {
+            const min = 0.15; // opacité mini (15%)
+            ratio = min + (1 - min) * ratio;
+        }
         const couleur = `rgba(255, 193, 7, ${ratio})`;
         const segment = document.createElement('div');
         segment.style.flex = '1';
