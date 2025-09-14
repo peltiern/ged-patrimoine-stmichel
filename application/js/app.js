@@ -443,7 +443,7 @@ function majCarte(photosFiltrees, clusterGroup) {
         const indexPhoto = listeFiltreeCourante.indexOf(photo);
 
         if (photo.latitude && photo.longitude) {
-            const path = 'resized/large/' + photo.chemin;
+            const path = 'resized/large/' + photo.numero + '.jpg';
 
             const marker = L.marker([photo.latitude, photo.longitude])
                 .bindPopup(`<strong>${photo.numero}</strong><br><img src="${path}" width="200"">`);
@@ -483,7 +483,7 @@ function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePh
 
     // Image
     const img = document.createElement('img');
-    img.src = 'resized/large/' + photo.chemin;
+    img.src = 'resized/large/' + photo.numero + '.jpg';
     img.alt = photo.numero;
 
     // Overlay
@@ -513,7 +513,7 @@ function displayLightbox() {
 
     // Image
     const img = document.getElementById('lightbox-img');
-    img.src = 'resized/large/' + photo.chemin;
+    img.src = 'resized/large/' + photo.numero + '.jpg';
     img.alt = photo.numero;
 
     // Date
@@ -550,7 +550,7 @@ function displayLightbox() {
 
     // Numéro
     const numero = document.getElementById('photo-numero');
-    numero.innerText = `${photo.numero || ''}`;
+    numero.innerText = `${photo.album || ''}/${photo.numero || ''}`;
 
     // Attendre que l'image soit bien chargée
     img.onload = () => {

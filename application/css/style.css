@@ -506,12 +506,17 @@ main {
     transform: translateY(-50%);
     background: rgba(255, 255, 255, 0.8);
     border: none;
-    color: black;
+    color: #333;
     font-size: 40px;
     cursor: pointer;
     padding: 5px 10px;
     border-radius: 5px;
     z-index: 100;
+}
+
+.lightbox-nav:hover {
+    filter: brightness(0.8);
+    transition: filter 0.2s;
 }
 
 #lightbox-prev {
@@ -548,13 +553,22 @@ main {
     right: 10px;
     display: flex;
     align-items: center;
-    z-index: 10001;
+    z-index: 10000;
 }
 
 .lightbox-button {
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
     cursor: pointer;
     font-size: 28px;
+    border-radius: 5px;
     width: 30px;
+    text-align: center;
+}
+
+.lightbox-button:hover {
+    filter: brightness(0.8);
+    transition: filter 0.2s;
 }
 
 #lightbox-menu-popup {
@@ -770,7 +784,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10000; /* au-dessus de la lightbox */
+    z-index: 10001; /* au-dessus de la lightbox */
 }
 
 #report-container.hidden {
