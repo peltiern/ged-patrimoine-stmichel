@@ -486,7 +486,7 @@ function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePh
     img.src = 'resized/large/' + photo.chemin;
     img.alt = photo.numero;
 
-// Overlay
+    // Overlay
     const overlay = document.createElement('div');
     overlay.className = 'photo-overlay';
 
@@ -500,51 +500,8 @@ function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePh
     photoTitle.textContent = photo.numero;
 
     overlayHeader.appendChild(photoTitle);
-
-    // // Overlay infos
-    // const overlayInfos = document.createElement('div');
-    // overlayInfos.className = 'overlay-infos';
-    //
-    // // Détails
-    // const photoDetails = document.createElement('div');
-    // photoDetails.className = 'photo-details';
-    //
-    // // Date
-    // const dateDiv = document.createElement('div');
-    // dateDiv.textContent = `Date : ${photo.date || 'Inconnue'}`;
-    // photoDetails.appendChild(dateDiv);
-    //
-    // // Thèmes
-    // const themesDiv = document.createElement('div');
-    // themesDiv.textContent = `Thèmes : ${(photo.themes || []).join(', ') || 'Aucun'}`;
-    // photoDetails.appendChild(themesDiv);
-    //
-    // // Lieux
-    // const lieuxDiv = document.createElement('div');
-    // lieuxDiv.textContent = `Lieux : ${(photo.lieu || []).join(', ') || 'Inconnu'}`;
-    // photoDetails.appendChild(lieuxDiv);
-    //
-    // // Assemblage overlay infos
-    // overlayInfos.appendChild(photoDetails);
-
-    // Assemblage overlay
     overlay.appendChild(overlayHeader);
-    // overlay.appendChild(overlayInfos);
 
-    // const openOverlay = () => {
-    //     overlay.style.maxHeight = '100%';
-    //     overlay.classList.add('open');
-    // };
-    // const closeOverlay = () => {
-    //     overlay.style.maxHeight = overlayMaxHeight;
-    //     overlay.classList.remove('open');
-    // };
-
-    // overlayHeader.addEventListener('mouseenter', openOverlay);
-    // overlayInfos.addEventListener('mouseenter', openOverlay);
-    // overlay.addEventListener('mouseleave', closeOverlay);
-
-    // Assemblage final
     item.appendChild(img);
     item.appendChild(overlay);
 
@@ -563,20 +520,28 @@ function displayLightbox() {
     const date = document.getElementById('photo-date');
     date.innerText = `${photo.date || ''}`;
 
-    // Description
-    const description = document.getElementById('photo-description');
-    if (photo.commentaires && photo.commentaires !== "") {
-        description.innerText = ` -  ${photo.commentaires}`;
-    } else {
-        description.innerText = "";
-    }
-
     // Lieu
     const lieu = document.getElementById('photo-lieu');
     if (photo.lieu && photo.lieu !== "") {
-        lieu.innerText = ` -  ${photo.lieu}`;
+        if (date.innerText !== "") {
+            lieu.innerText = ` -  ${photo.lieu}`;
+        } else {
+            lieu.innerText = `${photo.lieu}`;
+        }
     } else {
         lieu.innerText = "";
+    }
+
+    // Description
+    const description = document.getElementById('photo-description');
+    if (photo.commentaires && photo.commentaires !== "") {
+        if (date.innerText !== "" || lieu.innerText !== "") {
+            description.innerText = ` -  ${photo.commentaires}`;
+        } else {
+            description.innerText = `${photo.commentaires}`;
+        }
+    } else {
+        description.innerText = "";
     }
 
     // Source

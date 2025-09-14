@@ -259,6 +259,8 @@ main {
     color: white;
     border: none;
     border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
 }
 
 .onglets-gauche button:disabled {
