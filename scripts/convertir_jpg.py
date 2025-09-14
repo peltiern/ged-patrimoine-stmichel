@@ -63,7 +63,7 @@ def process_image(input_path, album_name, output_dir):
 
 
 def convert_album(album_name):
-    output_dir = Path("resized/large") / album_name
+    output_dir = Path("resized/large")
     output_dir.mkdir(parents=True, exist_ok=True)
 
     images_to_process = get_image_paths_for_album(album_name)
