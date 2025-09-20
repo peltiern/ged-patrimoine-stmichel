@@ -1,3 +1,3 @@
 window.ENV = {
-	INTERNET: false
+	INTERNET: true
 };
