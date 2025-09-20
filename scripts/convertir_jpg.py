@@ -32,29 +32,39 @@ def get_image_paths_for_album(album_name):
                     break  # on prend la première extension trouvée
     return result_paths
 
-def process_image(input_path, album_name, output_dir):
+def process_image(input_path, album_name, output_dir_large, output_dir_small):
     try:
         with Image.open(input_path) as img:
             if img.mode != 'RGB':
                 img = img.convert('RGB')
-            img.thumbnail((1920, 1920), Image.LANCZOS)
 
-            # Chemin relatif à l'album pour éviter le double dossier
+            # --- Grande image ---
+            large_img = img.copy()
+            large_img.thumbnail((1920, 1920), Image.LANCZOS)
             relative_path = input_path.relative_to(BASE_DIR / album_name)
-            output_path = output_dir / relative_path.with_suffix(".jpg")
-            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path_large = output_dir_large / relative_path.with_suffix(".jpg")
+            output_path_large.parent.mkdir(parents=True, exist_ok=True)
+            large_img.save(output_path_large, format="JPEG", quality=85, optimize=True)
+            print(f"🖼️ Image redimensionnée (large) : {output_path_large}")
 
-            img.save(output_path, format="JPEG", quality=85, optimize=True)
-            print(f"🖼️ Image redimensionnée : {output_path}")
+            # --- Petite vignette ---
+            small_img = img.copy()
+            small_img.thumbnail((500, 500), Image.LANCZOS)
+            output_path_small = output_dir_small / relative_path.with_suffix(".jpg")
+            output_path_small.parent.mkdir(parents=True, exist_ok=True)
+            small_img.save(output_path_small, format="JPEG", quality=80, optimize=True)
+            print(f"🖼️ Vignette générée (small) : {output_path_small}")
 
+            # Copier les métadonnées EXIF vers la grande image uniquement
             subprocess.run([
                 "exiftool",
                 "-overwrite_original",
                 "-TagsFromFile", str(input_path),
-                "-all:all", str(output_path)
+                "-all:all", str(output_path_large)
             ], check=True)
 
-            original_backup = output_path.with_name(output_path.name + "_original")
+            # Supprimer le backup créé par exiftool
+            original_backup = output_path_large.with_name(output_path_large.name + "_original")
             if original_backup.exists():
                 original_backup.unlink()
 
@@ -63,8 +73,10 @@ def process_image(input_path, album_name, output_dir):
 
 
 def convert_album(album_name):
-    output_dir = Path("resized/large")
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir_large = Path("resized/large")
+    output_dir_small = Path("resized/small")
+    output_dir_large.mkdir(parents=True, exist_ok=True)
+    output_dir_small.mkdir(parents=True, exist_ok=True)
 
     images_to_process = get_image_paths_for_album(album_name)
 
@@ -72,11 +84,12 @@ def convert_album(album_name):
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = [
-            executor.submit(process_image, path, album_name, output_dir)
+            executor.submit(process_image, path, album_name, output_dir_large, output_dir_small)
             for path in images_to_process
         ]
         for future in as_completed(futures):
             future.result()
+
 
 
 if __name__ == "__main__":

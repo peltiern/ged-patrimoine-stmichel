@@ -443,7 +443,7 @@ function majCarte(photosFiltrees, clusterGroup) {
         const indexPhoto = listeFiltreeCourante.indexOf(photo);
 
         if (photo.latitude && photo.longitude) {
-            const path = 'resized/large/' + photo.numero + '.jpg';
+            const path = 'resized/small/' + photo.numero + '.jpg';
 
             const marker = L.marker([photo.latitude, photo.longitude])
                 .bindPopup(`<strong>${photo.numero}</strong><br><img src="${path}" width="200"">`);
@@ -483,7 +483,7 @@ function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePh
 
     // Image
     const img = document.createElement('img');
-    img.src = 'resized/large/' + photo.numero + '.jpg';
+    img.src = 'resized/small/' + photo.numero + '.jpg';
     img.alt = photo.numero;
 
     // Overlay
@@ -739,23 +739,10 @@ const initPosition = (el, percent) => {
 const makeDraggable = (el, updateCallback, constraints = null) => {
     let dragging = false;
 
-    el.addEventListener('mousedown', () => {
-        dragging = true;
-        document.body.style.userSelect = 'none';
-
-        // Activer le bon mode dès le clic
-        if (el === explore) {
-            setExploreMode(true);
-        } else if (el === left || el === right) {
-            setExploreMode(false);
-        }
-    });
-
-
-    window.addEventListener('mousemove', (e) => {
+    const moveDrag = (clientX) => {
         if (!dragging) return;
         const rect = timeline.getBoundingClientRect();
-        let percent = ((e.clientX - rect.left) / rect.width) * 100;
+        let percent = ((clientX - rect.left) / rect.width) * 100;
         percent = Math.max(0, Math.min(100, percent));
 
         if (constraints) {
@@ -767,19 +754,49 @@ const makeDraggable = (el, updateCallback, constraints = null) => {
         setPosition(el, percent);
         updateLabels();
         updateHighlight();
-    });
+    };
 
-    window.addEventListener('mouseup', () => {
-        if (dragging && el === explore) {
+    const endDrag = () => {
+        if (!dragging) return;
+
+        if (el === explore) {
             updateDatesExplore();
-        }
-        if (dragging && (el === left || el === right)) {
+        } else if (el === left || el === right) {
             updateDatesRange();
         }
+
         dragging = false;
         document.body.style.userSelect = 'auto';
+
+        // 🔑 Nettoyage des events globaux
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+    };
+
+    const onMove = (e) => moveDrag(e.clientX);
+    const onUp = (e) => endDrag();
+
+    el.addEventListener('pointerdown', (e) => {
+        e.preventDefault(); // évite le scroll
+        dragging = true;
+        document.body.style.userSelect = 'none';
+
+        // Active le bon mode
+        if (el === explore) {
+            setExploreMode(true);
+        } else {
+            setExploreMode(false);
+        }
+
+        // 🔑 On écoute globalement pendant le drag
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onUp);
+
+        moveDrag(e.clientX);
     });
 };
+
+
 
 function setExploreMode(active) {
     if (active) {
@@ -819,9 +836,59 @@ updateDatesRange();
 setExploreMode(false);
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 🔗 Gestion des éléments externes (ton code existant)
     if (window.ENV?.INTERNET === true) {
         document.body.querySelectorAll('.external-only').forEach(el => {
             el.classList.remove('external-only');
         });
     }
+
+    // --- Détection mobile robuste (UA + touch + pointer coarse) ---
+    const ua = navigator.userAgent || '';
+    const isMobileUA = /Mobi|Android|iPhone|iPad|Mobile/i.test(ua);
+    const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+    const coarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+
+    // Log pour debugging en DevTools
+    console.log('[mobile-popup] ua=%o, isMobileUA=%o, hasTouch=%o, coarsePointer=%o',
+        ua, isMobileUA, hasTouch, coarsePointer);
+
+    const isMobile = isMobileUA || hasTouch || coarsePointer;
+
+    if (!isMobile) {
+        console.log('[mobile-popup] pas mobile détecté → popup non affichée');
+        return;
+    }
+
+    // --- Créer / Afficher popup (réutilise les classes .lightbox/.lightbox-content) ---
+    let popup = document.getElementById('mobile-popup');
+
+    if (!popup) {
+        // Si l'élément n'existe pas dans le HTML, on le crée dynamiquement (utile pour tests rapides)
+        popup = document.createElement('div');
+        popup.id = 'mobile-popup';
+        popup.className = 'lightbox'; // utilise ton CSS existant
+        popup.innerHTML = `
+            <div class="lightbox-content" style="max-width: 420px; text-align: center;">
+                <span id="mobile-popup-close" class="lightbox-close" role="button" aria-label="Fermer">&times;</span>
+                <h2>Attention</h2>
+                <p>Ce site n'est pas optimisé pour les appareils mobiles.</p>
+            </div>
+        `;
+        document.body.appendChild(popup);
+        console.log('[mobile-popup] créé dynamiquement');
+    } else {
+        popup.classList.remove('hidden');
+        console.log('[mobile-popup] élément existant affiché');
+    }
+
+    const closeBtn = document.getElementById('mobile-popup-close') || popup.querySelector('.lightbox-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            popup.classList.add('hidden');
+        });
+    } else {
+        console.warn('[mobile-popup] bouton de fermeture introuvable');
+    }
 });
+

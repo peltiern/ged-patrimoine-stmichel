@@ -694,6 +694,9 @@ main {
     cursor: pointer;
     transform: translateY(-50%);
     z-index: 10;
+    /* 🔑 Important pour le mobile */
+    touch-action: none;   /* empêche le scroll quand on glisse */
+    user-select: none;    /* empêche la sélection de texte au passage */
 }
 
 .handle.range-left {
@@ -877,5 +880,11 @@ main {
 
 .external-only {
     display: none; !important;
+}
+
+#mobile-popup .lightbox-content {
+    max-width: 90vw;   /* jamais plus large que 90% de la largeur de l’écran */
+    width: auto;       /* s’adapte au contenu */
+    box-sizing: border-box;
 }
 
