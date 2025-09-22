@@ -982,4 +982,136 @@ main {
     background: var(--button-color-hover);
 }
 
+/* === PATCH RESPONSIVE V2 === */
+
+/* 1. Layout global : flex pour footer collé sur desktop */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: visible; /* pas de scroll interne */
+}
+
+/* 2. Galerie : grid flexible qui s’adapte à la hauteur disponible */
+/* === Grille fixe avec ratios === */
+
+/* Par défaut : desktop (≥1200px) → 4 x 3 */
+/* === Grille fixe avec ajustement auto === */
+
+/* Conteneur prend toute la hauteur disponible */
+#resultats-liste {
+    display: grid;
+    gap: 1em;
+    padding: 0.7em;
+    height: 100%; /* occupe toute la zone */
+    box-sizing: border-box;
+}
+
+/* Vignettes paysage */
+.photo-item {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 5px;
+    background: var(--background-color-light);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* === Grille selon la taille d’écran === */
+
+/* Desktop ≥1200px : 4 colonnes x 3 lignes */
+@media (min-width: 1200px) {
+    #resultats-liste {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+    }
+}
+
+/* Laptop / grand tablet 900–1199px : 3 colonnes x 4 lignes */
+@media (min-width: 900px) and (max-width: 1199px) {
+    #resultats-liste {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+    }
+}
+
+/* Tablette 600–899px : 2 colonnes x 6 lignes */
+@media (min-width: 600px) and (max-width: 899px) {
+    #resultats-liste {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+    }
+}
+
+/* Mobile <600px : 1 colonne x 12 lignes */
+@media (max-width: 599px) {
+    #resultats-liste {
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: repeat(12, 1fr);
+    }
+}
+
+
+
+/* 3. Carte Leaflet : occupe l’espace mais sans forcer de scrollbar */
+#carte {
+    flex: 1;
+    min-height: 300px;
+}
+
+/* 4. Filtres + timeline s’adaptent */
+.filtres {
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+.filtre-group-champ-saisie {
+    max-width: 100%;
+    flex: 1 1 auto;
+}
+
+.timeline-container {
+    padding: 10px clamp(10px, 5vw, 50px);
+}
+
+/* 5. Footer sur mobile */
+@media (max-width: 768px) {
+    body {
+        display: block; /* 🔑 repasse en flux normal pour scroll global */
+    }
+
+    main {
+        min-height: auto;
+    }
+
+    #carte {
+        height: 60vh;
+    }
+
+    .site-footer {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+}
+
+
 
