@@ -20,7 +20,7 @@ document.addEventListener('submit', async function(e) {
         submitBtn.classList.add('loading');
 
         try {
-            const res = await fetch("https://formcarry.com/s/p19t2h_WZ1Z", {
+            const res = await fetch("https://formcarry.com/s/5rrRUap3AC3", {
                 method: "POST",
                 headers: {"Content-Type": "application/json", "Accept": "application/json"},
                 body: JSON.stringify({
