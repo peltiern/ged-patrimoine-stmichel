@@ -1002,7 +1002,8 @@ main {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    overflow: visible; /* pas de scroll interne */
+    overflow-y: auto; /* éviter les scrollbars parasites */
+    height: auto;
 }
 
 /* 2. Galerie : grid flexible qui s’adapte à la hauteur disponible */
@@ -1033,7 +1034,7 @@ main {
 .photo-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 /* === Grille selon la taille d’écran === */
