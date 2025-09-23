@@ -1,0 +1,11 @@
+# Autoriser l'exploration des pages HTML
+User-agent: *
+Allow: /
+
+# Empêcher l'indexation directe des images redimensionnées
+Disallow: /resized/large/
+Disallow: /resized/small/
+Disallow: /img/
+
+# Indiquer l'emplacement du sitemap si tu en génères un
+Sitemap: https://patrimoine.stmichel-charente.fr/sitemap.xml
