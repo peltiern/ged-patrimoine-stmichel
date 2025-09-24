@@ -182,12 +182,10 @@ main {
 
 
 .filtre-group-champ-saisie {
-    height: 45px;
+    padding: 0.2em 0.2em;
     border-radius: 5px;
     font-size: 1.1em;
     font-family: Roboto, sans-serif;
-    padding-left: 10px;
-    padding-right: 10px;
 }
 
 .filtre-button {
@@ -211,7 +209,7 @@ main {
 }
 
 .custom-multiselect-button {
-    padding: 8px 12px;
+    padding: 0.1em 0.1em;
     background-color: white;
     color: var(--color-dark);
     border: 1px solid #aaa;
@@ -306,16 +304,32 @@ main {
     color: white;
     border: none;
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
     cursor: pointer;
     transition: background 0.2s, transform 0.2s;
+
+    /* taille responsive du bouton */
+    width: clamp(25px, 4vw, 38px);
+    height: clamp(25px, 4vw, 38px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+#reset-filtres svg {
+    /* taille relative au bouton */
+    width: 60%;
+    height: 60%;
+    fill: currentColor;  /* hérite de color: white */
+    display: block;           /* supprime l’espace blanc sous le svg */
+    margin: auto;
+    transform: translateX(1px) translateY(-1px);
 }
 
 #reset-filtres:hover {
     background: var(--button-color-hover);
-    transform: rotate(-90deg);
+    transform: rotate(180deg);
 }
 
 
@@ -569,6 +583,13 @@ main {
     transition: filter 0.2s;
 }
 
+.lightbox-nav svg {
+    fill: currentColor;
+    display: block;
+    width: clamp(24px, 5vw, 48px);
+    height: clamp(24px, 5vw, 48px);
+}
+
 #lightbox-prev {
     left: 10px;
 }
@@ -610,10 +631,15 @@ main {
     background: rgba(255, 255, 255, 0.8);
     color: #333;
     cursor: pointer;
-    font-size: 28px;
     border-radius: 5px;
-    width: 30px;
     text-align: center;
+}
+
+.lightbox-button svg {
+    fill: currentColor;
+    display: block;
+    width: clamp(18px, 2.5vw, 24px);
+    height: clamp(18px, 2.5vw, 24px);
 }
 
 .lightbox-button:hover {
@@ -769,10 +795,10 @@ main {
 
 .label {
     position: absolute;
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: bold;
     border-radius: 5px;
-    padding: 8px;
+    padding: 0.3em;
     background-color: #333;
 }
 
@@ -1090,7 +1116,7 @@ main {
 }
 
 .timeline-container {
-    padding: 10px clamp(10px, 5vw, 50px);
+    padding: 10px clamp(20px, 14vw, 60px);
 }
 
 /* 5. Footer sur mobile */
