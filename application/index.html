@@ -14,13 +14,34 @@
     <meta name="robots" content="index, noimageindex, follow">
     <link rel="icon" href="img/favicon.ico"/>
     <title>Patrimoine photographique de Saint-Michel (16470 - France)</title>
-    <link rel="stylesheet" href="css/vendor/zoomist.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/contact.css">
     <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/vendor/leaflet.css"/>
-    <link rel="stylesheet" href="css/vendor/MarkerCluster.css"/>
-    <link rel="stylesheet" href="css/vendor/MarkerCluster.Default.css"/>
+    <script src="js/env.js"></script>
+    <script>
+        // Chargement des CSS et JS en fonction du type d'environnement
+        const isLocal = window.ENV?.INTERNET !== true;
+
+        const linkZoomistCss = document.createElement("link");
+        linkZoomistCss.rel = "stylesheet";
+        linkZoomistCss.href = isLocal ? "css/vendor/zoomist.css" : "https://cdn.jsdelivr.net/npm/zoomist@2/zoomist.css";
+        document.head.appendChild(linkZoomistCss);
+
+        const linkLeafletCss = document.createElement("link");
+        linkLeafletCss.rel = "stylesheet";
+        linkLeafletCss.href = isLocal ? "css/vendor/leaflet.css" : "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+        document.head.appendChild(linkLeafletCss);
+
+        const linkMarkerClusterCss = document.createElement("link");
+        linkMarkerClusterCss.rel = "stylesheet";
+        linkMarkerClusterCss.href = isLocal ? "css/vendor/MarkerCluster.css" : "https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css";
+        document.head.appendChild(linkMarkerClusterCss);
+
+        const linkMarkerClusterDefaultCss = document.createElement("link");
+        linkMarkerClusterDefaultCss.rel = "stylesheet";
+        linkMarkerClusterDefaultCss.href = isLocal ? "css/vendor/MarkerCluster.Default.css" : "https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css";
+        document.head.appendChild(linkMarkerClusterDefaultCss);
+    </script>
 </head>
 <body>
 <div id="site-header"></div>
@@ -147,7 +168,6 @@
 </main>
 <div id="site-footer"></div>
 
-<script src="js/env.js"></script>
 <script src="js/page-layout.js"></script>
 <script src="js/vendor/leaflet.js"></script>
 <script src="js/vendor/leaflet.markercluster.js"></script>
