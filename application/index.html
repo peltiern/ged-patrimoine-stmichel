@@ -156,24 +156,42 @@
 
     </div>
 
-<!--    &lt;!&ndash; Popup alerte mobile &ndash;&gt;-->
-<!--    <div id="mobile-popup" class="lightbox hidden">-->
-<!--        <div class="popup-content">-->
-<!--            <button id="mobile-popup-close" class="popup-close">&times;</button>-->
-<!--            <h2>Bienvenue !</h2>-->
-<!--            <p>Ce site n'est pas optimisé pour mobile.</p>-->
-<!--        </div>-->
-<!--    </div>-->
-
 </main>
 <div id="site-footer"></div>
 
 <script src="js/page-layout.js"></script>
-<script src="js/vendor/leaflet.js"></script>
-<script src="js/vendor/leaflet.markercluster.js"></script>
-<script src="js/vendor/zoomist.js"></script>
-<script src="js/app.js"></script>
-<script src="js/contact-form.js"></script>
-<script src="js/contact-submit.js"></script>
+<script>
+    function loadScript(localPath, cdnPath) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.src = isLocal ? localPath : cdnPath;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.body.appendChild(script);
+        });
+    }
+
+    // Charger les vendor JS dans l’ordre
+    Promise.resolve()
+            .then(() => loadScript(
+                    "js/vendor/leaflet.js",
+                    "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            ))
+            .then(() => loadScript(
+                    "js/vendor/leaflet.markercluster.js",
+                    "https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"
+            ))
+            .then(() => loadScript(
+                    "js/vendor/zoomist.js",
+                    "https://cdn.jsdelivr.net/npm/zoomist@2/zoomist.umd.js"
+            ))
+            .then(() => {
+                // Quand tout est chargé → tes scripts maison
+                return loadScript("js/app.js", "js/app.js");
+            })
+            .then(() => loadScript("js/contact-form.js", "js/contact-form.js"))
+            .then(() => loadScript("js/contact-submit.js", "js/contact-submit.js"))
+            .catch(err => console.error("Erreur de chargement d’un script:", err));
+</script>
 </body>
 </html>

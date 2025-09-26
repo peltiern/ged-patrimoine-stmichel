@@ -418,7 +418,9 @@ function genererPagination(totalItems) {
 function initialiserCartes() {
     carte = L.map('carte').setView(cordonneesCentre, zoomInitial);
 
-    L.tileLayer('img/tuiles/osm/{z}/{x}/{y}.png', {
+    const isLocal = window.ENV?.INTERNET !== true;
+
+    L.tileLayer(isLocal ? 'img/tuiles/osm/{z}/{x}/{y}.png' : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap'
     }).addTo(carte);
 
@@ -842,53 +844,5 @@ document.addEventListener('DOMContentLoaded', () => {
             el.classList.remove('external-only');
         });
     }
-
-    // // --- Détection mobile robuste (UA + touch + pointer coarse) ---
-    // const ua = navigator.userAgent || '';
-    // const isMobileUA = /Mobi|Android|iPhone|iPad|Mobile/i.test(ua);
-    // const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
-    // const coarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-    //
-    // // Log pour debugging en DevTools
-    // console.log('[mobile-popup] ua=%o, isMobileUA=%o, hasTouch=%o, coarsePointer=%o',
-    //     ua, isMobileUA, hasTouch, coarsePointer);
-    //
-    // const isMobile = isMobileUA || hasTouch || coarsePointer;
-    //
-    // if (!isMobile) {
-    //     console.log('[mobile-popup] pas mobile détecté → popup non affichée');
-    //     return;
-    // }
-    //
-    // // --- Créer / Afficher popup (réutilise les classes .lightbox/.lightbox-content) ---
-    // let popup = document.getElementById('mobile-popup');
-    //
-    // if (!popup) {
-    //     // Si l'élément n'existe pas dans le HTML, on le crée dynamiquement (utile pour tests rapides)
-    //     popup = document.createElement('div');
-    //     popup.id = 'mobile-popup';
-    //     popup.className = 'lightbox'; // utilise ton CSS existant
-    //     popup.innerHTML = `
-    //         <div class="lightbox-content" style="max-width: 420px; text-align: center;">
-    //             <span id="mobile-popup-close" class="lightbox-close" role="button" aria-label="Fermer">&times;</span>
-    //             <h2>Attention</h2>
-    //             <p>Ce site n'est pas optimisé pour les appareils mobiles.</p>
-    //         </div>
-    //     `;
-    //     document.body.appendChild(popup);
-    //     console.log('[mobile-popup] créé dynamiquement');
-    // } else {
-    //     popup.classList.remove('hidden');
-    //     console.log('[mobile-popup] élément existant affiché');
-    // }
-    //
-    // const closeBtn = document.getElementById('mobile-popup-close') || popup.querySelector('.lightbox-close');
-    // if (closeBtn) {
-    //     closeBtn.addEventListener('click', () => {
-    //         popup.classList.add('hidden');
-    //     });
-    // } else {
-    //     console.warn('[mobile-popup] bouton de fermeture introuvable');
-    // }
 });
 
