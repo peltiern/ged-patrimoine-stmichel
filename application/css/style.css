@@ -1140,5 +1140,36 @@ main {
     }
 }
 
+.badge-new {
+    display: flex;
+    justify-content: center; /* centre horizontalement */
+    align-items: center;     /* centre verticalement */
+
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    left: 5px;
+    background: red;
+    color: white;
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 3px 3px;
+    z-index: 10;
+}
+
+.top {
+    top: 5px;
+}
+
+.bottom {
+    bottom: 5px;
+}
+
+.badge-new span {
+    /*transform: rotate(-45deg); !* pivote le texte *!*/
+    display: inline-block;
+}
+
 
 

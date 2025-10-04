@@ -2,6 +2,7 @@ let data = [];
 let pageCourante = 1;
 const nbPhotosParPage = 12;
 let carte;
+let vuesNonVuesSelectionnes = [];
 let themesSelectionnes = [];
 let lieuxSelectionnes = [];
 let termeRecherche = '';
@@ -42,6 +43,7 @@ fetch('data/photos_saint_michel.json')
     });
 
 function initialiserFiltres() {
+    const listeVues = ['Toutes', 'Vues', 'Non vues'];
     const themes = new Set();
     const lieux = new Set();
 
@@ -50,9 +52,10 @@ function initialiserFiltres() {
         photo.lieu?.forEach(l => lieux.add(l));
     });
 
-    // Création des deux menus déroulants
-    creerMultiselect('filtre-themes', Array.from(themes).sort(), themesSelectionnes, filtrerPhotos);
-    creerMultiselect('filtre-lieux', Array.from(lieux).sort(), lieuxSelectionnes, filtrerPhotos);
+    // Création des menus déroulants
+    creerListeSelectionnable('filtre-vues', listeVues, vuesNonVuesSelectionnes, filtrerPhotos, true);
+    creerListeSelectionnable('filtre-themes', Array.from(themes).sort(), themesSelectionnes, filtrerPhotos, false);
+    creerListeSelectionnable('filtre-lieux', Array.from(lieux).sort(), lieuxSelectionnes, filtrerPhotos, false);
 
     const inputTerme = document.getElementById('filtre-terme-photo-input');
     inputTerme.oninput = () => {
@@ -69,7 +72,7 @@ function initialiserFiltres() {
     };
 }
 
-function creerMultiselect(containerId, valeurs, tableauSelection, onChange) {
+function creerListeSelectionnable(containerId, valeurs, tableauSelection, onChange, choixUnique) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
 
@@ -87,16 +90,25 @@ function creerMultiselect(containerId, valeurs, tableauSelection, onChange) {
     valeurs.forEach(val => {
         const label = document.createElement('label');
         const input = document.createElement('input');
-        input.type = 'checkbox';
+        input.type = choixUnique ? 'radio' : 'checkbox';
+        input.name = choixUnique ? containerId + "_radio" : undefined;
         input.value = val;
         input.checked = tableauSelection.includes(val);
 
         input.onchange = () => {
-            if (input.checked) {
-                tableauSelection.push(val);
+            if (choixUnique) {
+                // Si choix unique → remplacer entièrement le tableau
+                tableauSelection.splice(0, tableauSelection.length, val);
+                // fermer le menu après sélection
+                wrapper.classList.remove("open");
             } else {
-                const idx = tableauSelection.indexOf(val);
-                if (idx !== -1) tableauSelection.splice(idx, 1);
+                // Sinon → comportement multiselect classique
+                if (input.checked) {
+                    tableauSelection.push(val);
+                } else {
+                    const idx = tableauSelection.indexOf(val);
+                    if (idx !== -1) tableauSelection.splice(idx, 1);
+                }
             }
             mettreAJourLabel(button, tableauSelection);
             pageCourante = 1;
@@ -127,6 +139,7 @@ function mettreAJourLabel(button, selection) {
 }
 
 function reinitialiserFiltres() {
+    vuesNonVuesSelectionnes.length = 0;
     themesSelectionnes.length = 0;
     lieuxSelectionnes.length = 0;
     termeRecherche = '';
@@ -136,6 +149,7 @@ function reinitialiserFiltres() {
 
     document.getElementById('filtre-terme-photo-input').value = '';
     document.getElementById('filtre-sans-date-cb').checked = true;
+    document.querySelectorAll('.custom-multiselect input[type=radio]').forEach(cb => cb.checked = false);
     document.querySelectorAll('.custom-multiselect input[type=checkbox]').forEach(cb => cb.checked = false);
     document.querySelectorAll('.custom-multiselect-button').forEach(button => button.textContent = 'Sélectionner...');
 
@@ -206,6 +220,13 @@ function filtrerPhotos() {
 
         const termeMatch = termeRecherche.length === 0 || photo.numero?.includes(termeNorm) || commentairesNorm.includes(termeNorm);
         if (!termeMatch) return;
+
+        const photosVues = getPhotosVues();
+        const vuesNonVuesMatch = vuesNonVuesSelectionnes.length === 0
+            || vuesNonVuesSelectionnes[0] === 'Toutes'
+            || (vuesNonVuesSelectionnes[0] === 'Vues' && photosVues.includes(photo.numero))
+            || (vuesNonVuesSelectionnes[0] === 'Non vues' && !photosVues.includes(photo.numero));
+        if (!vuesNonVuesMatch) return;
 
         const themeMatch = themesSelectionnes.length === 0 || photo.themes?.some(t => themesSelectionnes.includes(t));
         if (!themeMatch) return;
@@ -447,11 +468,16 @@ function majCarte(photosFiltrees, clusterGroup) {
         if (photo.latitude && photo.longitude) {
             const path = 'resized/small/' + photo.numero + '.jpg';
 
-            const marker = L.marker([photo.latitude, photo.longitude])
-                .bindPopup(`<strong>${photo.numero}</strong><br><img src="${path}" width="200"">`);
+            const marker = L.marker([photo.latitude, photo.longitude]);
 
             // Ouvrir la popup au survol
             marker.on('mouseover', () => {
+                const photoVue = getPhotosVues().includes(photo.numero);
+                let badge = '';
+                if (!photoVue) {
+                    badge = '<div class="badge-new bottom"><span>N</span></div>'
+                }
+                marker.bindPopup(`${badge}<strong>${photo.numero}</strong><br><img src="${path}" width="200"">`);
                 marker.openPopup();
             });
 
@@ -482,6 +508,7 @@ function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePh
 
     const item = document.createElement('div');
     item.className = itemClassName;
+    item.dataset.numero = photo.numero;
 
     // Image
     const img = document.createElement('img');
@@ -506,6 +533,9 @@ function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePh
 
     item.appendChild(img);
     item.appendChild(overlay);
+
+    // Badge "Non vue"
+    indiquerSiPhotoNonVues(item, photo.numero);
 
     return item;
 }
@@ -556,6 +586,11 @@ function displayLightbox() {
 
     // Attendre que l'image soit bien chargée
     img.onload = () => {
+
+        // Considérer la photo "vue"
+        ajouterPhotoVue(photo.numero);
+
+        // Ajouter l'outil de zoom sur la photo
         if (!window.lightboxZoomist) {
             window.lightboxZoomist = new Zoomist('.lightbox-body', {
                 wheelable: true,
@@ -670,6 +705,38 @@ async function openReportForm(photoNum) {
         }
     };
 }
+
+/* Gestion des photos vues / non vues */
+function getPhotosVues() {
+    return JSON.parse(localStorage.getItem("photosVues")) || [];
+}
+
+function indiquerSiPhotoNonVues(photoElement, numeroPhoto) {
+    const photosVues = getPhotosVues();
+    if (!photosVues.includes(numeroPhoto)) {
+        const badge = document.createElement("div");
+        badge.classList.add("badge-new");
+        badge.classList.add("top");
+        const texte = document.createElement("span");
+        texte.textContent = "N";
+        badge.appendChild(texte);
+        photoElement.appendChild(badge);
+    }
+}
+
+function ajouterPhotoVue(numeroPhoto) {
+    let photosVues = getPhotosVues();
+    if (!photosVues.includes(numeroPhoto)) {
+        photosVues.push(numeroPhoto);
+        localStorage.setItem("photosVues", JSON.stringify(photosVues));
+    }
+    // Suppression du badge de la photo sur la liste
+    const badge = document.querySelector(`.photo-item[data-numero="${numeroPhoto}"] .badge-new`);
+    if (photosVues.includes(numeroPhoto)) {
+        if (badge) badge.remove();
+    }
+}
+
 
 function afficherOnglet(id) {
     document.querySelectorAll('.contenu-onglet').forEach(t => t.classList.remove('active'));
