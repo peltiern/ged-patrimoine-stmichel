@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: patrimoine-stmichel-ged
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+
+application:
+  object-storage:
+    endpoint: ${SCALEWAY_ENDPOINT}
+    client-id: ${SCALEWAY_CLIENT_ID}
+    client-secret: ${SCALEWAY_CLIENT_SECRET}
