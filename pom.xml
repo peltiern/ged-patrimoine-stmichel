@@ -35,7 +35,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2025.1.0-M3</version>
+                <version>2025.0.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -102,12 +102,6 @@
             <groupId>com.squareup.okio</groupId>
             <artifactId>okio</artifactId>
             <version>3.16.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.openfeign</groupId>
-            <artifactId>feign-gson</artifactId>
-            <version>13.6</version>
         </dependency>
 
     </dependencies>
