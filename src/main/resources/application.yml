@@ -7,7 +7,6 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
-
 application:
   object-storage:
     endpoint: ${SCALEWAY_ENDPOINT}

@@ -6,3 +6,19 @@ services:
     ports:
       - "8884:8884"
     restart: unless-stopped
+
+  solr:
+    image: solr:9
+    container_name: solr
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr_data:/var/solr
+      - ./solr-config:/solr-config
+    command:
+      - solr-precreate
+      - documents
+      - /solr-config
+
+volumes:
+  solr_data:

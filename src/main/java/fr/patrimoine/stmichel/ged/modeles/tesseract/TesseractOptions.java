@@ -1,5 +1,7 @@
 package fr.patrimoine.stmichel.ged.modeles.tesseract;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class TesseractOptions {
 
 	private String[] languages;

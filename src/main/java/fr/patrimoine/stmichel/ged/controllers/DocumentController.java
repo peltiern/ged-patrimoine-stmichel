@@ -1,39 +1,20 @@
 package fr.patrimoine.stmichel.ged.controllers;
 
 import fr.patrimoine.stmichel.ged.controllers.dto.DocumentMetadata;
-import fr.patrimoine.stmichel.ged.modeles.tesseract.TesseractConfigParams;
-import fr.patrimoine.stmichel.ged.modeles.tesseract.TesseractOptions;
-import fr.patrimoine.stmichel.ged.modeles.tesseract.TesseractResponse;
-import fr.patrimoine.stmichel.ged.providers.tesseract.TesseractProvider;
-import fr.patrimoine.stmichel.ged.services.ObjectStorageService;
-import io.minio.MinioClient;
-import net.coobird.thumbnailator.Thumbnails;
-import org.springframework.beans.factory.annotation.Value;
+import fr.patrimoine.stmichel.ged.services.DocumentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-
 @RestController
 public class DocumentController {
 
-    private static final int MAX_WIDTH = 1920;
-    private static final int MAX_HEIGHT = 1920;
+    private final DocumentService  documentService;
 
-    private final ObjectStorageService objectStorageService;
-
-    private final TesseractProvider tesseractProvider;
-
-    public DocumentController(ObjectStorageService objectStorageService, final TesseractProvider tesseractProvider) {
-        this.objectStorageService = objectStorageService;
-	    this.tesseractProvider = tesseractProvider;
+    public DocumentController(DocumentService documentService) {
+        this.documentService = documentService;
     }
 
     @PostMapping("/v1/documents")
@@ -41,53 +22,9 @@ public class DocumentController {
             @RequestPart(value = "document") MultipartFile fichier,
             @RequestPart("metadata") DocumentMetadata metadata) {
 
-        try {
-            // Vérification du type du fichier
-            String contentType = fichier.getContentType();
-            if (contentType == null ||
-                    !(contentType.equalsIgnoreCase("image/jpeg") ||
-                            contentType.equalsIgnoreCase("image/tiff") ||
-                            contentType.equalsIgnoreCase("image/tif"))) {
-                return ResponseEntity
-                        .badRequest()
-                        .body("Le fichier doit être une image JPEG ou TIFF.");
-            }
+            documentService.creerDocument(fichier, metadata);
 
-            BufferedImage image = ImageIO.read(fichier.getInputStream());
-            if (image == null) {
-                return ResponseEntity
-                        .badRequest()
-                        .body("Impossible de lire l'image envoyée.");
-            }
+            return ResponseEntity.ok("Document ajouté : " + fichier.getOriginalFilename());
 
-            // Redimensionnement si nécessaire
-            if (image.getWidth() > MAX_WIDTH || image.getHeight() > MAX_HEIGHT) {
-                image = Thumbnails.of(image)
-                        .size(MAX_WIDTH, MAX_HEIGHT)
-                        .keepAspectRatio(true)
-                        .asBufferedImage();
-            }
-
-            String extension = contentType.contains("tiff") ? "tiff" : "jpg";
-            File tempFile = File.createTempFile("upload-", "." + extension);
-            ImageIO.write(image, extension, tempFile);
-
-            // TODO Sauvegarde sur le S3 (TIFF + image redimensionnée)
-            objectStorageService.upload(tempFile);
-            tempFile.delete();
-
-            // Tesseract
-            String[] langages = {"fra"};
-            TesseractOptions options = new TesseractOptions(langages, new TesseractConfigParams("1"));
-            TesseractResponse reponse = tesseractProvider.recognize(fichier, options);
-
-            // TODO Sauvegarde dans SolR
-
-            return ResponseEntity.ok("Document ajouté : " + reponse);
-
-        } catch (IOException e) {
-            return ResponseEntity.internalServerError()
-                    .body("Erreur lors du traitement de l'image : " + e.getMessage());
-        }
     }
 }

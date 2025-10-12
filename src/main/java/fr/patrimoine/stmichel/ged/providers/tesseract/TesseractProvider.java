@@ -19,6 +19,6 @@ public interface TesseractProvider {
 	@PostMapping(value = "/tesseract", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	TesseractResponse recognize(
 			@RequestPart("file") MultipartFile file,
-			@RequestPart(value = "options") TesseractOptions options
+			@RequestPart(value = "options") String options
 	);
 }
