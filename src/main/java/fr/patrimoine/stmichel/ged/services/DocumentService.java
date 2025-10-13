@@ -23,6 +23,8 @@ public class DocumentService {
     private static final int MAX_WIDTH = 1920;
     private static final int MAX_HEIGHT = 1920;
 
+    private static final String DOSSIERS_DOCUMENTS = "tests/Documents/";
+
     private final ObjectStorageService objectStorageService;
 
     private final TesseractService  tesseractService;
@@ -60,20 +62,20 @@ public class DocumentService {
                         .asBufferedImage();
             }
 
-            String extension = contentType.contains("tiff") ? "tiff" : "jpg";
+            String extension = contentType.contains("tif") ? "tiff" : "jpg";
             File tempFile = File.createTempFile("upload-", "." + extension);
             ImageIO.write(image, extension, tempFile);
 
             // TODO Sauvegarde sur le S3 (TIFF + image redimensionnée)
-            objectStorageService.upload("saint-michel-archives", "nomFichier.jpg", tempFile);
+            objectStorageService.upload("saint-michel-archives", DOSSIERS_DOCUMENTS + metadata.getEid() + "." + extension, tempFile);
             if (StringUtils.isNotBlank(tesseractOutputs.getText())) {
-                objectStorageService.upload("saint-michel-archives", "nomFichier.txt", tesseractOutputs.getText(), "text/plain");
+                objectStorageService.upload("saint-michel-archives", DOSSIERS_DOCUMENTS + metadata.getEid() + ".txt", tesseractOutputs.getText(), "text/plain");
             }
             if (!CollectionUtils.isEmpty(tesseractOutputs.getWords())) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
                 String wordsJson = objectMapper.writeValueAsString(tesseractOutputs.getWords());
-                objectStorageService.upload("saint-michel-archives", "nomFichier.json", wordsJson, "application/json");
+                objectStorageService.upload("saint-michel-archives", DOSSIERS_DOCUMENTS + metadata.getEid() + ".json", wordsJson, "application/json");
             }
             tempFile.delete();
 
