@@ -40,10 +40,7 @@ public class DocumentService {
         try {
             // Vérification du type du fichier
             String contentType = fichier.getContentType();
-            if (contentType == null ||
-                    !(contentType.equalsIgnoreCase("image/jpeg") ||
-                            contentType.equalsIgnoreCase("image/tiff") ||
-                            contentType.equalsIgnoreCase("image/tif"))) {
+            if (contentType == null) {
                 throw new RuntimeException("Le fichier doit être une image JPEG ou TIFF.");
             }
 
@@ -54,7 +51,6 @@ public class DocumentService {
 
             // Tesseract
             TesseractOutputs tesseractOutputs = tesseractService.recognize(fichier);
-
 
             // Redimensionnement si nécessaire
             if (image.getWidth() > MAX_WIDTH || image.getHeight() > MAX_HEIGHT) {
