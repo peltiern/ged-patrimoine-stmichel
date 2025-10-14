@@ -2,12 +2,15 @@ package fr.patrimoine.stmichel.ged.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import fr.patrimoine.stmichel.ged.controllers.dto.DocumentCriteria;
 import fr.patrimoine.stmichel.ged.controllers.dto.DocumentMetadata;
 import fr.patrimoine.stmichel.ged.modeles.solr.Document;
 import fr.patrimoine.stmichel.ged.modeles.tesseract.TesseractOutputs;
 import fr.patrimoine.stmichel.ged.utils.DateUtils;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +19,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DocumentService {
@@ -88,5 +93,9 @@ public class DocumentService {
         } catch (IOException e) {
            throw new RuntimeException("Erreur lors de la création du document");
         }
+    }
+
+    public List<DocumentMetadata> getDocuments(String query) {
+        return moteurRechercheService.rechercherObjet("documents", query);
     }
 }

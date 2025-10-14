@@ -2,11 +2,13 @@ package fr.patrimoine.stmichel.ged.controllers.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.apache.solr.client.solrj.beans.Field;
 
 import java.time.LocalDate;
 
 public class DocumentMetadata {
 
+    @Field("eid")
     @NotBlank(message = "L'EID est obligatoire")
     private String eid;
 
