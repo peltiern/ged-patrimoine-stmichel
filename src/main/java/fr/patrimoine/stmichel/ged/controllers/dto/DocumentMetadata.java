@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.apache.solr.client.solrj.beans.Field;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class DocumentMetadata {
 
@@ -12,12 +12,15 @@ public class DocumentMetadata {
     @NotBlank(message = "L'EID est obligatoire")
     private String eid;
 
+    @Field("titre")
     @NotBlank(message = "Le titre est obligatoire")
     private String titre;
 
+    @Field("date")
     @NotNull(message = "La date est obligatoire")
-    private LocalDate date;
+    private Date date;
 
+    @Field("source")
     @NotBlank(message = "La source est obligatoire")
     private String source;
 
@@ -37,11 +40,11 @@ public class DocumentMetadata {
         this.titre = titre;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

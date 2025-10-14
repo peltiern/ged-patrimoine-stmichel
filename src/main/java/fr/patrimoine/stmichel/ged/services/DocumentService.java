@@ -2,15 +2,12 @@ package fr.patrimoine.stmichel.ged.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import fr.patrimoine.stmichel.ged.controllers.dto.DocumentCriteria;
 import fr.patrimoine.stmichel.ged.controllers.dto.DocumentMetadata;
 import fr.patrimoine.stmichel.ged.modeles.solr.Document;
+import fr.patrimoine.stmichel.ged.modeles.solr.DocumentResultat;
 import fr.patrimoine.stmichel.ged.modeles.tesseract.TesseractOutputs;
-import fr.patrimoine.stmichel.ged.utils.DateUtils;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +16,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -86,7 +82,7 @@ public class DocumentService {
 
             // Indexation
             if (StringUtils.isNotBlank(tesseractOutputs.getText())) {
-                Document document = new Document(metadata.getEid(), metadata.getTitre(), tesseractOutputs.getText(), DateUtils.parseDate(metadata.getDate()));
+                Document document = new Document(metadata.getEid(), metadata.getTitre(), tesseractOutputs.getText(), metadata.getDate(), metadata.getSource());
                 moteurRechercheService.indexerObjet("documents", document);
             }
 
@@ -95,7 +91,7 @@ public class DocumentService {
         }
     }
 
-    public List<DocumentMetadata> getDocuments(String query) {
+    public List<DocumentResultat> getDocuments(String query) {
         return moteurRechercheService.rechercherObjet("documents", query);
     }
 }

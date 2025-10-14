@@ -5,7 +5,10 @@ import org.apache.solr.client.solrj.beans.Field;
 import java.util.Date;
 import java.util.List;
 
-public class Document {
+public class DocumentResultat {
+
+    @Field
+    private String id;
 
     @Field
     private String eid;
@@ -14,20 +17,22 @@ public class Document {
     private String titre;
 
     @Field
-    private String contenu;
-
-    @Field
     private Date date;
 
     @Field
     private String source;
 
-    public Document(String eid, String titre, String contenu, Date date, String source) {
-        this.eid = eid;
-        this.titre = titre;
-        this.contenu = contenu;
-        this.date = date;
-        this.source = source;
+    private List<String> extraits;
+
+    public DocumentResultat() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getEid() {
@@ -38,15 +43,19 @@ public class Document {
         return titre;
     }
 
-    public String getContenu() {
-        return contenu;
-    }
-
     public Date getDate() {
         return date;
     }
 
     public String getSource() {
         return source;
+    }
+
+    public List<String> getExtraits() {
+        return extraits;
+    }
+
+    public void setExtraits(List<String> extraits) {
+        this.extraits = extraits;
     }
 }

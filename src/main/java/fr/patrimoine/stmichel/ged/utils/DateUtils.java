@@ -1,15 +1,15 @@
 package fr.patrimoine.stmichel.ged.utils;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public final class DateUtils {
 
-    public static String parseDate(LocalDate date) {
+    public static String parseDate(Date date) {
         if (date == null) {
             return "";
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return date.format(formatter);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(date);
     }
 }

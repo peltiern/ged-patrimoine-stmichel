@@ -1,19 +1,20 @@
 package fr.patrimoine.stmichel.ged.services;
 
-import fr.patrimoine.stmichel.ged.controllers.dto.DocumentCriteria;
 import fr.patrimoine.stmichel.ged.controllers.dto.DocumentMetadata;
+import fr.patrimoine.stmichel.ged.modeles.solr.Document;
+import fr.patrimoine.stmichel.ged.modeles.solr.DocumentResultat;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class MoteurRechercheService {
@@ -33,13 +34,13 @@ public class MoteurRechercheService {
 		}
 	}
 
-	public List<DocumentMetadata> rechercherObjet(String collection, String query) {
+	public List<DocumentResultat> rechercherObjet(String collection, String query) {
 
-        List<DocumentMetadata> documents = new ArrayList<>();
+        List<DocumentResultat> documents;
 
 		try {
 			SolrQuery solrQuery = new SolrQuery();
-            solrQuery.setQuery(StringUtils.isNotBlank(query) ? query : "*:*");
+            solrQuery.setQuery(StringUtils.isNotBlank(query) ? query + "~2" : "*:*");
 
             solrQuery.set("defType", "edismax");     // Permet d’utiliser un parser plus intelligent
             solrQuery.set("qf", "eid titre contenu");                // Champs à interroger (ici, tous)
@@ -49,12 +50,23 @@ public class MoteurRechercheService {
             solrQuery.addHighlightField("*");        // Sur tous les champs
             solrQuery.setHighlightSimplePre("<b>");
             solrQuery.setHighlightSimplePost("</b>");
+            solrQuery.setHighlightFragsize(30);
+            solrQuery.setHighlightSnippets(3);
 
 			// Exécution de la requête
 			QueryResponse response = solrClient.query(collection, solrQuery);
 
 			// Résultats
-            documents = response.getBeans(DocumentMetadata.class);
+            documents = response.getBeans(DocumentResultat.class);
+            Map<String, Map<String, List<String>>> highlighting = response.getHighlighting();
+            documents.forEach(document -> {
+                document.setExtraits(new ArrayList<>());
+                Map<String, List<String>> mapExtraits = highlighting.get(document.getId());
+                if (mapExtraits != null) {
+                    Optional.ofNullable(mapExtraits.get("contenu")).ifPresent(document::setExtraits);
+                }
+            });
+
 //			System.out.println("Résultats trouvés : " + results.getNumFound());
 //			for (SolrDocument doc : results) {
 //				System.out.println(" - " + doc.getFieldValue("id") + " → " + doc);
