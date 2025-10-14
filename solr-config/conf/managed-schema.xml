@@ -282,17 +282,18 @@
             <filter name="lowercase"/>
         </analyzer>
     </fieldType>
-    <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100" multiValued="true">
+    <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
         <analyzer type="index">
-            <tokenizer name="standard"/>
-            <filter ignoreCase="true" words="stopwords.txt" name="stop"/>
-            <filter name="lowercase"/>
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+            <filter class="solr.SnowballPorterFilterFactory" language="French"/>
         </analyzer>
         <analyzer type="query">
-            <tokenizer name="standard"/>
-            <filter ignoreCase="true" words="stopwords.txt" name="stop"/>
-            <filter ignoreCase="true" synonyms="synonyms.txt" name="synonymGraph" expand="true"/>
-            <filter name="lowercase"/>
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+            <filter class="solr.SnowballPorterFilterFactory" language="French"/>
         </analyzer>
     </fieldType>
     <fieldType name="text_general_rev" class="solr.TextField" positionIncrementGap="100">

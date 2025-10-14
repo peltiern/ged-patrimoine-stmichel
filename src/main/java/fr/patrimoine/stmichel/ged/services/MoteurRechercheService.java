@@ -40,10 +40,12 @@ public class MoteurRechercheService {
 
 		try {
 			SolrQuery solrQuery = new SolrQuery();
-            solrQuery.setQuery(StringUtils.isNotBlank(query) ? query + "~2" : "*:*");
+            solrQuery.setQuery(StringUtils.isNotBlank(query) ? query + "~1" : "*:*");
 
             solrQuery.set("defType", "edismax");     // Permet d’utiliser un parser plus intelligent
-            solrQuery.set("qf", "eid titre contenu");                // Champs à interroger (ici, tous)
+            solrQuery.set("qf", "eid contenu");                // Champs à interroger
+            solrQuery.set("q.op", "AND");
+            solrQuery.set("pf", "contenu^3");
             solrQuery.setStart(0);
             solrQuery.setRows(10);                   // Nombre de résultats à retourner
             solrQuery.setHighlight(true);            // Active le highlighting
