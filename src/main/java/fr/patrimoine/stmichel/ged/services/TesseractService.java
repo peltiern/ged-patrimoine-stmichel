@@ -2,11 +2,12 @@ package fr.patrimoine.stmichel.ged.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.patrimoine.stmichel.ged.dto.InfosImage;
 import fr.patrimoine.stmichel.ged.modeles.tesseract.*;
 import fr.patrimoine.stmichel.ged.providers.tesseract.TesseractProvider;
+import fr.patrimoine.stmichel.ged.utils.MathUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class TesseractService {
         this.tesseractProvider = tesseractProvider;
     }
 
-    public TesseractOutputs recognize(MultipartFile fichier) {
+    public TesseractOutputs recognize(MultipartFile fichier, InfosImage infosImage) {
         String[] langages = {"fra"};
         TesseractConfigParams configParams = new TesseractConfigParams();
         configParams.setCreateTxt("1");
@@ -45,10 +46,11 @@ public class TesseractService {
             throw new RuntimeException("Pas de texte reconnu");
         }
 
-        return parseTesseractResponse(reponse.getData().getStdout());
+        // TODO transformer les coordonnées des bounding box en pourcentage
+        return parseTesseractResponse(reponse.getData().getStdout(), infosImage);
     }
 
-    private TesseractOutputs parseTesseractResponse(String response) {
+    private TesseractOutputs parseTesseractResponse(String response, InfosImage infosImage) {
         String[] lines = response.split("\r?\n");
         StringBuilder tsv = new StringBuilder();
         StringBuilder text = new StringBuilder();
@@ -72,10 +74,10 @@ public class TesseractService {
             }
         }
 
-        return new TesseractOutputs(parseTsvToWords(tsv.toString().trim()), text.toString().trim());
+        return new TesseractOutputs(parseTsvToWords(tsv.toString().trim(), infosImage), text.toString().trim());
     }
 
-    private List<TesseractWord> parseTsvToWords(String tsvContent) {
+    private List<TesseractWord> parseTsvToWords(String tsvContent, InfosImage infosImage) {
         List<TesseractWord> words = new ArrayList<>();
         String[] lines = tsvContent.split("\r?\n");
 
@@ -94,10 +96,10 @@ public class TesseractService {
                 int parNum = Integer.parseInt(cols[3]);
                 int lineNum = Integer.parseInt(cols[4]);
                 int wordNum = Integer.parseInt(cols[5]);
-                int left = Integer.parseInt(cols[6]);
-                int top = Integer.parseInt(cols[7]);
-                int width = Integer.parseInt(cols[8]);
-                int height = Integer.parseInt(cols[9]);
+                double left = MathUtils.roundPercentOf(Integer.parseInt(cols[6]), infosImage.getWidth());
+                double top = MathUtils.roundPercentOf(Integer.parseInt(cols[7]), infosImage.getHeight());
+                double width = MathUtils.roundPercentOf(Integer.parseInt(cols[8]),  infosImage.getWidth());
+                double height = MathUtils.roundPercentOf(Integer.parseInt(cols[9]),   infosImage.getHeight());
                 int conf = Integer.parseInt(cols[10]);
                 String text = cols[11];
 

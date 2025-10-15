@@ -4,6 +4,7 @@ import org.apache.solr.client.solrj.beans.Field;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class DocumentResultat {
 
@@ -23,6 +24,8 @@ public class DocumentResultat {
     private String source;
 
     private List<String> extraits;
+
+    private Set<String> termes;
 
     public DocumentResultat() {
     }
@@ -57,5 +60,13 @@ public class DocumentResultat {
 
     public void setExtraits(List<String> extraits) {
         this.extraits = extraits;
+    }
+
+    public Set<String> getTermes() {
+        return termes;
+    }
+
+    public void setTermes(Set<String> termes) {
+        this.termes = termes;
     }
 }

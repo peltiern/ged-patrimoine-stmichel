@@ -2,7 +2,8 @@ package fr.patrimoine.stmichel.ged.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import fr.patrimoine.stmichel.ged.controllers.dto.DocumentMetadata;
+import fr.patrimoine.stmichel.ged.dto.DocumentMetadata;
+import fr.patrimoine.stmichel.ged.dto.InfosImage;
 import fr.patrimoine.stmichel.ged.modeles.solr.Document;
 import fr.patrimoine.stmichel.ged.modeles.solr.DocumentResultat;
 import fr.patrimoine.stmichel.ged.modeles.tesseract.TesseractOutputs;
@@ -52,11 +53,13 @@ public class DocumentService {
                 throw new RuntimeException("Impossible de lire l'image envoyée.");
             }
 
+            InfosImage infosImage = new InfosImage(image.getWidth(), image.getHeight());
+
             // Tesseract
-            TesseractOutputs tesseractOutputs = tesseractService.recognize(fichier);
+            TesseractOutputs tesseractOutputs = tesseractService.recognize(fichier, infosImage);
 
             // Redimensionnement si nécessaire
-            if (image.getWidth() > MAX_WIDTH || image.getHeight() > MAX_HEIGHT) {
+            if (infosImage.getWidth() > MAX_WIDTH || infosImage.getHeight() > MAX_HEIGHT) {
                 image = Thumbnails.of(image)
                         .size(MAX_WIDTH, MAX_HEIGHT)
                         .keepAspectRatio(true)

@@ -1,6 +1,6 @@
 package fr.patrimoine.stmichel.ged.controllers;
 
-import fr.patrimoine.stmichel.ged.controllers.dto.DocumentMetadata;
+import fr.patrimoine.stmichel.ged.dto.DocumentMetadata;
 import fr.patrimoine.stmichel.ged.modeles.solr.DocumentResultat;
 import fr.patrimoine.stmichel.ged.services.DocumentService;
 import fr.patrimoine.stmichel.ged.utils.validators.ValidImageFile;

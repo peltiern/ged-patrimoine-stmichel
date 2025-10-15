@@ -8,14 +8,14 @@ public class TesseractWord {
     private final int parNum;
     private final int lineNum;
     private final int wordNum;
-    private final int left;
-    private final int top;
-    private final int width;
-    private final int height;
+    private final double left;
+    private final double top;
+    private final double width;
+    private final double height;
     private final int conf;
     private final String text;
 
-    public TesseractWord(int level, int pageNum, int blockNum, int parNum, int lineNum, int wordNum, int left, int top, int width, int height, int conf, String text) {
+    public TesseractWord(int level, int pageNum, int blockNum, int parNum, int lineNum, int wordNum, double left, double top, double width, double height, int conf, String text) {
         this.level = level;
         this.pageNum = pageNum;
         this.blockNum = blockNum;
@@ -54,19 +54,19 @@ public class TesseractWord {
         return wordNum;
     }
 
-    public int getLeft() {
+    public double getLeft() {
         return left;
     }
 
-    public int getTop() {
+    public double getTop() {
         return top;
     }
 
-    public int getWidth() {
+    public double getWidth() {
         return width;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 

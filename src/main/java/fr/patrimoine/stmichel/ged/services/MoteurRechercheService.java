@@ -1,7 +1,5 @@
 package fr.patrimoine.stmichel.ged.services;
 
-import fr.patrimoine.stmichel.ged.controllers.dto.DocumentMetadata;
-import fr.patrimoine.stmichel.ged.modeles.solr.Document;
 import fr.patrimoine.stmichel.ged.modeles.solr.DocumentResultat;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
@@ -11,10 +9,9 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class MoteurRechercheService {
@@ -45,7 +42,7 @@ public class MoteurRechercheService {
             solrQuery.set("defType", "edismax");     // Permet d’utiliser un parser plus intelligent
             solrQuery.set("qf", "eid contenu");                // Champs à interroger
             solrQuery.set("q.op", "AND");
-            solrQuery.set("pf", "contenu^3");
+            solrQuery.set("pf", "contenu");
             solrQuery.setStart(0);
             solrQuery.setRows(10);                   // Nombre de résultats à retourner
             solrQuery.setHighlight(true);            // Active le highlighting
@@ -67,17 +64,13 @@ public class MoteurRechercheService {
                 if (mapExtraits != null) {
                     Optional.ofNullable(mapExtraits.get("contenu")).ifPresent(document::setExtraits);
                 }
+                // Extraction des termes matchés
+                document.setTermes(new HashSet<>());
+                document.getExtraits().stream()
+                        .flatMap(s -> Pattern.compile("<b>(.*?)</b>").matcher(s).results())
+                        .map(m -> m.group(1).toLowerCase())
+                        .forEach(s -> document.getTermes().add(s.toLowerCase()));
             });
-
-//			System.out.println("Résultats trouvés : " + results.getNumFound());
-//			for (SolrDocument doc : results) {
-//				System.out.println(" - " + doc.getFieldValue("id") + " → " + doc);
-//			}
-//
-//			// Exemple de récupération des highlights
-//			response.getHighlighting().forEach((docId, highlights) -> {
-//				System.out.println("Highlights pour " + docId + ": " + highlights);
-//			});
 
 		} catch (SolrServerException | IOException e) {
             // TODO

@@ -1,4 +1,4 @@
-package fr.patrimoine.stmichel.ged.controllers.dto;
+package fr.patrimoine.stmichel.ged.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

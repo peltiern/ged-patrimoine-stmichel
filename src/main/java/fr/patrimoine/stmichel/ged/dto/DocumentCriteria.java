@@ -1,4 +1,4 @@
-package fr.patrimoine.stmichel.ged.controllers.dto;
+package fr.patrimoine.stmichel.ged.dto;
 
 public class DocumentCriteria {
 
