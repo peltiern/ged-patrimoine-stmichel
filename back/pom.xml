@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>fr.patrimoine.stmichel</groupId>
-    <artifactId>ged</artifactId>
+    <artifactId>back</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>patrimoine-stmichel-ged</name>
     <description>patrimoine-stmichel-ged</description>
