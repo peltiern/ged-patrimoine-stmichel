@@ -8,6 +8,8 @@ spring:
       max-request-size: 10MB
 
 application:
+  api:
+    token: {APPLICATION_API_TOKEN}
   object-storage:
     endpoint: ${SCALEWAY_ENDPOINT}
     client-id: ${SCALEWAY_CLIENT_ID}

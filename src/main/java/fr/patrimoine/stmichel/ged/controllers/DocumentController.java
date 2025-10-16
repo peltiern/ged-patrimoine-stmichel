@@ -1,5 +1,6 @@
 package fr.patrimoine.stmichel.ged.controllers;
 
+import fr.patrimoine.stmichel.ged.configuration.security.Protected;
 import fr.patrimoine.stmichel.ged.dto.DocumentMetadata;
 import fr.patrimoine.stmichel.ged.modeles.solr.DocumentResultat;
 import fr.patrimoine.stmichel.ged.services.DocumentService;
@@ -25,6 +26,7 @@ public class DocumentController {
     }
 
     @PostMapping
+    @Protected
     public ResponseEntity<?> creerDocument(
             @RequestPart(value = "document") @ValidImageFile MultipartFile fichier,
             @RequestPart("metadata") @Valid DocumentMetadata metadata) {
