@@ -1,28 +1,33 @@
-package fr.patrimoine.stmichel.ged.dto;
+package fr.patrimoine.stmichel.ged.controllers.dto.document;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.apache.solr.client.solrj.beans.Field;
 
 import java.util.Date;
 
-public class DocumentMetadata {
+public class DocumentMetadataDto {
 
-    @Field("eid")
+    private String id;
+
     @NotBlank(message = "L'EID est obligatoire")
     private String eid;
 
-    @Field("titre")
     @NotBlank(message = "Le titre est obligatoire")
     private String titre;
 
-    @Field("date")
     @NotNull(message = "La date est obligatoire")
     private Date date;
 
-    @Field("source")
     @NotBlank(message = "La source est obligatoire")
     private String source;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getEid() {
         return eid;

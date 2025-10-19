@@ -1,36 +1,22 @@
-package fr.patrimoine.stmichel.ged.modeles.solr;
+package fr.patrimoine.stmichel.ged.modeles.document;
 
 import org.apache.solr.client.solrj.beans.Field;
 
 import java.util.Date;
-import java.util.Objects;
 
-public final class Document {
-    @Field
+public class DocumentMetadata {
+
+    @Field("eid")
     private String eid;
 
-    @Field
+    @Field("titre")
     private String titre;
 
-    @Field
-    private String contenu;
-
-    @Field
+    @Field("date")
     private Date date;
 
-    @Field
+    @Field("source")
     private String source;
-
-    public Document() {
-    }
-
-    public Document(String eid, String titre, String contenu, Date date, String source) {
-        this.eid = eid;
-        this.titre = titre;
-        this.contenu = contenu;
-        this.date = date;
-        this.source = source;
-    }
 
     public String getEid() {
         return eid;
@@ -46,14 +32,6 @@ public final class Document {
 
     public void setTitre(String titre) {
         this.titre = titre;
-    }
-
-    public String getContenu() {
-        return contenu;
-    }
-
-    public void setContenu(String contenu) {
-        this.contenu = contenu;
     }
 
     public Date getDate() {

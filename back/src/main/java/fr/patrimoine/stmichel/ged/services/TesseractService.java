@@ -2,7 +2,7 @@ package fr.patrimoine.stmichel.ged.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.patrimoine.stmichel.ged.dto.InfosImage;
+import fr.patrimoine.stmichel.ged.modeles.document.InfosImage;
 import fr.patrimoine.stmichel.ged.modeles.tesseract.*;
 import fr.patrimoine.stmichel.ged.providers.tesseract.TesseractProvider;
 import fr.patrimoine.stmichel.ged.utils.MathUtils;
@@ -96,10 +96,10 @@ public class TesseractService {
                 int parNum = Integer.parseInt(cols[3]);
                 int lineNum = Integer.parseInt(cols[4]);
                 int wordNum = Integer.parseInt(cols[5]);
-                double left = MathUtils.roundPercentOf(Integer.parseInt(cols[6]), infosImage.getWidth());
-                double top = MathUtils.roundPercentOf(Integer.parseInt(cols[7]), infosImage.getHeight());
-                double width = MathUtils.roundPercentOf(Integer.parseInt(cols[8]),  infosImage.getWidth());
-                double height = MathUtils.roundPercentOf(Integer.parseInt(cols[9]),   infosImage.getHeight());
+                double left = MathUtils.roundPercentOf(Integer.parseInt(cols[6]), infosImage.width());
+                double top = MathUtils.roundPercentOf(Integer.parseInt(cols[7]), infosImage.height());
+                double width = MathUtils.roundPercentOf(Integer.parseInt(cols[8]), infosImage.width());
+                double height = MathUtils.roundPercentOf(Integer.parseInt(cols[9]), infosImage.height());
                 int conf = Integer.parseInt(cols[10]);
                 String text = cols[11];
 
