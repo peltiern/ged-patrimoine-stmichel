@@ -7,57 +7,47 @@ import java.util.Date;
 
 public class DocumentMetadataDto {
 
-    private String id;
+	@NotBlank(message = "L'EID est obligatoire")
+	private String eid;
 
-    @NotBlank(message = "L'EID est obligatoire")
-    private String eid;
+	@NotBlank(message = "Le titre est obligatoire")
+	private String titre;
 
-    @NotBlank(message = "Le titre est obligatoire")
-    private String titre;
+	@NotNull(message = "La date est obligatoire")
+	private Date date;
 
-    @NotNull(message = "La date est obligatoire")
-    private Date date;
+	@NotBlank(message = "La source est obligatoire")
+	private String source;
 
-    @NotBlank(message = "La source est obligatoire")
-    private String source;
+	public String getEid() {
+		return eid;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public void setEid(String eid) {
+		this.eid = eid;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public String getTitre() {
+		return titre;
+	}
 
-    public String getEid() {
-        return eid;
-    }
+	public void setTitre(String titre) {
+		this.titre = titre;
+	}
 
-    public void setEid(String eid) {
-        this.eid = eid;
-    }
+	public Date getDate() {
+		return date;
+	}
 
-    public String getTitre() {
-        return titre;
-    }
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
-    public void setTitre(String titre) {
-        this.titre = titre;
-    }
+	public String getSource() {
+		return source;
+	}
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
+	public void setSource(String source) {
+		this.source = source;
+	}
 }

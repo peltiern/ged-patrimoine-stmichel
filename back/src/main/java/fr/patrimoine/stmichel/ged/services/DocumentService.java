@@ -60,6 +60,10 @@ public class DocumentService {
 
         DocumentMetadata metadata = documentMetadataMapper.toModel(metadataDto);
 
+        if (moteurRechercheService.existsByEid("documents", metadataDto.getEid())) {
+            throw new RuntimeException("Un document avec cet EID existe déjà.");
+        }
+
         try {
             // Vérification du type du fichier
             String contentType = fichier.getContentType();

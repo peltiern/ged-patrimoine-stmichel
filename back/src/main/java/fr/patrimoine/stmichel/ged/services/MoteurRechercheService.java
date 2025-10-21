@@ -90,4 +90,17 @@ public class MoteurRechercheService {
 
         return new PageResponse<>(documents, nbTotalResultats, (int) Math.ceil((double) nbTotalResultats / taillePage), indexDebut / taillePage, taillePage);
     }
+
+    public boolean existsByEid(String collection, String eid) {
+        SolrQuery query = new SolrQuery("eid:\"" + eid + "\"");
+
+	    QueryResponse response;
+	    try {
+		    response = solrClient.query(collection, query);
+	    } catch (SolrServerException | IOException e) {
+		    throw new RuntimeException(e);
+	    }
+	    return response.getResults().getNumFound() > 0;
+    }
+
 }

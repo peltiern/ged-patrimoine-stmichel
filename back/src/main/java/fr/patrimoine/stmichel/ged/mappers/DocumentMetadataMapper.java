@@ -10,7 +10,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface DocumentMetadataMapper extends ElementMapper<DocumentMetadata, DocumentMetadataDto> {
 
-    @Mapping(target = "id", ignore = true)
     DocumentMetadataDto toDto(DocumentMetadata model);
 
     DocumentMetadata toModel(DocumentMetadataDto documentMetadataDto);
