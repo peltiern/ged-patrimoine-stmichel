@@ -1,3 +1,4 @@
 window.ENV = {
-	INTERNET: true
+	INTERNET: true,
+    GED_HOST: 'http://localhost:8080',
 };
