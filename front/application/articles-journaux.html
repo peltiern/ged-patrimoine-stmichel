@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta property="og:title" content="Articles de presse - Patrimoine de Saint-Michel (16470 - France)">
+	<meta property="og:description" content="Articles de presse concernant la commune de Saint-Michel (16470)">
+	<meta property="og:image" content="https://peltiern.github.io/cartographie-saint-michel/img/banniere.jpg">
+	<meta property="og:image:width" content="1200"/>
+	<meta property="og:image:height" content="630"/>
+	<!--  <meta property="og:url" content="https://peltiern.github.io/cartographie-saint-michel/">-->
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="Patrimoine photographique de Saint-Michel (16470 - France)">
+	<meta name="robots" content="index, noimageindex, follow">
+	<link rel="icon" href="img/favicon.ico"/>
+	<title>Patrimoine photographique de Saint-Michel (16470 - France)</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/contact.css">
+	<link rel="stylesheet" href="css/footer.css">
+	<script src="js/env.js"></script>
+	<script>
+		// Chargement des CSS et JS en fonction du type d'environnement
+		const isLocal = window.ENV?.INTERNET !== true;
+
+		const linkZoomistCss = document.createElement("link");
+		linkZoomistCss.rel = "stylesheet";
+		linkZoomistCss.href = isLocal ? "css/vendor/zoomist.css" : "https://cdn.jsdelivr.net/npm/zoomist@2/zoomist.css";
+		document.head.appendChild(linkZoomistCss);
+	</script>
+</head>
+<body>
+<div id="site-header"></div>
+<main>
+	<div class="filtres">
+		<label for="filtre-terme-article-input">Recherche:</label>
+		<div id="filtre-terme-article" class="filtre-group">
+			<input type="search" id="filtre-terme-article-input" class="filtre-group-champ-saisie"/>
+		</div>
+
+		<label>Vus / Non vus:</label>
+		<div id="filtre-vues" class="filtre-group"></div>
+	</div>
+	<div class="timeline-container">
+		<div class="timeline-wrapper" id="timeline">
+			<div class="timeline-bar"></div>
+			<div class="timeline-highlight" id="highlight"></div>
+			<div class="handle range-left" id="handle-left">
+				<div class="label left" id="label-left"></div>
+			</div>
+			<div class="handle range-right" id="handle-right">
+				<div class="label right" id="label-right"></div>
+			</div>
+			<div class="handle explore" id="handle-explore">
+				<div class="label explore" id="label-explore"></div>
+			</div>
+		</div>
+		<div id="timeline-heatmap"></div>
+	</div>
+
+	<div class="onglets">
+		<div class="onglets-gauche">
+		</div>
+		<div class="onglets-droite">
+			<span id="compteur-articles">0 articles</span>
+			<button id="reset-filtres" title="Réinitialiser les filtres"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ><path d="M2 12C2 16.97 6.03 21 11 21C13.39 21 15.68 20.06 17.4 18.4L15.9 16.9C14.63 18.25 12.86 19 11 19C4.76 19 1.64 11.46 6.05 7.05C10.46 2.64 18 5.77 18 12H15L19 16H19.1L23 12H20C20 7.03 15.97 3 11 3C6.03 3 2 7.03 2 12Z" /></svg></button>
+		</div>
+	</div>
+
+
+	<section id="onglet-liste" class="contenu-onglet">
+		<div id="resultats-liste" class="liste-container"></div>
+		<div id="pagination"></div>
+	</section>
+
+	<div id="lightbox" class="lightbox hidden">
+		<div class="lightbox-content">
+			<div class="lightbox-topbar">
+				<div id="lightbox-menu" class="lightbox-button external-only"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" /></svg></div>
+				<div id="lightbox-close" class="lightbox-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" /></svg></div>
+			</div>
+
+			<div id="lightbox-menu-popup" class="hidden">
+				<ul>
+					<li id="menu-report">Signaler l'article</li>
+				</ul>
+			</div>
+
+			<button id="lightbox-prev" class="lightbox-nav"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" /></svg></button>
+			<!-- zoomist-container -->
+			<div class="lightbox-body zoomist-container">
+				<!-- zoomist-wrapper is required -->
+				<div class="zoomist-wrapper">
+					<!-- zoomist-image is required -->
+					<div class="zoomist-image">
+						<!-- you can add anything you want to zoom here. -->
+						<img id="lightbox-img" src="" alt="">
+					</div>
+				</div>
+			</div>
+			<button id="lightbox-next" class="lightbox-nav"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg></button>
+
+			<div id="lightbox-description">
+				<div class="lightbox-info">
+					<div class="info-left">
+						<div class="info-date-desc">
+							<span class="info-date" id="article-date"></span>
+						</div>
+						<div class="info-source">
+							Source : <span id="article-source"></span>
+						</div>
+					</div>
+					<div class="info-right">
+						<span class="info-number" id="article-numero"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Conteneur caché pour le signalement -->
+		<div id="report-container" class="hidden">
+			<div class="report-content">
+				<!-- le formulaire sera injecté ici -->
+			</div>
+		</div>
+
+	</div>
+
+</main>
+<div id="site-footer"></div>
+
+<script src="js/page-layout.js"></script>
+<script>
+	function loadScript(localPath, cdnPath) {
+		return new Promise((resolve, reject) => {
+			const script = document.createElement("script");
+			script.src = isLocal ? localPath : cdnPath;
+			script.onload = resolve;
+			script.onerror = reject;
+			document.body.appendChild(script);
+		});
+	}
+
+	// Charger les vendor JS dans l’ordre
+	Promise.resolve()
+		.then(() => loadScript(
+			"js/vendor/zoomist.js",
+			"https://cdn.jsdelivr.net/npm/zoomist@2/zoomist.umd.js"
+		))
+		.then(() => {
+			// Quand tout est chargé → tes scripts maison
+			return loadScript("js/articles.js", "js/articles.js");
+		})
+		.then(() => loadScript("js/contact-form.js", "js/contact-form.js"))
+		.then(() => loadScript("js/contact-submit.js", "js/contact-submit.js"))
+		.catch(err => console.error("Erreur de chargement d’un script:", err));
+</script>
+</body>
+</html>
