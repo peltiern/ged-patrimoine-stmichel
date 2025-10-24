@@ -25,6 +25,7 @@ const labelExplore = document.getElementById('label-explore');
 const highlight = document.getElementById('highlight');
 
 initialiserFiltres();
+rechercherArticles();
 
 const normalize = (s) => String(s ?? '').toLowerCase()
     .normalize('NFD')
@@ -52,7 +53,12 @@ async function callRechercherArticles() {
 
 function rechercherArticles() {
     callRechercherArticles()
-        .then(result => console.log(result))
+        .then(result => {
+            let listeArticles = [];
+            if (result && result.contenu && result.contenu.length !== 0) {
+                genererListe(result.contenu, "resultats-liste");
+            }
+        })
         .catch(error => console.error(error));
 }
 
@@ -181,13 +187,13 @@ function genererListe(filtered, containerId) {
     if (filtered && filtered.length > 0) {
         const pageItems = filtered.slice((pageCourante - 1) * nbArticlesParPage, pageCourante * nbArticlesParPage);
 
-        pageItems.forEach((photo, index) => {
+        pageItems.forEach((article, index) => {
 
-            const item = genererPhotoOverlay(photo, 'photo-item', '28px', 'photo-title-small');
+            const item = genererArticle(article, 'article-item', '28px', 'photo-title-small');
 
             // Click pour ouvrir lightbox
             item.addEventListener('click', () => {
-                openLightbox(index + (pageCourante - 1) * nbArticlesParPage);
+               // openLightbox(index + (pageCourante - 1) * nbArticlesParPage);
             });
 
             container.appendChild(item);
@@ -322,41 +328,41 @@ function genererPagination(totalItems) {
 //     document.getElementById('lightbox').classList.remove('hidden');
 // }
 //
-// function genererPhotoOverlay(photo, itemClassName, overlayMaxHeight, classNamePhotoTitle) {
-//
-//     const item = document.createElement('div');
-//     item.className = itemClassName;
-//     item.dataset.numero = photo.numero;
-//
-//     // Image
-//     const img = document.createElement('img');
-//     img.src = 'resized/small/' + photo.numero + '.jpg';
-//     img.alt = photo.numero;
-//
-//     // Overlay
-//     const overlay = document.createElement('div');
-//     overlay.className = 'photo-overlay';
-//
-//     // Overlay header
-//     const overlayHeader = document.createElement('div');
-//     overlayHeader.className = 'overlay-header';
-//
-//     // Titre
-//     const photoTitle = document.createElement('div');
-//     photoTitle.className = classNamePhotoTitle;
-//     photoTitle.textContent = photo.numero;
-//
-//     overlayHeader.appendChild(photoTitle);
-//     overlay.appendChild(overlayHeader);
-//
-//     item.appendChild(img);
-//     item.appendChild(overlay);
-//
-//     // Badge "Non vue"
-//     indiquerSiPhotoNonVues(item, photo.numero);
-//
-//     return item;
-// }
+function genererArticle(article, itemClassName, overlayMaxHeight, classNamePhotoTitle) {
+
+    const item = document.createElement('div');
+    item.className = itemClassName;
+    item.dataset.numero = article.metadata.eid;
+
+    // Image
+    const img = document.createElement('img');
+    img.src = 'https://saint-michel-archives.s3.fr-par.scw.cloud/tests/Documents/' + article.metadata.eid + '.jpg';
+    img.alt = article.metadata.eid;
+
+    // Overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'photo-overlay';
+
+    // Overlay header
+    const overlayHeader = document.createElement('div');
+    overlayHeader.className = 'overlay-header';
+
+    // Titre
+    const photoTitle = document.createElement('div');
+    photoTitle.className = classNamePhotoTitle;
+    photoTitle.textContent = article.metadata.eid;
+
+    overlayHeader.appendChild(photoTitle);
+    overlay.appendChild(overlayHeader);
+
+    item.appendChild(img);
+    item.appendChild(overlay);
+
+    // Badge "Non vue"
+    //indiquerSiPhotoNonVues(item, article.numero);
+
+    return item;
+}
 //
 // function displayLightbox() {
 //     const photo = listeFiltreeCourante[currentLightboxIndex];
