@@ -16,24 +16,38 @@ import fr.patrimoine.stmichel.ged.modeles.document.InfosImage;
 import fr.patrimoine.stmichel.ged.modeles.solr.Document;
 import fr.patrimoine.stmichel.ged.modeles.solr.DocumentResultat;
 import fr.patrimoine.stmichel.ged.modeles.tesseract.TesseractOutputs;
-import net.coobird.thumbnailator.Thumbnails;
+import fr.patrimoine.stmichel.ged.utils.ImageUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Optional;
 
 @Service
 public class DocumentService {
 
+    public static final String IMAGE_JPEG = "image/jpeg";
+    public static final String IMAGE_TIFF = "image/tiff";
+    public static final String EXTENSION_JPG = "jpg";
+    public static final String EXTENSION_TIFF = "tiff";
     private static final int MAX_WIDTH = 1920;
     private static final int MAX_HEIGHT = 1920;
-
     private static final String DOSSIERS_DOCUMENTS = "tests/Documents/";
+
+    @Value(value = "${application.object-storage.bucket.archives}")
+    private String bucketArchives;
+
+    @Value(value = "${application.object-storage.bucket.public}")
+    private String bucketPublic;
 
     private final ObjectStorageService objectStorageService;
 
@@ -47,13 +61,16 @@ public class DocumentService {
 
     private final PaginationMapper paginationMapper;
 
-    public DocumentService(ObjectStorageService objectStorageService, TesseractService tesseractService, MoteurRechercheService moteurRechercheService, DocumentMetadataMapper documentMetadataMapper, DocumentResponseMapper documentResponseMapper, PaginationMapper paginationMapper) {
+    private final Tika tika;
+
+    public DocumentService(ObjectStorageService objectStorageService, TesseractService tesseractService, MoteurRechercheService moteurRechercheService, DocumentMetadataMapper documentMetadataMapper, DocumentResponseMapper documentResponseMapper, PaginationMapper paginationMapper, Tika tika) {
         this.objectStorageService = objectStorageService;
         this.tesseractService = tesseractService;
         this.moteurRechercheService = moteurRechercheService;
         this.documentMetadataMapper = documentMetadataMapper;
         this.documentResponseMapper = documentResponseMapper;
         this.paginationMapper = paginationMapper;
+        this.tika = tika;
     }
 
     public DocumentMetadataDto creerDocument(MultipartFile fichier, DocumentMetadataDto metadataDto) {
@@ -66,47 +83,48 @@ public class DocumentService {
 
         try {
             // Vérification du type du fichier
-            String contentType = fichier.getContentType();
-            if (contentType == null) {
+            String contentType = tika.detect(fichier.getInputStream());
+            if (!(StringUtils.equals(contentType, IMAGE_JPEG) || StringUtils.equals(contentType, IMAGE_TIFF))) {
                 throw new RuntimeException("Le fichier doit être une image JPEG ou TIFF.");
             }
 
+            // Récupération des dimensions de l'image
             BufferedImage image = ImageIO.read(fichier.getInputStream());
             if (image == null) {
                 throw new RuntimeException("Impossible de lire l'image envoyée.");
             }
-
             InfosImage infosImage = new InfosImage(image.getWidth(), image.getHeight());
 
-            // Tesseract
+            // OCR
             TesseractOutputs tesseractOutputs = tesseractService.recognize(fichier, infosImage);
 
-            // Redimensionnement si nécessaire
-            if (infosImage.width() > MAX_WIDTH || infosImage.height() > MAX_HEIGHT) {
-                image = Thumbnails.of(image)
-                        .size(MAX_WIDTH, MAX_HEIGHT)
-                        .keepAspectRatio(true)
-                        .asBufferedImage();
-            }
+            // Redimensionnement de l'image si nécessaire puis transformation en RGB
+            BufferedImage imageRedimensionneeRgb = Optional.of(image)
+                    .filter(img -> img.getWidth() > MAX_WIDTH || img.getHeight() > MAX_HEIGHT)
+                    .map(img -> ImageUtils.redimensionnerImage(img, MAX_WIDTH, MAX_HEIGHT))
+                    .map(ImageUtils::convertirEnRgb)
+                    .orElseGet(() -> ImageUtils.convertirEnRgb(image));
 
-            String extension = contentType.contains("tif") ? "tiff" : "jpg";
-            File tempFile = File.createTempFile("upload-", "." + extension);
-            ImageIO.write(image, extension, tempFile);
+            // Sauvegarde de l'image redimensionnée sur le bucket public
+            uploadImage(imageRedimensionneeRgb, bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid(), IMAGE_JPEG);
 
-            // TODO Sauvegarde sur le S3 (TIFF + image redimensionnée)
-            objectStorageService.upload("saint-michel-archives", DOSSIERS_DOCUMENTS + metadata.getEid() + "." + extension, tempFile);
+            // Sauvegarde de l'image initiale sur le bucket archives
+            uploadImage(image, bucketArchives, DOSSIERS_DOCUMENTS + metadata.getEid() + "_save", contentType);
+
+            // Sauvegarde du contenu texte du document sur le bucket public
             if (StringUtils.isNotBlank(tesseractOutputs.text())) {
-                objectStorageService.upload("saint-michel-archives", DOSSIERS_DOCUMENTS + metadata.getEid() + ".txt", tesseractOutputs.text(), "text/plain");
+                objectStorageService.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".txt", tesseractOutputs.text(), "text/plain");
             }
+
+            // Sauvegarde des mots trouvés dans le document sur le bucket public
             if (!CollectionUtils.isEmpty(tesseractOutputs.words())) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
                 String wordsJson = objectMapper.writeValueAsString(tesseractOutputs.words());
-                objectStorageService.upload("saint-michel-archives", DOSSIERS_DOCUMENTS + metadata.getEid() + ".json", wordsJson, "application/json");
+                objectStorageService.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".json", wordsJson, "application/json");
             }
-            tempFile.delete();
 
-            // Indexation
+            // Indexation du document
             if (StringUtils.isNotBlank(tesseractOutputs.text())) {
                 Document document = new Document(metadata.getEid(), metadata.getTitre(), tesseractOutputs.text(), metadata.getDate(), metadata.getSource());
                 moteurRechercheService.indexerObjet("documents", document);
@@ -127,5 +145,25 @@ public class DocumentService {
         PageResponse<DocumentResultat> resultats = moteurRechercheService.rechercherObjet("documents", documentRequest);
 
         return paginationMapper.toDto(resultats, documentResponseMapper);
+    }
+
+    private void uploadImage(BufferedImage imageRedimensionneeRgb, String bucket, String cheminDossier, String contentType) throws IOException {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            String extensionImage = StringUtils.equals(contentType, IMAGE_TIFF) ? EXTENSION_TIFF : EXTENSION_JPG;
+            ImageIO.write(imageRedimensionneeRgb, extensionImage, baos);
+            baos.flush();
+
+            byte[] data = baos.toByteArray();
+
+            try (InputStream is = new ByteArrayInputStream(data)) {
+                objectStorageService.upload(
+                        bucket,
+                        cheminDossier + "." + extensionImage,
+                        is,
+                        data.length,
+                        contentType
+                );
+            }
+        }
     }
 }

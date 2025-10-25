@@ -2,13 +2,12 @@ package fr.patrimoine.stmichel.ged.services;
 
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
-import io.minio.UploadObjectArgs;
 import io.minio.errors.*;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -22,14 +21,15 @@ public class ObjectStorageService {
         this.minioClient = minioClient;
     }
 
-    public void upload(String bucket, String nomFichier, File fichier) {
+    public void upload(String bucket, String nomFichier, InputStream inputStream, long taille, String contentType) {
 
         try {
-            minioClient.uploadObject(
-                    UploadObjectArgs.builder()
+            minioClient.putObject(
+                    PutObjectArgs.builder()
                             .bucket(bucket)
                             .object(nomFichier)
-                            .filename(fichier.getAbsolutePath())
+                            .stream(inputStream, taille, -1)
+                            .contentType(contentType)
                             .build()
             );
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
