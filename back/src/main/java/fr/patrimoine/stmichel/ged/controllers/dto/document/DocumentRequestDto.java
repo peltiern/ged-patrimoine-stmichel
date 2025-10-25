@@ -6,6 +6,16 @@ public class DocumentRequestDto {
 
     private String query;
 
+    /**
+     * Date de début de la recherche (format yyyy-MM-dd).
+     */
+    private String dateDebut;
+
+    /**
+     * Date de fin de la recherche (format yyyy-MM-dd).
+     */
+    private String dateFin;
+
     private int page = 0;
 
     private int taillePage = 20;
@@ -20,6 +30,22 @@ public class DocumentRequestDto {
 
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    public String getDateDebut() {
+        return dateDebut;
+    }
+
+    public void setDateDebut(String dateDebut) {
+        this.dateDebut = dateDebut;
+    }
+
+    public String getDateFin() {
+        return dateFin;
+    }
+
+    public void setDateFin(String dateFin) {
+        this.dateFin = dateFin;
     }
 
     public int getPage() {

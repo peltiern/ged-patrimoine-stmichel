@@ -4,6 +4,7 @@ import fr.patrimoine.stmichel.ged.modeles.common.PageResponse;
 import fr.patrimoine.stmichel.ged.modeles.common.SortOrder;
 import fr.patrimoine.stmichel.ged.modeles.document.DocumentRequest;
 import fr.patrimoine.stmichel.ged.modeles.solr.DocumentResultat;
+import fr.patrimoine.stmichel.ged.utils.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -47,6 +48,18 @@ public class MoteurRechercheService {
 
             SolrQuery solrQuery = new SolrQuery();
             solrQuery.setQuery(StringUtils.isNotBlank(documentRequest.getQuery()) ? documentRequest.getQuery() + "~1" : "*:*");
+
+            if (StringUtils.isNotBlank(documentRequest.getDateDebut()) || StringUtils.isNotBlank(documentRequest.getDateFin())) {
+                String dateDebut = "*";
+                String dateFin = "*";
+                if (StringUtils.isNotBlank(documentRequest.getDateDebut())) {
+                    dateDebut = DateUtils.parseToSolrDate(documentRequest.getDateDebut());
+                }
+                if (StringUtils.isNotBlank(documentRequest.getDateFin())) {
+                    dateFin = DateUtils.parseToSolrDate(documentRequest.getDateFin());
+                }
+                solrQuery.addFilterQuery(String.format("(date:[%s TO %s])", dateDebut, dateFin));
+            }
 
             solrQuery.set("defType", "edismax");     // Permet d’utiliser un parser plus intelligent
             solrQuery.set("qf", "eid contenu");                // Champs à interroger
@@ -94,13 +107,13 @@ public class MoteurRechercheService {
     public boolean existsByEid(String collection, String eid) {
         SolrQuery query = new SolrQuery("eid:\"" + eid + "\"");
 
-	    QueryResponse response;
-	    try {
-		    response = solrClient.query(collection, query);
-	    } catch (SolrServerException | IOException e) {
-		    throw new RuntimeException(e);
-	    }
-	    return response.getResults().getNumFound() > 0;
+        QueryResponse response;
+        try {
+            response = solrClient.query(collection, query);
+        } catch (SolrServerException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        return response.getResults().getNumFound() > 0;
     }
 
 }
