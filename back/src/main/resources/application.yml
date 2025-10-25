@@ -16,4 +16,4 @@ application:
     client-secret: ${SCALEWAY_CLIENT_SECRET}
     bucket:
       archives: "saint-michel-archives"
-      public: "saint-michel-archives"
+      public: "saint-michel-archives-publiques"

@@ -109,7 +109,7 @@ public class DocumentService {
             uploadImage(imageRedimensionneeRgb, bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid(), IMAGE_JPEG);
 
             // Sauvegarde de l'image initiale sur le bucket archives
-            uploadImage(image, bucketArchives, DOSSIERS_DOCUMENTS + metadata.getEid() + "_save", contentType);
+            uploadImage(image, bucketArchives, DOSSIERS_DOCUMENTS + metadata.getEid(), contentType);
 
             // Sauvegarde du contenu texte du document sur le bucket public
             if (StringUtils.isNotBlank(tesseractOutputs.text())) {
