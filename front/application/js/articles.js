@@ -8,7 +8,6 @@ let termeRecherche = '';
 let anneeDebut = 1851;
 let anneeFin = 2025;
 let currentLightboxIndex = 0;
-let listeFiltreeCourante = [];
 
 /** Slider - Timeline */
 const anneeMinInitiale = 1851;
@@ -54,8 +53,8 @@ async function callRechercherArticles() {
 function rechercherArticles() {
     callRechercherArticles()
         .then(result => {
-            let listeArticles = [];
             if (result && result.contenu) {
+                document.getElementById('compteur-articles').textContent = `${result.nbTotalElements} article(s)`;
                 genererListe(result, "resultats-liste");
             }
         })
@@ -64,17 +63,6 @@ function rechercherArticles() {
 
 
 function initialiserFiltres() {
-    const listeVues = ['Tous', 'Vus', 'Non vus'];
-    // const themes = new Set();
-    //
-    // data.forEach(photo => {
-    //     photo.themes?.forEach(t => themes.add(t));
-    //     photo.lieu?.forEach(l => lieux.add(l));
-    // });
-
-    // // Création des menus déroulants
-    // creerListeSelectionnable('filtre-themes', Array.from(themes).sort(), themesSelectionnes, filtrerArticles, false);
-
     const inputTerme = document.getElementById('filtre-terme-article-input');
     inputTerme.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
@@ -85,73 +73,7 @@ function initialiserFiltres() {
         }
     });
 }
-//
-// function creerListeSelectionnable(containerId, valeurs, tableauSelection, onChange, choixUnique) {
-//     const container = document.getElementById(containerId);
-//     container.innerHTML = '';
-//
-//     const wrapper = document.createElement('div');
-//     wrapper.className = 'custom-multiselect';
-//
-//     const button = document.createElement('div');
-//     button.className = 'custom-multiselect-button';
-//     button.textContent = 'Sélectionner...';
-//     button.onclick = () => wrapper.classList.toggle('open');
-//
-//     const options = document.createElement('div');
-//     options.className = 'custom-multiselect-options';
-//
-//     valeurs.forEach(val => {
-//         const label = document.createElement('label');
-//         const input = document.createElement('input');
-//         input.type = choixUnique ? 'radio' : 'checkbox';
-//         input.name = choixUnique ? containerId + "_radio" : undefined;
-//         input.value = val;
-//         input.checked = tableauSelection.includes(val);
-//
-//         input.onchange = () => {
-//             if (choixUnique) {
-//                 // Si choix unique → remplacer entièrement le tableau
-//                 tableauSelection.splice(0, tableauSelection.length, val);
-//                 // fermer le menu après sélection
-//                 wrapper.classList.remove("open");
-//             } else {
-//                 // Sinon → comportement multiselect classique
-//                 if (input.checked) {
-//                     tableauSelection.push(val);
-//                 } else {
-//                     const idx = tableauSelection.indexOf(val);
-//                     if (idx !== -1) tableauSelection.splice(idx, 1);
-//                 }
-//             }
-//             mettreAJourLabel(button, tableauSelection);
-//             pageCourante = 1;
-//             onChange();
-//         };
-//
-//         label.appendChild(input);
-//         label.appendChild(document.createTextNode(val));
-//         options.appendChild(label);
-//     });
-//
-//     wrapper.appendChild(button);
-//     wrapper.appendChild(options);
-//     container.appendChild(wrapper);
-//     mettreAJourLabel(button, tableauSelection);
-// }
-//
-// // Met à jour le texte du bouton selon le nombre de valeurs sélectionnées
-// function mettreAJourLabel(button, selection) {
-//     if (selection.length === 0) {
-//         button.textContent = 'Sélectionner...';
-//     } else if (selection.length === 1) {
-//         button.textContent = selection[0];
-//     } else {
-//         button.textContent = `${selection.length} sélectionnés`;
-//     }
-//     button.title = selection.join(', ');
-// }
-//
+
 function reinitialiserFiltres() {
     termeRecherche = '';
     anneeDebut = anneeMinInitiale;
@@ -170,15 +92,6 @@ function reinitialiserFiltres() {
     pageCourante = 1;
     rechercherArticles();
 }
-//
-// // Fermer les menus ouverts quand on clique ailleurs
-// document.addEventListener('click', (e) => {
-//     document.querySelectorAll('.custom-multiselect').forEach(ms => {
-//         if (!ms.contains(e.target)) {
-//             ms.classList.remove('open');
-//         }
-//     });
-// });
 
 function genererListe(reponseRecherche, containerId) {
     const container = document.getElementById(containerId);
@@ -193,7 +106,7 @@ function genererListe(reponseRecherche, containerId) {
 
             // Click pour ouvrir lightbox
             item.addEventListener('click', () => {
-               // openLightbox(index + (pageCourante - 1) * nbArticlesParPage);
+               openLightbox(article);
             });
 
             container.appendChild(item);
@@ -320,14 +233,13 @@ function genererPagination(totalItems) {
     pageInfo.textContent = `${pageCourante} / ${nbTotalPages}`;
     pagination.appendChild(pageInfo);
 }
-//
-// function openLightbox(index) {
-//     currentLightboxIndex = index;
-//     displayLightbox();
-//
-//     document.getElementById('lightbox').classList.remove('hidden');
-// }
-//
+
+function openLightbox(article) {
+    afficherArticle(article);
+
+    document.getElementById('lightbox').classList.remove('hidden');
+}
+
 function genererArticle(article, itemClassName, overlayMaxHeight, classNamePhotoTitle) {
 
     const item = document.createElement('div');
@@ -363,204 +275,152 @@ function genererArticle(article, itemClassName, overlayMaxHeight, classNamePhoto
 
     return item;
 }
-//
-// function displayLightbox() {
-//     const photo = listeFiltreeCourante[currentLightboxIndex];
-//
-//     // Image
-//     const img = document.getElementById('lightbox-img');
-//     img.src = 'resized/large/' + photo.numero + '.jpg';
-//     img.alt = photo.numero;
-//
-//     // Date
-//     const date = document.getElementById('photo-date');
-//     date.innerText = `${photo.date || ''}`;
-//
-//     // Lieu
-//     const lieu = document.getElementById('photo-lieu');
-//     if (photo.lieu && photo.lieu !== "") {
-//         if (date.innerText !== "") {
-//             lieu.innerText = ` -  ${photo.lieu}`;
-//         } else {
-//             lieu.innerText = `${photo.lieu}`;
-//         }
-//     } else {
-//         lieu.innerText = "";
-//     }
-//
-//     // Description
-//     const description = document.getElementById('photo-description');
-//     if (photo.commentaires && photo.commentaires !== "") {
-//         if (date.innerText !== "" || lieu.innerText !== "") {
-//             description.innerText = ` -  ${photo.commentaires}`;
-//         } else {
-//             description.innerText = `${photo.commentaires}`;
-//         }
-//     } else {
-//         description.innerText = "";
-//     }
-//
-//     // Source
-//     const source = document.getElementById('photo-source');
-//     source.innerText = `${photo.sources || ''}`;
-//
-//     // Numéro
-//     const numero = document.getElementById('photo-numero');
-//     numero.innerText = `${photo.album || ''}/${photo.numero || ''}`;
-//
-//     // Attendre que l'image soit bien chargée
-//     img.onload = () => {
-//
-//         // Considérer la photo "vue"
-//         ajouterPhotoVue(photo.numero);
-//
-//         // Ajouter l'outil de zoom sur la photo
-//         if (!window.lightboxZoomist) {
-//             window.lightboxZoomist = new Zoomist('.lightbox-body', {
-//                 wheelable: true,
-//                 draggable: true,
-//                 smooth: true,
-//                 initScale: 1,
-//             });
-//         } else {
-//             window.lightboxZoomist.update();
-//             window.lightboxZoomist.reset();
-//         }
-//     };
-// }
-//
-// document.getElementById('lightbox-close').addEventListener('click', () => {
-//     document.getElementById('lightbox').classList.add('hidden');
-// });
-//
-// document.getElementById('lightbox-prev').addEventListener('click', () => {
-//     if (currentLightboxIndex > 0) {
-//         currentLightboxIndex--;
-//         displayLightbox();
-//     }
-// });
-//
-// document.getElementById('lightbox-next').addEventListener('click', () => {
-//     if (currentLightboxIndex < listeFiltreeCourante.length - 1) {
-//         currentLightboxIndex++;
-//         displayLightbox();
-//     }
-// });
-//
-// document.addEventListener('keydown', (e) => {
-//     const lightbox = document.getElementById('lightbox');
-//     if (lightbox.classList.contains('hidden')) return; // si la lightbox n'est pas ouverte, on ignore
-//
-//     if (e.key === 'ArrowLeft') {
-//         if (currentLightboxIndex > 0) {
-//             currentLightboxIndex--;
-//             displayLightbox();
-//         }
-//     } else if (e.key === 'ArrowRight') {
-//         if (currentLightboxIndex < listeFiltreeCourante.length - 1) {
-//             currentLightboxIndex++;
-//             displayLightbox();
-//         }
-//     } else if (e.key === 'Escape') {
-//         // bonus: fermer avec Echap
-//         lightbox.classList.add('hidden');
-//     }
-// });
-//
-// document.getElementById('lightbox').addEventListener('click', (e) => {
-//     if (e.target.id === 'lightbox') {
-//         document.getElementById('lightbox').classList.add('hidden');
-//     }
-// });
-//
-// const menuBtn = document.getElementById('lightbox-menu');
-// const menuPopup = document.getElementById('lightbox-menu-popup');
-//
-// // Toggle affichage du menu
-// menuBtn.addEventListener('click', () => {
-//     menuPopup.classList.toggle('hidden');
-// });
-//
-// // Fermer le menu si on clique ailleurs
-// document.addEventListener('click', (e) => {
-//     if (!menuBtn.contains(e.target) && !menuPopup.contains(e.target)) {
-//         menuPopup.classList.add('hidden');
-//     }
-// });
-//
-// // Action "Signaler"
-// document.getElementById('menu-report').addEventListener('click', () => {
-//     menuPopup.classList.add('hidden');
-//     const photo = listeFiltreeCourante[currentLightboxIndex];
-//     openReportForm(photo.numero);
-// });
-//
-//
-// async function openReportForm(photoNum) {
-//     const overlay = document.getElementById('report-container');
-//     const content = overlay.querySelector('.report-content');
-//
-//     // Charger le formulaire depuis le composant
-//     const res = await fetch('components/contact-form.html');
-//     const html = await res.text();
-//     content.innerHTML = `
-//     <button class="report-close" title="Fermer">&times;</button>
-//     ${html}
-//   `;
-//
-//     // Préremplir les champs cachés
-//     initContactForm({
-//         mode: 'signalement',
-//         photo: photoNum
-//     });
-//
-//     // Afficher l'overlay
-//     overlay.classList.remove('hidden');
-//
-//     // Fermer en cliquant sur le bouton de fermeture
-//     content.querySelector('.report-close').onclick = () => {
-//         overlay.classList.add('hidden');
-//     };
-//
-//     // Fermer si on clique en dehors du formulaire
-//     overlay.onclick = (e) => {
-//         if (e.target === overlay) {
-//             overlay.classList.add('hidden');
-//         }
-//     };
-// }
-//
-// /* Gestion des photos vues / non vues */
-// function getPhotosVues() {
-//     return JSON.parse(localStorage.getItem("photosVues")) || [];
-// }
-//
-// function indiquerSiPhotoNonVues(photoElement, numeroPhoto) {
-//     const photosVues = getPhotosVues();
-//     if (!photosVues.includes(numeroPhoto)) {
-//         const badge = document.createElement("div");
-//         badge.classList.add("badge-new");
-//         badge.classList.add("top");
-//         const texte = document.createElement("span");
-//         texte.textContent = "N";
-//         badge.appendChild(texte);
-//         photoElement.appendChild(badge);
-//     }
-// }
-//
-// function ajouterPhotoVue(numeroPhoto) {
-//     let photosVues = getPhotosVues();
-//     if (!photosVues.includes(numeroPhoto)) {
-//         photosVues.push(numeroPhoto);
-//         localStorage.setItem("photosVues", JSON.stringify(photosVues));
-//     }
-//     // Suppression du badge de la photo sur la liste
-//     const badge = document.querySelector(`.photo-item[data-numero="${numeroPhoto}"] .badge-new`);
-//     if (photosVues.includes(numeroPhoto)) {
-//         if (badge) badge.remove();
-//     }
-// }
-//
+
+function afficherArticle(article) {
+
+    const metadata = article.metadata;
+
+    // Image
+    const img = document.getElementById('lightbox-img');
+    img.src = 'https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/' + metadata.eid + '.jpg';
+    img.alt = metadata.eid;
+
+    // Date
+    const date = document.getElementById('article-date');
+    date.innerText = `${formaterDate(metadata.date) || ''}`;
+
+    // Source
+    const source = document.getElementById('article-source');
+    source.innerText = `${metadata.source || ''}`;
+
+    // Numéro
+    const numero = document.getElementById('article-numero');
+    numero.innerText = `${metadata.numero || ''}`;
+
+    // Attendre que l'article soit bien chargé
+    img.onload = () => {
+
+        // Ajouter l'outil de zoom sur la photo
+        if (!window.lightboxZoomist) {
+            window.lightboxZoomist = new Zoomist('.lightbox-body', {
+                wheelable: true,
+                draggable: true,
+                smooth: true,
+                initScale: 1,
+            });
+        } else {
+            window.lightboxZoomist.update();
+            window.lightboxZoomist.reset();
+        }
+    };
+}
+
+function formaterDate(dateIso8601) {
+    const date = new Date(dateIso8601);
+    return date.toLocaleDateString('fr-FR');
+}
+
+document.getElementById('lightbox-close').addEventListener('click', () => {
+    document.getElementById('lightbox').classList.add('hidden');
+});
+
+document.getElementById('lightbox-prev').addEventListener('click', () => {
+    if (currentLightboxIndex > 0) {
+        currentLightboxIndex--;
+        afficherArticle();
+    }
+});
+
+document.getElementById('lightbox-next').addEventListener('click', () => {
+    if (currentLightboxIndex < listeFiltreeCourante.length - 1) {
+        currentLightboxIndex++;
+        afficherArticle();
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    const lightbox = document.getElementById('lightbox');
+    if (lightbox.classList.contains('hidden')) return; // si la lightbox n'est pas ouverte, on ignore
+
+    if (e.key === 'ArrowLeft') {
+        if (currentLightboxIndex > 0) {
+            currentLightboxIndex--;
+            afficherArticle();
+        }
+    } else if (e.key === 'ArrowRight') {
+        if (currentLightboxIndex < listeFiltreeCourante.length - 1) {
+            currentLightboxIndex++;
+            afficherArticle();
+        }
+    } else if (e.key === 'Escape') {
+        // bonus: fermer avec Echap
+        lightbox.classList.add('hidden');
+    }
+});
+
+document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target.id === 'lightbox') {
+        document.getElementById('lightbox').classList.add('hidden');
+    }
+});
+
+const menuBtn = document.getElementById('lightbox-menu');
+const menuPopup = document.getElementById('lightbox-menu-popup');
+
+// Toggle affichage du menu
+menuBtn.addEventListener('click', () => {
+    menuPopup.classList.toggle('hidden');
+});
+
+// Fermer le menu si on clique ailleurs
+document.addEventListener('click', (e) => {
+    if (!menuBtn.contains(e.target) && !menuPopup.contains(e.target)) {
+        menuPopup.classList.add('hidden');
+    }
+});
+
+// Action "Signaler"
+document.getElementById('menu-report').addEventListener('click', () => {
+    menuPopup.classList.add('hidden');
+    const photo = listeFiltreeCourante[currentLightboxIndex];
+    openReportForm(photo.numero);
+});
+
+
+async function openReportForm(photoNum) {
+    const overlay = document.getElementById('report-container');
+    const content = overlay.querySelector('.report-content');
+
+    // Charger le formulaire depuis le composant
+    const res = await fetch('components/contact-form.html');
+    const html = await res.text();
+    content.innerHTML = `
+    <button class="report-close" title="Fermer">&times;</button>
+    ${html}
+  `;
+
+    // Préremplir les champs cachés
+    initContactForm({
+        mode: 'signalement',
+        photo: photoNum
+    });
+
+    // Afficher l'overlay
+    overlay.classList.remove('hidden');
+
+    // Fermer en cliquant sur le bouton de fermeture
+    content.querySelector('.report-close').onclick = () => {
+        overlay.classList.add('hidden');
+    };
+
+    // Fermer si on clique en dehors du formulaire
+    overlay.onclick = (e) => {
+        if (e.target === overlay) {
+            overlay.classList.add('hidden');
+        }
+    };
+}
+
 const setPosition = (el, percent) => {
     el.style.left = `calc(${percent}% - 10px)`;
 };
