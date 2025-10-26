@@ -36,7 +36,7 @@ function buildQueryParams() {
     if (termeRecherche.length !== 0) {
         params.append('query', normalize(termeRecherche));
     }
-    params.append('page', (pageCourante - 1).toString());
+    params.append('page', pageCourante.toString());
     params.append('taillePage', nbArticlesParPage.toString());
     params.append('ordreTri', 'ASC');
     params.append('colonneTri', 'date')
@@ -55,8 +55,8 @@ function rechercherArticles() {
     callRechercherArticles()
         .then(result => {
             let listeArticles = [];
-            if (result && result.contenu && result.contenu.length !== 0) {
-                genererListe(result.contenu, "resultats-liste");
+            if (result && result.contenu) {
+                genererListe(result, "resultats-liste");
             }
         })
         .catch(error => console.error(error));
@@ -180,14 +180,14 @@ function reinitialiserFiltres() {
 //     });
 // });
 
-function genererListe(filtered, containerId) {
+function genererListe(reponseRecherche, containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
 
-    if (filtered && filtered.length > 0) {
-        const pageItems = filtered.slice((pageCourante - 1) * nbArticlesParPage, pageCourante * nbArticlesParPage);
+    const articles = reponseRecherche.contenu;
+    if (articles && articles.length > 0) {
 
-        pageItems.forEach((article, index) => {
+        articles.forEach((article, index) => {
 
             const item = genererArticle(article, 'article-item', '28px', 'photo-title-small');
 
@@ -201,7 +201,7 @@ function genererListe(filtered, containerId) {
     }
 
     if (containerId === "resultats-liste") {
-        genererPagination(filtered.length);
+        genererPagination(reponseRecherche.nbTotalElements);
     }
 }
 
@@ -336,7 +336,7 @@ function genererArticle(article, itemClassName, overlayMaxHeight, classNamePhoto
 
     // Image
     const img = document.createElement('img');
-    img.src = 'https://saint-michel-archives.s3.fr-par.scw.cloud/tests/Documents/' + article.metadata.eid + '.jpg';
+    img.src = 'https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/' + article.metadata.eid + '.jpg';
     img.alt = article.metadata.eid;
 
     // Overlay

@@ -39,7 +39,7 @@ public class MoteurRechercheService {
         List<DocumentResultat> documents;
         long nbTotalResultats;
 
-        int indexDebut = documentRequest.getPageRequest().getPage() * documentRequest.getPageRequest().getTaillePage();
+        int indexDebut = (documentRequest.getPageRequest().getPage() - 1) * documentRequest.getPageRequest().getTaillePage();
         int taillePage = documentRequest.getPageRequest().getTaillePage();
         String colonneTri = documentRequest.getPageRequest().getColonneTri() == null ? "date" : documentRequest.getPageRequest().getColonneTri();
         SolrQuery.ORDER ordreTri = documentRequest.getPageRequest().getOrdreTri() == SortOrder.ASC ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc;

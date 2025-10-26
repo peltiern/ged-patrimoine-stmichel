@@ -16,7 +16,7 @@ public class DocumentRequestDto {
      */
     private String dateFin;
 
-    private int page = 0;
+    private int page = 1;
 
     private int taillePage = 20;
 

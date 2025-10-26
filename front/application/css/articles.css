@@ -1,0 +1,50 @@
+.contenu-principal {
+    display: flex !important;
+    flex: 1;
+    overflow: hidden;
+}
+
+#compteur-articles {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Assurer ratio paysage */
+.article-item {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--background-color-light);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    /* 🔑 Forcer vignettes paysage */
+    aspect-ratio: 4 / 3; /* largeur > hauteur */
+}
+
+.article-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* évite de couper l'image */
+    border-radius: 5px;
+    cursor: zoom-in;
+}
+
+.article-item img:hover {
+    filter: brightness(0.9);
+    transition: filter 0.2s;
+}
+
+.article-title-small {
+    font-weight: bold;
+    font-size: 1.3em
+}
+
+.article-title-large {
+    padding: 5px;
+    font-size: 26px;
+}
