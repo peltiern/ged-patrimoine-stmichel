@@ -276,43 +276,108 @@ function genererArticle(article, itemClassName, overlayMaxHeight, classNamePhoto
     return item;
 }
 
-function afficherArticle(article) {
-
+async function afficherArticle(article, termeRecherche) {
     const metadata = article.metadata;
 
     // Image
     const img = document.getElementById('lightbox-img');
-    img.src = 'https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/' + metadata.eid + '.jpg';
+    img.src = `https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/${metadata.eid}.jpg`;
     img.alt = metadata.eid;
 
-    // Date
-    const date = document.getElementById('article-date');
-    date.innerText = `${formaterDate(metadata.date) || ''}`;
+    // Données texte
+    document.getElementById('article-date').innerText = formaterDate(metadata.date) || '';
+    document.getElementById('article-source').innerText = metadata.source || '';
+    document.getElementById('article-numero').innerText = metadata.numero || '';
 
-    // Source
-    const source = document.getElementById('article-source');
-    source.innerText = `${metadata.source || ''}`;
+    // // Charger le JSON des mots
+    // const jsonUrl = `https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/${metadata.eid}.json`;
+    // let mots = [];
+    // try {
+    //     const response = await fetch(jsonUrl);
+    //     if (response.ok) mots = await response.json();
+    // } catch (e) {
+    //     console.warn('Impossible de charger les coordonnées des mots :', e);
+    // }
+    //
+    // // Filtrer selon le terme recherché
+    // const motsFiltres = filtrerMots(mots, termeRecherche);
 
-    // Numéro
-    const numero = document.getElementById('article-numero');
-    numero.innerText = `${metadata.numero || ''}`;
-
-    // Attendre que l'article soit bien chargé
     img.onload = () => {
+        const container = document.querySelector('.lightbox-body');
 
-        // Ajouter l'outil de zoom sur la photo
+        // Supprimer ancien calque
+        container.querySelector('svg.highlight-layer')?.remove();
+
+        // Créer le SVG overlay
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.classList.add('highlight-layer');
+        Object.assign(svg.style, {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none',
+        });
+        container.appendChild(svg);
+
+        const mot = {
+            left: 20,
+            top: 30,
+            width: 10,
+            height: 5
+        }
+
+        // Dessiner les rectangles pour les mots filtrés
+        // motsFiltres.forEach(mot => {
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', mot.left + '%');
+            rect.setAttribute('y', mot.top + '%');
+            rect.setAttribute('width', mot.width + '%');
+            rect.setAttribute('height', mot.height + '%');
+            rect.setAttribute('fill', 'rgba(255, 255, 0, 0.4)');
+            rect.setAttribute('stroke', 'orange');
+            rect.setAttribute('stroke-width', '0.3%');
+            svg.appendChild(rect);
+        // });
+
+        // Gérer le zoom / pan
         if (!window.lightboxZoomist) {
             window.lightboxZoomist = new Zoomist('.lightbox-body', {
                 wheelable: true,
                 draggable: true,
                 smooth: true,
                 initScale: 1,
+                // on: {
+                //     zoom: syncSvgTransform,
+                //     drag: syncSvgTransform,
+                // },
             });
         } else {
             window.lightboxZoomist.update();
             window.lightboxZoomist.reset();
         }
+
+    //     function syncSvgTransform() {
+    //         const transform = window.lightboxZoomist.instance.$image.style.transform;
+    //         svg.style.transform = transform;
+    //         svg.style.transformOrigin = 'top left';
+    //     }
+    //
+    //     syncSvgTransform();
     };
+}
+
+// Fonction utilitaire pour filtrer les mots recherchés
+function filtrerMots(mots, recherche) {
+    if (!recherche) return [];
+    const terme = recherche.trim().toLowerCase();
+
+    return mots.filter(m =>
+        m.text &&
+        m.text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') // retire les accents
+            .includes(terme.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
+    );
 }
 
 function formaterDate(dateIso8601) {
