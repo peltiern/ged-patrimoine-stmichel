@@ -303,14 +303,13 @@ async function afficherArticle(article, termeRecherche) {
     // const motsFiltres = filtrerMots(mots, termeRecherche);
 
     img.onload = () => {
-        const container = document.querySelector('.lightbox-body');
+        const container = document.querySelector('#highlight-layer');
 
         // Supprimer ancien calque
-        container.querySelector('svg.highlight-layer')?.remove();
+        container.querySelector('svg')?.remove();
 
         // Créer le SVG overlay
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.classList.add('highlight-layer');
         Object.assign(svg.style, {
             position: 'absolute',
             top: 0,
