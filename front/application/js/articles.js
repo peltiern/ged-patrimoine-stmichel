@@ -284,20 +284,23 @@ async function afficherArticle(article, termeRecherche) {
     img.src = `https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/${metadata.eid}.jpg`;
     img.alt = metadata.eid;
 
-    // // Charger le JSON des mots
-    // const jsonUrl = `https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/${metadata.eid}.json`;
-    // let mots = [];
-    // try {
-    //     const response = await fetch(jsonUrl);
-    //     if (response.ok) mots = await response.json();
-    // } catch (e) {
-    //     console.warn('Impossible de charger les coordonnées des mots :', e);
-    // }
+
     //
     // // Filtrer selon le terme recherché
     // const motsFiltres = filtrerMots(mots, termeRecherche);
 
-    img.onload = () => {
+    img.onload = async () => {
+
+        // Charger le JSON des mots
+        const jsonUrl = `https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/${metadata.eid}.json`;
+        let mots = [];
+        try {
+            const response = await fetch(jsonUrl);
+            if (response.ok) mots = await response.json();
+        } catch (e) {
+            console.warn('Impossible de charger les coordonnées des mots :', e);
+        }
+
         // Supprimer ancien calque
         highlight.querySelector('svg')?.remove();
 
