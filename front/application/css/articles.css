@@ -53,26 +53,34 @@
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: hidden; /* empêche de dépasser */
+    overflow: hidden;
 }
 
 .zoomist-image {
-    max-width: 100%;
-    max-height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
-#lightbox-img {
+.zoomist-image img {
     display: block;
-    width: 100%;
-    height: auto;            /* important */
-    object-fit: contain;     /* garde les proportions */
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
 }
 
 #highlight-layer {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
     pointer-events: none;
+    z-index: 2;
 }
+
+
+

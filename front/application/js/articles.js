@@ -278,16 +278,11 @@ function genererArticle(article, itemClassName, overlayMaxHeight, classNamePhoto
 
 async function afficherArticle(article, termeRecherche) {
     const metadata = article.metadata;
-
-    // Image
     const img = document.getElementById('lightbox-img');
+    const highlight = document.getElementById('highlight-layer');
+
     img.src = `https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/${metadata.eid}.jpg`;
     img.alt = metadata.eid;
-
-    // Données texte
-    document.getElementById('article-date').innerText = formaterDate(metadata.date) || '';
-    document.getElementById('article-source').innerText = metadata.source || '';
-    document.getElementById('article-numero').innerText = metadata.numero || '';
 
     // // Charger le JSON des mots
     // const jsonUrl = `https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/${metadata.eid}.json`;
@@ -303,69 +298,72 @@ async function afficherArticle(article, termeRecherche) {
     // const motsFiltres = filtrerMots(mots, termeRecherche);
 
     img.onload = () => {
-        const container = document.querySelector('#highlight-layer');
-
         // Supprimer ancien calque
-        container.querySelector('svg')?.remove();
+        highlight.querySelector('svg')?.remove();
 
         // Créer le SVG overlay
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        Object.assign(svg.style, {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            pointerEvents: 'none',
-        });
-        container.appendChild(svg);
+        svg.style.position = 'absolute';
+        svg.style.pointerEvents = 'none';
+        highlight.appendChild(svg);
 
-        const mot = {
-            left: 20,
-            top: 30,
-            width: 10,
-            height: 5
+        // Exemple : rectangle de test
+        const mot = { left: 22.02, top: 36.24, width: 15.37, height: 0.91 };
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', mot.left + '%');
+        rect.setAttribute('y', mot.top + '%');
+        rect.setAttribute('width', mot.width + '%');
+        rect.setAttribute('height', mot.height + '%');
+        rect.setAttribute('fill', 'rgba(255,255,0,0.4)');
+        rect.setAttribute('stroke-width', '0.3%');
+        svg.appendChild(rect);
+
+        // Fonction pour adapter le calque à la taille réelle de l'image
+        function ajusterHighlightLayer() {
+            const imgRect = img.getBoundingClientRect();
+            const parentRect = highlight.parentElement.getBoundingClientRect();
+
+            const offsetX = imgRect.left - parentRect.left;
+            const offsetY = imgRect.top - parentRect.top;
+
+            svg.style.left = `${offsetX}px`;
+            svg.style.top = `${offsetY}px`;
+            svg.style.width = `${imgRect.width}px`;
+            svg.style.height = `${imgRect.height}px`;
         }
 
-        // Dessiner les rectangles pour les mots filtrés
-        // motsFiltres.forEach(mot => {
-            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            rect.setAttribute('x', mot.left + '%');
-            rect.setAttribute('y', mot.top + '%');
-            rect.setAttribute('width', mot.width + '%');
-            rect.setAttribute('height', mot.height + '%');
-            rect.setAttribute('fill', 'rgba(255, 255, 0, 0.4)');
-            rect.setAttribute('stroke', 'orange');
-            rect.setAttribute('stroke-width', '0.3%');
-            svg.appendChild(rect);
-        // });
+        // Appel initial
+        ajusterHighlightLayer();
 
-        // Gérer le zoom / pan
+        // Observer les changements de taille / zoom
+        if (window.ResizeObserver) {
+            const ro = new ResizeObserver(ajusterHighlightLayer);
+            ro.observe(img);
+            ro.observe(highlight.parentElement);
+        } else {
+            window.addEventListener('resize', ajusterHighlightLayer);
+        }
+
+        // Synchroniser lors des événements Zoomist
+        const zoomistContainer = document.querySelector('.zoomist-container');
+        zoomistContainer?.addEventListener('zoomist:zoom', ajusterHighlightLayer);
+        zoomistContainer?.addEventListener('zoomist:move', ajusterHighlightLayer);
+
+        // Initialiser Zoomist
         if (!window.lightboxZoomist) {
             window.lightboxZoomist = new Zoomist('.lightbox-body', {
                 wheelable: true,
                 draggable: true,
                 smooth: true,
                 initScale: 1,
-                // on: {
-                //     zoom: syncSvgTransform,
-                //     drag: syncSvgTransform,
-                // },
             });
         } else {
             window.lightboxZoomist.update();
             window.lightboxZoomist.reset();
         }
-
-    //     function syncSvgTransform() {
-    //         const transform = window.lightboxZoomist.instance.$image.style.transform;
-    //         svg.style.transform = transform;
-    //         svg.style.transformOrigin = 'top left';
-    //     }
-    //
-    //     syncSvgTransform();
     };
 }
+
 
 // Fonction utilitaire pour filtrer les mots recherchés
 function filtrerMots(mots, recherche) {
