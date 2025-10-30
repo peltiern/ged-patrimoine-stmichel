@@ -1,5 +1,6 @@
 package fr.patrimoine.stmichel.ged.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.patrimoine.stmichel.ged.controllers.dto.document.DocumentMetadataDto;
@@ -16,6 +17,7 @@ import fr.patrimoine.stmichel.ged.modeles.document.InfosImage;
 import fr.patrimoine.stmichel.ged.modeles.solr.Document;
 import fr.patrimoine.stmichel.ged.modeles.solr.DocumentResultat;
 import fr.patrimoine.stmichel.ged.modeles.tesseract.TesseractOutputs;
+import fr.patrimoine.stmichel.ged.modeles.tesseract.TesseractWord;
 import fr.patrimoine.stmichel.ged.utils.ImageUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -30,7 +32,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class DocumentService {
@@ -143,6 +149,38 @@ public class DocumentService {
         documentRequest.getPageRequest().setTaillePage(Math.min(documentRequest.getPageRequest().getTaillePage(), 20));
 
         PageResponse<DocumentResultat> resultats = moteurRechercheService.rechercherObjet("documents", documentRequest);
+
+        // Récupération des coordonnées des termes trouvés
+        if (StringUtils.isNotBlank(documentRequestDto.getQuery()) && !CollectionUtils.isEmpty(resultats.getContenu())) {
+            resultats.getContenu().forEach(contenu -> {
+                if (!CollectionUtils.isEmpty(contenu.getExtraits())) {
+                    // Récupération du fichier de coordonnées
+	                byte[] fichierCoordonnees = objectStorageService.download(bucketPublic, DOSSIERS_DOCUMENTS + contenu.getEid() + ".json");
+                        ObjectMapper mapper = new ObjectMapper();
+
+	                List<TesseractWord> words;
+	                try {
+		                words = mapper.readValue(
+		                        fichierCoordonnees,
+		                        new TypeReference<>() {}
+		                );
+	                } catch (IOException e) {
+		                throw new RuntimeException(e);
+	                }
+
+                    List<TesseractWord> listeAGarder = new ArrayList<>();
+
+                    Stream.of(StringUtils.split(documentRequestDto.getQuery()))
+                            .forEach(
+                                    word -> words.stream()
+                                            .filter(tesseractWord -> StringUtils.equals(tesseractWord.text(), word))
+                                            .forEach(listeAGarder::add)
+                            );
+
+
+                }
+            });
+        }
 
         return paginationMapper.toDto(resultats, documentResponseMapper);
     }

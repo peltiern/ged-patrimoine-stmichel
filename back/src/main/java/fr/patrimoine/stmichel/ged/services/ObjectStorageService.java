@@ -1,5 +1,6 @@
 package fr.patrimoine.stmichel.ged.services;
 
+import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
@@ -56,6 +57,21 @@ public class ObjectStorageService {
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
                  InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException |
                  XmlParserException e) {
+            // TODO
+            throw new RuntimeException(e);
+        }
+    }
+
+    public byte[] download(String bucket, String nomFichier) {
+        try (InputStream stream = minioClient.getObject(
+                GetObjectArgs.builder()
+                        .bucket(bucket)
+                        .object(nomFichier)
+                        .build())) {
+
+            return stream.readAllBytes();
+
+        } catch (Exception e) {
             // TODO
             throw new RuntimeException(e);
         }
