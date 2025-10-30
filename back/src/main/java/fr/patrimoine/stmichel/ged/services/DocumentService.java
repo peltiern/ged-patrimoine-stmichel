@@ -6,10 +6,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.patrimoine.stmichel.ged.controllers.dto.document.DocumentMetadataDto;
 import fr.patrimoine.stmichel.ged.controllers.dto.document.DocumentRequestDto;
 import fr.patrimoine.stmichel.ged.controllers.dto.document.DocumentResponseDto;
+import fr.patrimoine.stmichel.ged.controllers.dto.document.TermesCoordonnees;
 import fr.patrimoine.stmichel.ged.controllers.dto.pagination.PageResponseDto;
 import fr.patrimoine.stmichel.ged.mappers.DocumentMetadataMapper;
 import fr.patrimoine.stmichel.ged.mappers.DocumentResponseMapper;
-import fr.patrimoine.stmichel.ged.mappers.PaginationMapper;
 import fr.patrimoine.stmichel.ged.modeles.common.PageResponse;
 import fr.patrimoine.stmichel.ged.modeles.document.DocumentMetadata;
 import fr.patrimoine.stmichel.ged.modeles.document.DocumentRequest;
@@ -32,11 +32,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class DocumentService {
@@ -48,34 +45,24 @@ public class DocumentService {
     private static final int MAX_WIDTH = 1920;
     private static final int MAX_HEIGHT = 1920;
     private static final String DOSSIERS_DOCUMENTS = "tests/Documents/";
-
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private final ObjectStorageService objectStorageService;
+    private final TesseractService tesseractService;
+    private final MoteurRechercheService moteurRechercheService;
+    private final DocumentMetadataMapper documentMetadataMapper;
+    private final DocumentResponseMapper documentResponseMapper;
+    private final Tika tika;
     @Value(value = "${application.object-storage.bucket.archives}")
     private String bucketArchives;
-
     @Value(value = "${application.object-storage.bucket.public}")
     private String bucketPublic;
 
-    private final ObjectStorageService objectStorageService;
-
-    private final TesseractService tesseractService;
-
-    private final MoteurRechercheService moteurRechercheService;
-
-    private final DocumentMetadataMapper documentMetadataMapper;
-
-    private final DocumentResponseMapper documentResponseMapper;
-
-    private final PaginationMapper paginationMapper;
-
-    private final Tika tika;
-
-    public DocumentService(ObjectStorageService objectStorageService, TesseractService tesseractService, MoteurRechercheService moteurRechercheService, DocumentMetadataMapper documentMetadataMapper, DocumentResponseMapper documentResponseMapper, PaginationMapper paginationMapper, Tika tika) {
+    public DocumentService(ObjectStorageService objectStorageService, TesseractService tesseractService, MoteurRechercheService moteurRechercheService, DocumentMetadataMapper documentMetadataMapper, DocumentResponseMapper documentResponseMapper, Tika tika) {
         this.objectStorageService = objectStorageService;
         this.tesseractService = tesseractService;
         this.moteurRechercheService = moteurRechercheService;
         this.documentMetadataMapper = documentMetadataMapper;
         this.documentResponseMapper = documentResponseMapper;
-        this.paginationMapper = paginationMapper;
         this.tika = tika;
     }
 
@@ -150,39 +137,71 @@ public class DocumentService {
 
         PageResponse<DocumentResultat> resultats = moteurRechercheService.rechercherObjet("documents", documentRequest);
 
-        // Récupération des coordonnées des termes trouvés
-        if (StringUtils.isNotBlank(documentRequestDto.getQuery()) && !CollectionUtils.isEmpty(resultats.getContenu())) {
-            resultats.getContenu().forEach(contenu -> {
-                if (!CollectionUtils.isEmpty(contenu.getExtraits())) {
-                    // Récupération du fichier de coordonnées
-	                byte[] fichierCoordonnees = objectStorageService.download(bucketPublic, DOSSIERS_DOCUMENTS + contenu.getEid() + ".json");
-                        ObjectMapper mapper = new ObjectMapper();
+        return buildResponsePage(resultats);
+    }
 
-	                List<TesseractWord> words;
-	                try {
-		                words = mapper.readValue(
-		                        fichierCoordonnees,
-		                        new TypeReference<>() {}
-		                );
-	                } catch (IOException e) {
-		                throw new RuntimeException(e);
-	                }
-
-                    List<TesseractWord> listeAGarder = new ArrayList<>();
-
-                    Stream.of(StringUtils.split(documentRequestDto.getQuery()))
-                            .forEach(
-                                    word -> words.stream()
-                                            .filter(tesseractWord -> StringUtils.equals(tesseractWord.text(), word))
-                                            .forEach(listeAGarder::add)
-                            );
-
-
-                }
-            });
+    public PageResponseDto<DocumentResponseDto> buildResponsePage(PageResponse<DocumentResultat> page) {
+        if (page == null) {
+            return null;
         }
 
-        return paginationMapper.toDto(resultats, documentResponseMapper);
+        List<DocumentResponseDto> contenu = page.getContenu()
+                .parallelStream()
+                .map(this::toResponseDto)
+                .toList();
+
+        PageResponseDto<DocumentResponseDto> dto = new PageResponseDto<>();
+        dto.setContenu(contenu);
+        dto.setNbTotalElements(page.getNbTotalElements());
+        dto.setNbTotalPages(page.getNbTotalPages());
+        dto.setPage(page.getPage());
+        dto.setTaillePage(page.getTaillePage());
+
+        return dto;
+    }
+
+    private DocumentResponseDto toResponseDto(DocumentResultat documentResultat) {
+        DocumentResponseDto dto = documentResponseMapper.toDto(documentResultat);
+        dto.setTermesCoordonnees(buildTermesCoordonneesMap(documentResultat));
+        return dto;
+    }
+
+    private Map<String, List<TermesCoordonnees>> buildTermesCoordonneesMap(DocumentResultat doc) {
+        if (doc.getTermes() == null || doc.getTermes().isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        try {
+            byte[] fichier = objectStorageService.download(
+                    bucketPublic,
+                    DOSSIERS_DOCUMENTS + doc.getEid() + ".json"
+            );
+
+
+            List<TesseractWord> mots = OBJECT_MAPPER.readValue(fichier, new TypeReference<>() {
+            });
+            Set<String> termesRecherche = doc.getTermes();
+
+            return mots.stream()
+                    .filter(tw -> termesRecherche.stream().anyMatch(t -> t.equalsIgnoreCase(tw.text())))
+                    .collect(Collectors.groupingBy(
+                            TesseractWord::text,
+                            Collectors.mapping(
+                                    tw -> {
+                                        TermesCoordonnees coord = new TermesCoordonnees();
+                                        coord.setLeft(tw.left());
+                                        coord.setTop(tw.top());
+                                        coord.setWidth(tw.width());
+                                        coord.setHeight(tw.height());
+                                        coord.setConfidence(tw.conf());
+                                        return coord;
+                                    },
+                                    Collectors.toList()
+                            )
+                    ));
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur de lecture JSON pour le document " + doc.getEid(), e);
+        }
     }
 
     private void uploadImage(BufferedImage imageRedimensionneeRgb, String bucket, String cheminDossier, String contentType) throws IOException {

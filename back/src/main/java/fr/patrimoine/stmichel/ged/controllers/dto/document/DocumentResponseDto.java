@@ -1,7 +1,7 @@
 package fr.patrimoine.stmichel.ged.controllers.dto.document;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 public class DocumentResponseDto {
 
@@ -9,7 +9,7 @@ public class DocumentResponseDto {
 
     private List<String> extraits;
 
-    private Set<String> termes;
+    private Map<String, List<TermesCoordonnees>> termesCoordonnees;
 
     public DocumentMetadataDto getMetadata() {
         return metadata;
@@ -27,11 +27,11 @@ public class DocumentResponseDto {
         this.extraits = extraits;
     }
 
-    public Set<String> getTermes() {
-        return termes;
+    public Map<String, List<TermesCoordonnees>> getTermesCoordonnees() {
+        return termesCoordonnees;
     }
 
-    public void setTermes(Set<String> termes) {
-        this.termes = termes;
+    public void setTermesCoordonnees(Map<String, List<TermesCoordonnees>> termesCoordonnees) {
+        this.termesCoordonnees = termesCoordonnees;
     }
 }

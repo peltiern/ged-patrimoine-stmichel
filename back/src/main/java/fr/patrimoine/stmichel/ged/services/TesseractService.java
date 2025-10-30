@@ -103,6 +103,8 @@ public class TesseractService {
                 int conf = Integer.parseInt(cols[10]);
                 String text = cols[11];
 
+                // TODO ignorer les confidences faibles
+
                 words.add(new TesseractWord(level, pageNum, blockNum, parNum, lineNum, wordNum, left, top, width, height, conf, text));
             } catch (NumberFormatException e) {
                 // ignorer les lignes malformées

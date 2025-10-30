@@ -293,13 +293,7 @@ async function afficherArticle(article, termeRecherche) {
 
         // Charger le JSON des mots
         const jsonUrl = `https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/${metadata.eid}.json`;
-        let mots = [];
-        try {
-            const response = await fetch(jsonUrl);
-            if (response.ok) mots = await response.json();
-        } catch (e) {
-            console.warn('Impossible de charger les coordonnées des mots :', e);
-        }
+        let coordonneesMots = article.termesCoordonnees;
 
         // Supprimer ancien calque
         highlight.querySelector('svg')?.remove();
@@ -310,16 +304,20 @@ async function afficherArticle(article, termeRecherche) {
         svg.style.pointerEvents = 'none';
         highlight.appendChild(svg);
 
-        // Exemple : rectangle de test
-        const mot = { left: 22.02, top: 36.24, width: 15.37, height: 0.91 };
-        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        rect.setAttribute('x', mot.left + '%');
-        rect.setAttribute('y', mot.top + '%');
-        rect.setAttribute('width', mot.width + '%');
-        rect.setAttribute('height', mot.height + '%');
-        rect.setAttribute('fill', 'rgba(255,255,0,0.4)');
-        rect.setAttribute('stroke-width', '0.3%');
-        svg.appendChild(rect);
+        if (coordonneesMots || Object.keys(coordonneesMots).length === 0) {
+            Object.entries(coordonneesMots).forEach(([mot, coordonnees]) => {
+                coordonnees.forEach(coordonnees => {
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', coordonnees.left + '%');
+                    rect.setAttribute('y', coordonnees.top + '%');
+                    rect.setAttribute('width', coordonnees.width + '%');
+                    rect.setAttribute('height', coordonnees.height + '%');
+                    rect.setAttribute('fill', 'rgba(255,255,0,0.4)');
+                    rect.setAttribute('data-terme', mot); // facultatif : utile pour identifier le terme au clic
+                    svg.appendChild(rect);
+                });
+            });
+        }
 
         // Fonction pour adapter le calque à la taille réelle de l'image
         function ajusterHighlightLayer() {
