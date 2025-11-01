@@ -90,26 +90,40 @@ public class TesseractService {
             if (cols.length < 12) continue; // sécurité
 
             try {
-                int level = Integer.parseInt(cols[0]);
-                int pageNum = Integer.parseInt(cols[1]);
-                int blockNum = Integer.parseInt(cols[2]);
-                int parNum = Integer.parseInt(cols[3]);
-                int lineNum = Integer.parseInt(cols[4]);
-                int wordNum = Integer.parseInt(cols[5]);
-                double left = MathUtils.roundPercentOf(Integer.parseInt(cols[6]), infosImage.width());
-                double top = MathUtils.roundPercentOf(Integer.parseInt(cols[7]), infosImage.height());
-                double width = MathUtils.roundPercentOf(Integer.parseInt(cols[8]), infosImage.width());
-                double height = MathUtils.roundPercentOf(Integer.parseInt(cols[9]), infosImage.height());
                 int conf = Integer.parseInt(cols[10]);
-                String text = cols[11];
 
-                // TODO ignorer les confidences faibles
+                if (conf > 0) {
+                    String mot = nettoyerMot(cols[11]);
 
-                words.add(new TesseractWord(level, pageNum, blockNum, parNum, lineNum, wordNum, left, top, width, height, conf, text));
+                    if (StringUtils.isNotBlank(mot)) {
+                        int level = Integer.parseInt(cols[0]);
+                        int pageNum = Integer.parseInt(cols[1]);
+                        int blockNum = Integer.parseInt(cols[2]);
+                        int parNum = Integer.parseInt(cols[3]);
+                        int lineNum = Integer.parseInt(cols[4]);
+                        int wordNum = Integer.parseInt(cols[5]);
+                        double left = MathUtils.roundPercentOf(Integer.parseInt(cols[6]), infosImage.width());
+                        double top = MathUtils.roundPercentOf(Integer.parseInt(cols[7]), infosImage.height());
+                        double width = MathUtils.roundPercentOf(Integer.parseInt(cols[8]), infosImage.width());
+                        double height = MathUtils.roundPercentOf(Integer.parseInt(cols[9]), infosImage.height());
+
+                        words.add(new TesseractWord(level, pageNum, blockNum, parNum, lineNum, wordNum, left, top, width, height, conf, mot));
+                    }
+                }
             } catch (NumberFormatException e) {
                 // ignorer les lignes malformées
             }
         }
         return words;
+    }
+
+    private String nettoyerMot(String mot) {
+        if (mot != null) {
+            return mot
+                    .replaceAll("[.,;:!?()«»\\-]", "")
+                    .replaceAll("(?i)\\b[dlmnstj][’']","")
+                    .trim();
+        }
+        return null;
     }
 }
