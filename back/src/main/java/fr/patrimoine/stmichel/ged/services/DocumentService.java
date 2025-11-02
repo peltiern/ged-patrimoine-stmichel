@@ -28,10 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,6 +44,7 @@ public class DocumentService {
     private static final String DOSSIERS_DOCUMENTS = "tests/Documents/";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final ObjectStorageService objectStorageService;
+    private final S3Service s3Service;
     private final TesseractService tesseractService;
     private final MoteurRechercheService moteurRechercheService;
     private final DocumentMetadataMapper documentMetadataMapper;
@@ -57,8 +55,9 @@ public class DocumentService {
     @Value(value = "${application.object-storage.bucket.public}")
     private String bucketPublic;
 
-    public DocumentService(ObjectStorageService objectStorageService, TesseractService tesseractService, MoteurRechercheService moteurRechercheService, DocumentMetadataMapper documentMetadataMapper, DocumentResponseMapper documentResponseMapper, Tika tika) {
+    public DocumentService(ObjectStorageService objectStorageService, S3Service s3Service, TesseractService tesseractService, MoteurRechercheService moteurRechercheService, DocumentMetadataMapper documentMetadataMapper, DocumentResponseMapper documentResponseMapper, Tika tika) {
         this.objectStorageService = objectStorageService;
+        this.s3Service = s3Service;
         this.tesseractService = tesseractService;
         this.moteurRechercheService = moteurRechercheService;
         this.documentMetadataMapper = documentMetadataMapper;
@@ -106,16 +105,18 @@ public class DocumentService {
 
             // Sauvegarde du contenu texte du document sur le bucket public
             if (StringUtils.isNotBlank(tesseractOutputs.text())) {
-                objectStorageService.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".txt", tesseractOutputs.text(), "text/plain");
+                s3Service.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".txt", tesseractOutputs.text(), "text/plain");
             }
 
+//            objectStorageService.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".txt", "le texte", "text/plain");
+
             // Sauvegarde des mots trouvés dans le document sur le bucket public
-            if (!CollectionUtils.isEmpty(tesseractOutputs.words())) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-                String wordsJson = objectMapper.writeValueAsString(tesseractOutputs.words());
-                objectStorageService.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".json", wordsJson, "application/json");
-            }
+//            if (!CollectionUtils.isEmpty(tesseractOutputs.words())) {
+//                ObjectMapper objectMapper = new ObjectMapper();
+//                objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+//                String wordsJson = objectMapper.writeValueAsString(tesseractOutputs.words());
+//                s3Service.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".json", wordsJson, "application/json");
+//            }
 
             // Indexation du document
             if (StringUtils.isNotBlank(tesseractOutputs.text())) {
@@ -204,23 +205,24 @@ public class DocumentService {
         }
     }
 
-    private void uploadImage(BufferedImage imageRedimensionneeRgb, String bucket, String cheminDossier, String contentType) throws IOException {
+    private void uploadImage(BufferedImage image, String bucket, String cheminDossier, String contentType) {
+        String extension = StringUtils.equals(contentType, IMAGE_TIFF) ? EXTENSION_TIFF : EXTENSION_JPG;
+
+        // Conversion BufferedImage → bytes
+        byte[] data;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            String extensionImage = StringUtils.equals(contentType, IMAGE_TIFF) ? EXTENSION_TIFF : EXTENSION_JPG;
-            ImageIO.write(imageRedimensionneeRgb, extensionImage, baos);
+            ImageIO.write(image, extension, baos);
             baos.flush();
+            data = baos.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lors de la conversion de l'image en bytes", e);
+        }
 
-            byte[] data = baos.toByteArray();
-
-            try (InputStream is = new ByteArrayInputStream(data)) {
-                objectStorageService.upload(
-                        bucket,
-                        cheminDossier + "." + extensionImage,
-                        is,
-                        data.length,
-                        contentType
-                );
-            }
+        // Upload via InputStream indépendant
+        try (InputStream is = new ByteArrayInputStream(data)) {
+            s3Service.upload(bucket, cheminDossier + "." + extension, is, data.length, contentType);
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lors de l'upload de l'image : " + cheminDossier, e);
         }
     }
 }
