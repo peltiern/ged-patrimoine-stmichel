@@ -44,7 +44,6 @@ public class DocumentService {
     private static final String DOSSIERS_DOCUMENTS = "tests/Documents/";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final ObjectStorageService objectStorageService;
-    private final S3Service s3Service;
     private final TesseractService tesseractService;
     private final MoteurRechercheService moteurRechercheService;
     private final DocumentMetadataMapper documentMetadataMapper;
@@ -55,9 +54,8 @@ public class DocumentService {
     @Value(value = "${application.object-storage.bucket.public}")
     private String bucketPublic;
 
-    public DocumentService(ObjectStorageService objectStorageService, S3Service s3Service, TesseractService tesseractService, MoteurRechercheService moteurRechercheService, DocumentMetadataMapper documentMetadataMapper, DocumentResponseMapper documentResponseMapper, Tika tika) {
+    public DocumentService(ObjectStorageService objectStorageService, TesseractService tesseractService, MoteurRechercheService moteurRechercheService, DocumentMetadataMapper documentMetadataMapper, DocumentResponseMapper documentResponseMapper, Tika tika) {
         this.objectStorageService = objectStorageService;
-        this.s3Service = s3Service;
         this.tesseractService = tesseractService;
         this.moteurRechercheService = moteurRechercheService;
         this.documentMetadataMapper = documentMetadataMapper;
@@ -105,18 +103,18 @@ public class DocumentService {
 
             // Sauvegarde du contenu texte du document sur le bucket public
             if (StringUtils.isNotBlank(tesseractOutputs.text())) {
-                s3Service.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".txt", tesseractOutputs.text(), "text/plain");
+                objectStorageService.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".txt", tesseractOutputs.text(), "text/plain");
             }
 
 //            objectStorageService.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".txt", "le texte", "text/plain");
 
             // Sauvegarde des mots trouvés dans le document sur le bucket public
-//            if (!CollectionUtils.isEmpty(tesseractOutputs.words())) {
-//                ObjectMapper objectMapper = new ObjectMapper();
-//                objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-//                String wordsJson = objectMapper.writeValueAsString(tesseractOutputs.words());
-//                s3Service.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".json", wordsJson, "application/json");
-//            }
+            if (!CollectionUtils.isEmpty(tesseractOutputs.words())) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+                String wordsJson = objectMapper.writeValueAsString(tesseractOutputs.words());
+                objectStorageService.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".json", wordsJson, "application/json");
+            }
 
             // Indexation du document
             if (StringUtils.isNotBlank(tesseractOutputs.text())) {
@@ -220,7 +218,7 @@ public class DocumentService {
 
         // Upload via InputStream indépendant
         try (InputStream is = new ByteArrayInputStream(data)) {
-            s3Service.upload(bucket, cheminDossier + "." + extension, is, data.length, contentType);
+            objectStorageService.upload(bucket, cheminDossier + "." + extension, is, data.length, contentType);
         } catch (IOException e) {
             throw new RuntimeException("Erreur lors de l'upload de l'image : " + cheminDossier, e);
         }

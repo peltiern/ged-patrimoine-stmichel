@@ -10,6 +10,6 @@ public class SolrClientConfig {
 
     @Bean
     public SolrClient solrClient() {
-        return new HttpJdkSolrClient.Builder("http://localhost:8983/solr").build();
+        return new HttpJdkSolrClient.Builder("http://localhost:8983/solr").useHttp1_1(true).build();
     }
 }
