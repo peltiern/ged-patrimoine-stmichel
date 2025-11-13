@@ -28,7 +28,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,9 +42,13 @@ public class DocumentService {
     public static final String IMAGE_TIFF = "image/tiff";
     public static final String EXTENSION_JPG = "jpg";
     public static final String EXTENSION_TIFF = "tiff";
-    private static final int MAX_WIDTH = 1920;
-    private static final int MAX_HEIGHT = 1920;
+    private static final int MAX_WIDTH_MEDIUM = 1920;
+    private static final int MAX_HEIGHT_MEDIUM = 1920;
+    private static final int MAX_WIDTH_SMALL = 640;
+    private static final int MAX_HEIGHT_SMALL = 640;
     private static final String DOSSIERS_DOCUMENTS = "tests/Documents/";
+    private static final String DOSSIERS_DOCUMENTS_MEDIUM = "tests/Documents/medium/";
+    private static final String DOSSIERS_DOCUMENTS_SMALL = "tests/Documents/small/";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final ObjectStorageService objectStorageService;
     private final TesseractService tesseractService;
@@ -88,15 +95,11 @@ public class DocumentService {
             // OCR
             TesseractOutputs tesseractOutputs = tesseractService.recognize(fichier, infosImage);
 
-            // Redimensionnement de l'image si nécessaire puis transformation en RGB
-            BufferedImage imageRedimensionneeRgb = Optional.of(image)
-                    .filter(img -> img.getWidth() > MAX_WIDTH || img.getHeight() > MAX_HEIGHT)
-                    .map(img -> ImageUtils.redimensionnerImage(img, MAX_WIDTH, MAX_HEIGHT))
-                    .map(ImageUtils::convertirEnRgb)
-                    .orElseGet(() -> ImageUtils.convertirEnRgb(image));
+            // Redimensionnement MEDIUM
+            rezizeAndUpload(image, MAX_WIDTH_MEDIUM, MAX_HEIGHT_MEDIUM, metadata, DOSSIERS_DOCUMENTS_MEDIUM);
 
-            // Sauvegarde de l'image redimensionnée sur le bucket public
-            uploadImage(imageRedimensionneeRgb, bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid(), IMAGE_JPEG);
+            // Redimensionnement SMALL
+            rezizeAndUpload(image, MAX_WIDTH_SMALL, MAX_HEIGHT_SMALL, metadata, DOSSIERS_DOCUMENTS_SMALL);
 
             // Sauvegarde de l'image initiale sur le bucket archives
             uploadImage(image, bucketArchives, DOSSIERS_DOCUMENTS + metadata.getEid(), contentType);
@@ -105,8 +108,6 @@ public class DocumentService {
             if (StringUtils.isNotBlank(tesseractOutputs.text())) {
                 objectStorageService.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".txt", tesseractOutputs.text(), "text/plain");
             }
-
-//            objectStorageService.upload(bucketPublic, DOSSIERS_DOCUMENTS + metadata.getEid() + ".txt", "le texte", "text/plain");
 
             // Sauvegarde des mots trouvés dans le document sur le bucket public
             if (!CollectionUtils.isEmpty(tesseractOutputs.words())) {
@@ -127,6 +128,18 @@ public class DocumentService {
         }
 
         return metadataDto;
+    }
+
+    private void rezizeAndUpload(BufferedImage image, int maxWidthMedium, int maxHeightMedium, DocumentMetadata metadata, String dossiersDocuments) {
+        // Redimensionnement de l'image si nécessaire puis transformation en RGB MEDIUM
+        BufferedImage imageRedimensionneeRgbMedium = Optional.of(image)
+                .filter(img -> img.getWidth() > maxWidthMedium || img.getHeight() > maxHeightMedium)
+                .map(img -> ImageUtils.redimensionnerImage(img, maxWidthMedium, maxHeightMedium))
+                .map(ImageUtils::convertirEnRgb)
+                .orElseGet(() -> ImageUtils.convertirEnRgb(image));
+
+        // Sauvegarde de l'image redimensionnée sur le bucket public
+        uploadImage(imageRedimensionneeRgbMedium, bucketPublic, dossiersDocuments + metadata.getEid(), IMAGE_JPEG);
     }
 
     public PageResponseDto<DocumentResponseDto> getDocuments(DocumentRequestDto documentRequestDto) {

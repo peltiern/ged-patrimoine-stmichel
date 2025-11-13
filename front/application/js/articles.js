@@ -248,7 +248,7 @@ function genererArticle(article, itemClassName, overlayMaxHeight, classNamePhoto
 
     // Image
     const img = document.createElement('img');
-    img.src = 'https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/' + article.metadata.eid + '.jpg';
+    img.src = 'https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/small/' + article.metadata.eid + '.jpg';
     img.alt = article.metadata.eid;
 
     // Overlay
@@ -281,7 +281,7 @@ async function afficherArticle(article, termeRecherche) {
     const img = document.getElementById('lightbox-img');
     const highlight = document.getElementById('highlight-layer');
 
-    img.src = `https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/${metadata.eid}.jpg`;
+    img.src = `https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/medium/${metadata.eid}.jpg`;
     img.alt = metadata.eid;
 
 
@@ -291,8 +291,6 @@ async function afficherArticle(article, termeRecherche) {
 
     img.onload = async () => {
 
-        // Charger le JSON des mots
-        const jsonUrl = `https://saint-michel-archives-publiques.s3.fr-par.scw.cloud/tests/Documents/${metadata.eid}.json`;
         let coordonneesMots = article.termesCoordonnees;
 
         // Supprimer ancien calque
